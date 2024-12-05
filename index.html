@@ -9,6 +9,8 @@
           rel="stylesheet" 
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
           crossorigin="anonymous">
+    <!-- Mermaid CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/mermaid@10.4.0/dist/mermaid.min.css" rel="stylesheet">
     <style>
         :root {
             --accent-color: #0d6efd; /* Bootstrap primary default */
@@ -41,7 +43,8 @@
         }
 
         .dark-mode .project-card, 
-        .dark-mode .info-card {
+        .dark-mode .info-card,
+        .dark-mode .markdown-card {
             background-color: var(--dark-card-bg);
             color: var(--dark-text);
         }
@@ -104,7 +107,7 @@
             width: 100%;
         }
 
-        .project-card, .info-card {
+        .project-card, .info-card, .markdown-card {
             background: #ffffff;
             border: none;
             border-radius: 8px;
@@ -114,7 +117,7 @@
             transition: background-color var(--transition-speed), color var(--transition-speed), box-shadow var(--transition-speed);
         }
 
-        .project-card:hover, .info-card:hover {
+        .project-card:hover, .info-card:hover, .markdown-card:hover {
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
@@ -128,6 +131,40 @@
             font-size: 0.9rem;
             margin-top: 2rem;
             padding-top: 1rem;
+        }
+
+        /* Markdown styling */
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+
+        .markdown-content pre {
+            background: #f0f0f0;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow: auto;
+        }
+
+        .dark-mode .markdown-content pre {
+            background: #2a2a2a;
+        }
+
+        .markdown-content code {
+            background: #f0f0f0;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+        }
+
+        .dark-mode .markdown-content code {
+            background: #333;
         }
     </style>
 </head>
@@ -153,6 +190,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#projects">Projects & Goals</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#markdown-demo">Markdown & Mermaid</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#contact">Contact</a>
@@ -314,6 +354,38 @@
         </div>
     </section>
 
+    <!-- Markdown & Mermaid Demo Section -->
+    <section id="markdown-demo" class="container mb-5">
+        <h2 class="section-heading">Markdown & Mermaid Demo</h2>
+        <div class="row">
+            <div class="col-12 col-lg-6 mb-4">
+                <div class="markdown-card">
+                    <h3>Markdown Preview</h3>
+                    <p>This content is rendered from Markdown:</p>
+                    <div id="markdown-container" class="markdown-content"></div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 mb-4">
+                <div class="markdown-card">
+                    <h3>Mermaid Diagram</h3>
+                    <p>
+                        Below is a simple Mermaid diagram showing a CI/CD pipeline flow:
+                    </p>
+                    <div class="mermaid">
+                        flowchart TD
+                          A[Commit Code] --> B[CI Build]
+                          B --> C[Run Tests]
+                          C --> D{Tests Passed?}
+                          D -->|Yes| E[Deploy to Staging]
+                          D -->|No| F[Notify Developer]
+                          E --> G[Manual Approval]
+                          G --> H[Deploy to Production]
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="contact" class="container mb-5">
         <h2 class="section-heading">Contact</h2>
         <div class="row">
@@ -340,6 +412,10 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
         crossorigin="anonymous">
     </script>
+    <!-- Marked.js for Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Mermaid.js for Diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.4.0/dist/mermaid.min.js"></script>
     <script>
         // Update the footer year
         document.getElementById('year').textContent = new Date().getFullYear();
@@ -358,6 +434,38 @@
         darkModeSwitch.addEventListener('change', function() {
             body.classList.toggle('dark-mode', this.checked);
         });
+
+        // Markdown Content
+        const markdownContent = `
+# Markdown Example
+
+This is a sample of **Markdown** text. Below is a code snippet:
+
+\`\`\`csharp
+using System;
+
+class Program {
+    static void Main() {
+        Console.WriteLine("Hello, Markdown!");
+    }
+}
+\`\`\`
+
+You can also create lists:
+
+- Item 1
+- Item 2
+- Item 3
+
+And [links](https://www.example.com) as well.
+`;
+
+        // Render Markdown to HTML
+        const markdownContainer = document.getElementById('markdown-container');
+        markdownContainer.innerHTML = marked.parse(markdownContent);
+
+        // Initialize Mermaid
+        mermaid.initialize({ startOnLoad: true, theme: "default" });
     </script>
 </body>
 </html>
