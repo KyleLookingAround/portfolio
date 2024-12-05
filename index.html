@@ -139,38 +139,6 @@
             transform: rotate(-90deg);
         }
 
-        /* Interactive Timeline */
-        .timeline {
-            position: relative;
-            margin: 2rem 0;
-            padding: 0;
-            list-style: none;
-        }
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 20px;
-            top: 0;
-            width: 2px;
-            height: 100%;
-            background: var(--accent-color);
-        }
-        .timeline li {
-            position: relative;
-            margin-bottom: 2rem;
-            padding-left: 50px;
-        }
-        .timeline li::before {
-            content: '';
-            position: absolute;
-            left: 12px;
-            top: 0;
-            width: 16px;
-            height: 16px;
-            background: var(--accent-color);
-            border-radius: 50%;
-        }
-
         /* Scroll Indicator */
         #scroll-indicator {
             position: fixed;
@@ -333,29 +301,20 @@
         </div>
     </section>
 
-    <!-- Interactive Timeline Section -->
+    <!-- Updated Timeline with Mermaid -->
     <section id="timeline-section" class="container py-5">
         <h2 class="section-heading">Timeline <span class="collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#timeline-collapse"><i class="bi bi-chevron-down"></i></span></h2>
         <div id="timeline-collapse" class="collapse">
-            <div class="timeline-card">
-                <ul class="timeline">
-                    <li>
-                        <h5>2020</h5>
-                        <p>Started working as a junior backend developer.</p>
-                    </li>
-                    <li>
-                        <h5>2021</h5>
-                        <p>Focused on SQL optimizations and JSON data handling.</p>
-                    </li>
-                    <li>
-                        <h5>2022</h5>
-                        <p>Introduced modern visualization tools to improve documentation workflows.</p>
-                    </li>
-                    <li>
-                        <h5>2023</h5>
-                        <p>Integrated HTMX and Bootstrap 5 for a better UX.</p>
-                    </li>
-                </ul>
+            <div class="info-card">
+                <div class="mermaid">
+                    timeline
+                        title Career Timeline
+                        Nov 2018 - Mar 2020 : Apprentice Developer at BEP Systems Limited
+                        Mar 2020 - Feb 2022 : Junior Developer at BEP Systems Limited
+                        Feb 2022 - Jul 2022 : Developer at finova
+                        Jul 2022 - Dec 2023 : Senior Developer at finova
+                        Dec 2023 - Present  : Lead Engineer at finova
+                </div>
             </div>
         </div>
     </section>
@@ -435,7 +394,7 @@
         </div>
     </section>
 
-    <!-- Sticky Bottom Navigation for mobile (no bg-light class) -->
+    <!-- Sticky Bottom Navigation for mobile -->
     <nav class="navbar bottom-nav">
         <div class="d-flex justify-content-around w-100">
             <a class="nav-link" href="#home"><i class="bi bi-house"></i><div>Home</div></a>
@@ -455,7 +414,11 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+    <!-- Mermaid for diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.4.0/dist/mermaid.min.js"></script>
     <script>
+        mermaid.initialize({ startOnLoad: true });
+
         // Update the footer year
         document.getElementById('year').textContent = new Date().getFullYear();
 
