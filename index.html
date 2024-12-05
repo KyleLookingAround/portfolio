@@ -26,8 +26,8 @@
             --transition-speed: 0.3s;
         }
 
-        /* Dark mode overrides variables */
         body.dark-mode {
+            /* Dark Mode Variables */
             --bg: #121212;
             --text: #e0e0e0;
             --card-bg: #1e1e1e;
@@ -44,22 +44,19 @@
             line-height: 1.6;
             font-size: 1rem;
             transition: background-color var(--transition-speed), color var(--transition-speed);
-            scroll-behavior: smooth; /* Smooth Scrolling */
+            scroll-behavior: smooth; 
             overscroll-behavior: none;
         }
 
-        /* Navbar and bottom nav styling using variables */
         .navbar, .bottom-nav {
             background-color: var(--nav-bg);
             color: var(--nav-text);
         }
 
-        /* In dark mode, toggler icon should invert */
         body.dark-mode .navbar-toggler-icon {
             filter: invert(1);
         }
 
-        /* Nav links */
         .nav-link {
             position: relative;
             transition: color var(--transition-speed);
@@ -79,8 +76,7 @@
             width: 100%;
         }
 
-        /* Cards */
-        .project-card, .info-card, .chart-card, .timeline-card {
+        .project-card, .info-card, .chart-card {
             background: var(--card-bg);
             border: none;
             border-radius: 8px;
@@ -88,7 +84,7 @@
             padding: 1.5rem;
             transition: background-color var(--transition-speed), color var(--transition-speed), box-shadow var(--transition-speed);
         }
-        .project-card:hover, .info-card:hover, .chart-card:hover, .timeline-card:hover {
+        .project-card:hover, .info-card:hover, .chart-card:hover {
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
@@ -108,7 +104,6 @@
             font-size: 1.05rem;
         }
 
-        /* Hero Section Animation */
         #home {
             background: var(--hero-gradient);
             color: #fff;
@@ -118,6 +113,7 @@
             transform: translateY(20px);
             animation: fadeInUp 1s forwards ease-in-out;
         }
+
         @keyframes fadeInUp {
             to {
                 opacity: 1;
@@ -125,7 +121,6 @@
             }
         }
 
-        /* Collapsible sections */
         .collapsible-header {
             cursor: pointer;
             display: flex;
@@ -139,7 +134,6 @@
             transform: rotate(-90deg);
         }
 
-        /* Scroll Indicator */
         #scroll-indicator {
             position: fixed;
             top: 0;
@@ -150,7 +144,6 @@
             z-index: 9999;
         }
 
-        /* Sticky Bottom Navigation for mobile */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -179,7 +172,6 @@
             margin-bottom: 1.5rem;
         }
 
-        /* Swipe Navigation */
         section, header {
             scroll-snap-align: start;
         }
@@ -190,20 +182,30 @@
             margin: auto;
         }
 
-        .gig-list {
-            list-style: none;
-            padding: 0;
+        /* For Gig Section enhancement:
+           Use tabs and cards for a more visually appealing layout. */
+        .gig-card {
+            background: var(--card-bg);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.3s;
         }
-        .gig-list li {
-            margin-bottom: 0.5rem;
+        .gig-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .gig-date {
+            font-weight: bold;
+        }
+        .gig-description {
+            margin: 0;
         }
     </style>
 </head>
 <body>
-    <!-- Scroll Indicator -->
     <div id="scroll-indicator"></div>
 
-    <!-- Sticky Navigation -->
     <nav class="navbar navbar-expand-lg border-bottom sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="#home">UK Software Engineer</a>
@@ -278,7 +280,6 @@
         </div>
     </section>
 
-    <!-- Collapsible Skills Section -->
     <section id="skills-section" class="container py-5">
         <h2 class="section-heading">Skills <span class="collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#skills-collapse"><i class="bi bi-chevron-down"></i></span></h2>
         <div id="skills-collapse" class="collapse">
@@ -290,8 +291,6 @@
                     <li><strong>Process Improvement:</strong> Bridging gaps, streamlining workflows, enhancing efficiency</li>
                 </ul>
             </div>
-            
-            <!-- Skill Charts -->
             <div class="chart-card">
                 <h3>Skill Proficiency</h3>
                 <div class="chart-container">
@@ -301,25 +300,26 @@
         </div>
     </section>
 
-    <!-- Updated Timeline with Mermaid -->
+    <!-- Mermaid Timeline -->
     <section id="timeline-section" class="container py-5">
         <h2 class="section-heading">Timeline <span class="collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#timeline-collapse"><i class="bi bi-chevron-down"></i></span></h2>
         <div id="timeline-collapse" class="collapse">
             <div class="info-card">
                 <div class="mermaid">
+                    %%{init: {'theme': 'base'}}%%
                     timeline
-                        title Career Timeline
-                        Nov 2018 - Mar 2020 : Apprentice Developer at BEP Systems Limited
-                        Mar 2020 - Feb 2022 : Junior Developer at BEP Systems Limited
-                        Feb 2022 - Jul 2022 : Developer at finova
-                        Jul 2022 - Dec 2023 : Senior Developer at finova
-                        Dec 2023 - Present  : Lead Engineer at finova
+                      title: Career Timeline
+                      dateFormat YYYY-MM-DD
+                      2018-11-01 : Apprentice Developer at BEP Systems Limited (Nov 2018 - Mar 2020)
+                      2020-03-01 : Junior Developer at BEP Systems Limited (Mar 2020 - Feb 2022)
+                      2022-02-01 : Developer at finova (Feb 2022 - Jul 2022)
+                      2022-07-01 : Senior Developer at finova (Jul 2022 - Dec 2023)
+                      2023-12-01 : Lead Engineer at finova (Dec 2023 - Present)
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Achievements Section -->
     <section id="achievements-section" class="container py-5">
         <h2 class="section-heading">Achievements <span class="collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#achievements-collapse"><i class="bi bi-chevron-down"></i></span></h2>
         <div id="achievements-collapse" class="collapse">
@@ -334,53 +334,212 @@
         </div>
     </section>
 
-    <!-- Gig Tracker Section -->
+    <!-- Improved Gig Section with Tabs and Cards -->
     <section id="gigs-section" class="container py-5">
         <h2 class="section-heading">Gig Tracker <span class="collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#gigs-collapse"><i class="bi bi-chevron-down"></i></span></h2>
         <div id="gigs-collapse" class="collapse">
             <div class="info-card">
-                <h3>Past Gigs (2024)</h3>
-                <ul class="gig-list">
-                    <li>June 10: Mt. Joy (Ritz)</li>
-                    <li>July 10: Kings of Leon (Co-Op)</li>
-                    <li>August 8: Pete Doherty</li>
-                    <li>August 24: New Order + Johnny Marr (Wythenshawe Park)</li>
-                    <li>August 25: Blossoms (Wythenshawe Park)</li>
-                    <li>September 1: girl in red (Apollo)</li>
-                    <li>September 28: Sea Girls (Apollo)</li>
-                    <li>October 1: The Struts (Albert Hall)</li>
-                    <li>October 2: Driver Era (Apollo)</li>
-                    <li>October 4: Aurora (Apollo)</li>
-                    <li>October 5: Neighbourhood Festival (Manchester) - Red Rum Club, Brooke Combe, Antony Szmierek</li>
-                    <li>October 11: Saint Motel (New Century Hall)</li>
-                    <li>October 15: Leap (Yes Basement)</li>
-                    <li>November 2: Glass Animals (Co-Op)</li>
-                    <li>November 4: Blossoms (Plaza Stockport)</li>
-                    <li>November 7: Jack Jones (Yes Basement)</li>
-                    <li>November 20: Blossoms (Ritz)</li>
+                <ul class="nav nav-tabs mb-3" id="gigTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="past2024-tab" data-bs-toggle="tab" data-bs-target="#past2024" type="button" role="tab" aria-controls="past2024" aria-selected="true">
+                            Past Gigs (2024)
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="festivals-tab" data-bs-toggle="tab" data-bs-target="#festivals" type="button" role="tab" aria-controls="festivals" aria-selected="false">
+                            Past Festivals
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="upcoming2024-tab" data-bs-toggle="tab" data-bs-target="#upcoming2024" type="button" role="tab" aria-controls="upcoming2024" aria-selected="false">
+                            Upcoming (2024)
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="upcoming2025-tab" data-bs-toggle="tab" data-bs-target="#upcoming2025" type="button" role="tab" aria-controls="upcoming2025" aria-selected="false">
+                            Upcoming (2025)
+                        </button>
+                    </li>
                 </ul>
-
-                <h3 class="mt-4">Past Festivals</h3>
-                <p><strong>Bonnaroo 2024 (Manchester, Tennessee)</strong></p>
-                <p>Acts: Pretty Lights, FISHER, GWAR, Post Malone, Interpol, T-Pain, The Japanese House, Red Hot Chili Peppers, Cage the Elephant, Cigarettes After Sex, Fred again.., Megan Thee Stallion, Carly Rae Jepsen, Taking Back Sunday.</p>
-                
-                <p><strong>Lollapalooza 2023 (Chicago)</strong></p>
-                <p>Acts: Billie Eilish, Portugal. The Man, The 1975, Foals, Odesza, Red Hot Chili Peppers, Mt. Joy.</p>
-
-                <h3 class="mt-4">Upcoming Gigs (2024)</h3>
-                <ul class="gig-list">
-                    <li>December 7: Idles (Apollo) + Idles DJ set (YES)</li>
-                    <li>December 16: Paul Heaton (Co-Op)</li>
-                </ul>
-
-                <h3 class="mt-4">Upcoming Gigs (2025)</h3>
-                <ul class="gig-list">
-                    <li>February 14: Cage the Elephant (Apollo)</li>
-                    <li>March 2: You Are Not Alone Festival (Stockport)</li>
-                    <li>April 18: Finneas (Apollo)</li>
-                    <li>June: Bonnaroo (Manchester, Tennessee)</li>
-                    <li>July 5: Fontaines D.C. (Finsbury Park)</li>
-                </ul>
+                <div class="tab-content" id="gigTabContent">
+                    <!-- Past Gigs 2024 -->
+                    <div class="tab-pane fade show active" id="past2024" role="tabpanel" aria-labelledby="past2024-tab">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">June 10</p>
+                                    <p class="gig-description">Mt. Joy (Ritz)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">July 10</p>
+                                    <p class="gig-description">Kings of Leon (Co-Op)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">August 8</p>
+                                    <p class="gig-description">Pete Doherty</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">August 24</p>
+                                    <p class="gig-description">New Order + Johnny Marr (Wythenshawe Park)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">August 25</p>
+                                    <p class="gig-description">Blossoms (Wythenshawe Park)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">September 1</p>
+                                    <p class="gig-description">girl in red (Apollo)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">September 28</p>
+                                    <p class="gig-description">Sea Girls (Apollo)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">October 1</p>
+                                    <p class="gig-description">The Struts (Albert Hall)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">October 2</p>
+                                    <p class="gig-description">Driver Era (Apollo)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">October 4</p>
+                                    <p class="gig-description">Aurora (Apollo)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">October 5</p>
+                                    <p class="gig-description">Neighbourhood Festival (Manchester): Red Rum Club, Brooke Combe, Antony Szmierek</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">October 11</p>
+                                    <p class="gig-description">Saint Motel (New Century Hall)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">October 15</p>
+                                    <p class="gig-description">Leap (Yes Basement)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">November 2</p>
+                                    <p class="gig-description">Glass Animals (Co-Op)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">November 4</p>
+                                    <p class="gig-description">Blossoms (Plaza Stockport)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">November 7</p>
+                                    <p class="gig-description">Jack Jones (Yes Basement)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">November 20</p>
+                                    <p class="gig-description">Blossoms (Ritz)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Past Festivals -->
+                    <div class="tab-pane fade" id="festivals" role="tabpanel" aria-labelledby="festivals-tab">
+                        <div class="mb-4 gig-card">
+                            <p class="gig-date">Bonnaroo 2024 (Manchester, Tennessee)</p>
+                            <p class="gig-description">
+                                Acts: Pretty Lights, FISHER, GWAR, Post Malone, Interpol, T-Pain, The Japanese House, 
+                                Red Hot Chili Peppers, Cage the Elephant, Cigarettes After Sex, Fred again.., 
+                                Megan Thee Stallion, Carly Rae Jepsen, Taking Back Sunday.
+                            </p>
+                        </div>
+                        <div class="gig-card">
+                            <p class="gig-date">Lollapalooza 2023 (Chicago)</p>
+                            <p class="gig-description">
+                                Acts: Billie Eilish, Portugal. The Man, The 1975, Foals, Odesza, 
+                                Red Hot Chili Peppers, Mt. Joy.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Upcoming 2024 -->
+                    <div class="tab-pane fade" id="upcoming2024" role="tabpanel" aria-labelledby="upcoming2024-tab">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">December 7</p>
+                                    <p class="gig-description">Idles (Apollo) + Idles DJ set (YES)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">December 16</p>
+                                    <p class="gig-description">Paul Heaton (Co-Op)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Upcoming 2025 -->
+                    <div class="tab-pane fade" id="upcoming2025" role="tabpanel" aria-labelledby="upcoming2025-tab">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">February 14</p>
+                                    <p class="gig-description">Cage the Elephant (Apollo)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">March 2</p>
+                                    <p class="gig-description">You Are Not Alone Festival (Stockport)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">April 18</p>
+                                    <p class="gig-description">Finneas (Apollo)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">June</p>
+                                    <p class="gig-description">Bonnaroo (Manchester, Tennessee)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="gig-card">
+                                    <p class="gig-date">July 5</p>
+                                    <p class="gig-description">Fontaines D.C. (Finsbury Park)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -394,7 +553,6 @@
         </div>
     </section>
 
-    <!-- Sticky Bottom Navigation for mobile -->
     <nav class="navbar bottom-nav">
         <div class="d-flex justify-content-around w-100">
             <a class="nav-link" href="#home"><i class="bi bi-house"></i><div>Home</div></a>
@@ -408,13 +566,11 @@
         &copy; <span id="year"></span> UK-based Software Engineer. All rights reserved.
     </footer>
 
-    <!-- JS Dependencies -->
     <script 
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
-    <!-- Mermaid for diagrams -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.4.0/dist/mermaid.min.js"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
@@ -426,20 +582,17 @@
         const darkModeSwitch = document.getElementById('darkModeSwitch');
         const storedDarkMode = localStorage.getItem('darkMode');
 
-        // Apply dark mode if previously chosen
         if (storedDarkMode === 'true') {
             body.classList.add('dark-mode');
             darkModeSwitch.checked = true;
         }
 
-        // Dark mode toggle
         darkModeSwitch.addEventListener('change', function() {
             const isDark = this.checked;
             body.classList.toggle('dark-mode', isDark);
             localStorage.setItem('darkMode', isDark);
         });
 
-        // Greeting based on time
         const greetingEl = document.getElementById('greeting');
         const now = new Date();
         const hour = now.getHours();
@@ -453,7 +606,6 @@
         }
         greetingEl.textContent = greetingText + "!";
 
-        // Visitor name integration with Easter Egg
         const visitorNameInput = document.getElementById('visitor-name-input');
         const visitorNameForm = document.getElementById('visitor-name-form');
         const visitorNamePlaceholder = document.getElementById('visitorNamePlaceholder');
@@ -472,7 +624,6 @@
         });
 
         function setVisitorName(name) {
-            // Easter egg for Daniel or Denise
             let displayName = name;
             const lowerName = name.toLowerCase();
             if (lowerName.includes("daniel") || lowerName.includes("denise")) {
@@ -481,14 +632,12 @@
             visitorNamePlaceholder.textContent = `, ${displayName}`;
         }
 
-        // Collapsible icons rotate
         document.querySelectorAll('.collapsible-header').forEach(header => {
             header.addEventListener('click', () => {
                 header.classList.toggle('collapsed');
             });
         });
 
-        // Scroll Indicator
         window.addEventListener('scroll', () => {
             const scrollIndicator = document.getElementById('scroll-indicator');
             const scrollTop = window.scrollY;
@@ -497,7 +646,6 @@
             scrollIndicator.style.width = scrollPercent + '%';
         });
 
-        // Skill Chart
         const ctx = document.getElementById('skillChart');
         if (ctx) {
             new Chart(ctx, {
@@ -521,7 +669,6 @@
             });
         }
 
-        // Swipe Navigation
         let startX;
         let currentSectionIndex = 0;
         const sections = Array.from(document.querySelectorAll('section, header'));
