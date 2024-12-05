@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UK-based Software Engineer Portfolio</title>
+    
+    <!-- CSS Styles -->
     <style>
         /* CSS Variables for Theming */
         :root {
@@ -17,28 +19,25 @@
             --footer-background: #f8f9fa;
             --footer-text-color: #000000;
             --overlay-background: rgba(13, 110, 253, 0.8);
-            --btn-primary-bg: #0d6efd;
+            --btn-primary-bg: var(--primary-color);
             --btn-primary-text: #ffffff;
-            --btn-secondary-bg: #6c757d;
+            --btn-secondary-bg: var(--secondary-color);
             --btn-secondary-text: #ffffff;
             --border-color: #dee2e6;
+            --error-color: #dc3545;
+            --focus-color: var(--primary-color);
         }
 
+        /* Dark Mode Overrides */
         .dark-mode {
             --background-color: #121212;
             --text-color: #ffffff;
-            --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
-            --card-background: #1e1e1e;
             --nav-background: #343a40;
             --nav-text-color: #adb5bd;
             --footer-background: #343a40;
             --footer-text-color: #ffffff;
+            --card-background: #1e1e1e;
             --overlay-background: rgba(13, 110, 253, 0.8);
-            --btn-primary-bg: #0d6efd;
-            --btn-primary-text: #ffffff;
-            --btn-secondary-bg: #6c757d;
-            --btn-secondary-text: #ffffff;
             --border-color: #495057;
         }
 
@@ -59,6 +58,19 @@
 
         h1, h2, h3, h4, h5, h6 {
             color: var(--text-color);
+            margin: 0.5em 0;
+        }
+
+        /* Visually Hidden Class for Accessibility */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            border: 0;
         }
 
         /* Section Headings */
@@ -85,6 +97,52 @@
             top: 20px;
             right: 20px;
             z-index: 1001;
+        }
+
+        /* Toggle Switch Styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 24px;
+        }
+
+        .slider::before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider::before {
+            transform: translateX(26px);
         }
 
         /* Fixed Bottom Navigation Bar */
@@ -150,10 +208,16 @@
             border-radius: 4px;
         }
 
-        #visitor-name-form button {
+        #visitor-name-input:focus {
+            border-color: var(--focus-color);
+            outline: none;
+            box-shadow: 0 0 5px var(--focus-color);
+        }
+
+        .button {
             padding: 0.5rem 1rem;
             font-size: 1rem;
-            background-color: var(--primary-color);
+            background-color: var(--btn-primary-bg);
             color: var(--btn-primary-text);
             border: none;
             border-radius: 4px;
@@ -161,8 +225,17 @@
             transition: background-color 0.3s;
         }
 
-        #visitor-name-form button:hover {
-            background-color: darken(var(--primary-color), 10%);
+        .button--primary:hover {
+            background-color: #0a58ca; /* Darkened primary color */
+        }
+
+        .button--secondary {
+            background-color: var(--btn-secondary-bg);
+            color: var(--btn-secondary-text);
+        }
+
+        .button--secondary:hover {
+            background-color: #5a6268; /* Darkened secondary color */
         }
 
         /* About Section */
@@ -181,6 +254,7 @@
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
+            height: 40vh;
         }
 
         /* FAQ Section */
@@ -221,7 +295,7 @@
         .faq-answer {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease;
+            transition: max-height 0.3s ease, padding 0.3s ease;
             background-color: var(--card-background);
             padding: 0 1rem;
             border-left: 3px solid var(--primary-color);
@@ -235,25 +309,33 @@
         }
 
         /* Portfolio Section */
-        #portfolio-section .portfolio-item {
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            border-radius: 8px;
+        #portfolio-section .portfolio-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
         }
 
-        #portfolio-section .portfolio-item img {
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: var(--card-background);
+            transition: transform 0.3s;
+        }
+
+        .portfolio-item:hover {
+            transform: scale(1.02);
+        }
+
+        .portfolio-item img {
             width: 100%;
             height: auto;
             display: block;
             transition: transform 0.3s;
         }
 
-        #portfolio-section .portfolio-item:hover img {
-            transform: scale(1.1);
-        }
-
-        #portfolio-section .portfolio-overlay {
+        .portfolio-overlay {
             position: absolute;
             top: 0;
             left: 0;
@@ -271,15 +353,15 @@
             padding: 1rem;
         }
 
-        #portfolio-section .portfolio-item:hover .portfolio-overlay {
+        .portfolio-item:hover .portfolio-overlay {
             opacity: 1;
         }
 
-        #portfolio-section .portfolio-overlay h5 {
+        .portfolio-overlay h5 {
             margin-bottom: 0.5rem;
         }
 
-        #portfolio-section .portfolio-overlay a {
+        .portfolio-overlay a {
             background-color: rgba(255, 255, 255, 0.2);
             color: #ffffff;
             padding: 0.5rem 1rem;
@@ -287,7 +369,7 @@
             transition: background-color 0.3s;
         }
 
-        #portfolio-section .portfolio-overlay a:hover {
+        .portfolio-overlay a:hover {
             background-color: rgba(255, 255, 255, 0.4);
         }
 
@@ -308,6 +390,13 @@
             max-width: 300px;
             border: 1px solid var(--border-color);
             border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        #gigSearch:focus {
+            border-color: var(--focus-color);
+            outline: none;
+            box-shadow: 0 0 5px var(--focus-color);
         }
 
         #clearSearchBtn {
@@ -319,10 +408,42 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin-bottom: 1rem;
         }
 
         #clearSearchBtn:hover {
-            background-color: darken(var(--secondary-color), 10%);
+            background-color: #5a6268; /* Darkened secondary color */
+        }
+
+        .gig-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .gig-tab {
+            padding: 0.5rem 1rem;
+            background-color: var(--secondary-color);
+            color: var(--btn-secondary-text);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .gig-tab.active, .gig-tab:hover {
+            background-color: var(--primary-color);
+            color: var(--btn-primary-text);
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
         }
 
         .gig-card {
@@ -334,9 +455,13 @@
             transition: background-color 0.3s, border-color 0.3s;
         }
 
-        .gig-card .gig-date {
+        .gig-card__date {
             font-weight: bold;
             margin-bottom: 0.5rem;
+        }
+
+        .gig-card__description {
+            /* Additional styles if needed */
         }
 
         /* Testimonials Section */
@@ -347,18 +472,18 @@
             overflow: hidden;
         }
 
-        #testimonials-section .testimonial {
+        .testimonial {
             display: none;
             text-align: center;
             padding: 2rem;
-        }
-
-        #testimonials-section .testimonial.active {
-            display: block;
             animation: fadeIn 1s;
         }
 
-        #testimonials-section .carousel-controls {
+        .testimonial.active {
+            display: block;
+        }
+
+        .carousel-controls {
             position: absolute;
             top: 50%;
             width: 100%;
@@ -367,7 +492,7 @@
             transform: translateY(-50%);
         }
 
-        #testimonials-section .carousel-controls button {
+        .carousel-controls button {
             background-color: var(--primary-color);
             border: none;
             color: #ffffff;
@@ -377,8 +502,8 @@
             transition: background-color 0.3s;
         }
 
-        #testimonials-section .carousel-controls button:hover {
-            background-color: darken(var(--primary-color), 10%);
+        .carousel-controls button:hover {
+            background-color: #0a58ca; /* Darkened primary color */
         }
 
         /* Contact Section */
@@ -404,44 +529,39 @@
         #contactForm input, #contactForm textarea {
             padding: 0.5rem;
             font-size: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             border: 1px solid var(--border-color);
             border-radius: 4px;
             transition: border-color 0.3s;
         }
 
         #contactForm input:focus, #contactForm textarea:focus {
-            border-color: var(--primary-color);
+            border-color: var(--focus-color);
             outline: none;
+            box-shadow: 0 0 5px var(--focus-color);
         }
 
-        #contactForm button {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            background-color: var(--primary-color);
-            color: var(--btn-primary-text);
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.875rem;
+            display: none;
             margin-bottom: 0.5rem;
         }
 
-        #contactForm button:hover {
-            background-color: darken(var(--primary-color), 10%);
-        }
-
-        #contactForm .btn-download {
+        .btn-download {
             background-color: var(--secondary-color);
             color: var(--btn-secondary-text);
             text-align: center;
             text-decoration: none;
             display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
             transition: background-color 0.3s;
+            cursor: pointer;
         }
 
-        #contactForm .btn-download:hover {
-            background-color: darken(var(--secondary-color), 10%);
+        .btn-download:hover {
+            background-color: #5a6268; /* Darkened secondary color */
         }
 
         /* Footer */
@@ -460,14 +580,20 @@
             to { opacity: 1; }
         }
 
-        /* Media Queries for Responsiveness */
+        /* Responsive Media Queries */
         @media (max-width: 768px) {
-            .portfolio-item {
-                margin-bottom: 1rem;
+            .portfolio-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             }
 
-            .gig-card {
-                padding: 0.75rem;
+            .gig-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .carousel-controls button {
+                padding: 0.5rem;
+                font-size: 0.875rem;
             }
         }
 
@@ -484,235 +610,250 @@
                 width: 100%;
             }
 
-            #visitor-name-form button {
+            #visitor-name-form .button {
                 width: 100%;
+            }
+
+            .portfolio-overlay a {
+                padding: 0.5rem;
+                font-size: 0.875rem;
             }
         }
     </style>
+
+    <!-- External Icons (Bootstrap Icons CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
 </head>
 <body>
     <!-- Dark Mode Toggle -->
     <div class="dark-mode-toggle">
-        <label class="switch">
+        <label class="switch" aria-label="Toggle Dark Mode">
             <input type="checkbox" id="darkModeSwitch">
             <span class="slider round"></span>
         </label>
     </div>
 
-    <!-- Greeting and Visitor Name -->
-    <section id="home" class="container">
-        <h1 data-key="greeting">Hello!</h1>
-        <p data-key="welcome_message">Welcome to my portfolio.</p>
-        <form id="visitor-name-form">
-            <input type="text" id="visitor-name-input" placeholder="Enter your name" data-key="visitor_name_placeholder">
-            <button type="submit" data-key="submit_button">Submit</button>
-        </form>
-        <p id="visitorNamePlaceholder" data-key="personalized_greeting"></p>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="container">
-        <h2 class="section-heading" data-key="about_title">About Me</h2>
-        <div class="card-custom">
-            <p data-key="about_description">
-                I'm a UK-based Software Engineer with a passion for developing innovative programs that expedite the efficiency and effectiveness of organizational success.
-                Well-versed in technology and writing code to create reliable and user-friendly systems.
-            </p>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section id="skills-section" class="container">
-        <h2 class="section-heading" data-key="skills_title">Skills</h2>
-        <div class="card-custom">
-            <div class="chart-container">
-                <canvas id="skillChart"></canvas>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section id="faq-section" class="container">
-        <h2 class="section-heading" data-key="faq_title">Frequently Asked Questions</h2>
-        <div class="card-custom">
-            <div class="faq-item">
-                <div class="faq-question" data-key="faq1_question">What technologies do you specialize in?</div>
-                <div class="faq-answer" data-key="faq1_answer"></div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" data-key="faq2_question">How do you handle project deadlines?</div>
-                <div class="faq-answer" data-key="faq2_answer"></div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" data-key="faq3_question">Can you work remotely?</div>
-                <div class="faq-answer" data-key="faq3_answer"></div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" data-key="faq4_question">Do you offer support after project completion?</div>
-                <div class="faq-answer" data-key="faq4_answer"></div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" data-key="faq5_question">What is your approach to learning new technologies?</div>
-                <div class="faq-answer" data-key="faq5_answer"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Portfolio Gallery Section -->
-    <section id="portfolio-section" class="container">
-        <h2 class="section-heading" data-key="portfolio_title">Portfolio</h2>
-        <div class="grid">
-            <!-- Portfolio Item 1 -->
-            <div class="portfolio-item">
-                <img src="https://via.placeholder.com/400x300" alt="Project 1" class="lazy" data-key="portfolio1_image_alt">
-                <div class="portfolio-overlay">
-                    <h5 data-key="portfolio1_title">Project Title 1</h5>
-                    <p data-key="portfolio1_description">Short description of Project 1.</p>
-                    <a href="#" data-key="portfolio1_view">View Project</a>
-                </div>
-            </div>
-            <!-- Portfolio Item 2 -->
-            <div class="portfolio-item">
-                <img src="https://via.placeholder.com/400x300" alt="Project 2" class="lazy" data-key="portfolio2_image_alt">
-                <div class="portfolio-overlay">
-                    <h5 data-key="portfolio2_title">Project Title 2</h5>
-                    <p data-key="portfolio2_description">Short description of Project 2.</p>
-                    <a href="#" data-key="portfolio2_view">View Project</a>
-                </div>
-            </div>
-            <!-- Portfolio Item 3 -->
-            <div class="portfolio-item">
-                <img src="https://via.placeholder.com/400x300" alt="Project 3" class="lazy" data-key="portfolio3_image_alt">
-                <div class="portfolio-overlay">
-                    <h5 data-key="portfolio3_title">Project Title 3</h5>
-                    <p data-key="portfolio3_description">Short description of Project 3.</p>
-                    <a href="#" data-key="portfolio3_view">View Project</a>
-                </div>
-            </div>
-            <!-- Add more portfolio items as needed -->
-        </div>
-    </section>
-
-    <!-- Gig Tracker Section -->
-    <section id="gig-section" class="container">
-        <h2 class="section-heading" data-key="gig_title">Gig Tracker</h2>
-        <div class="card-custom">
-            <input type="text" id="gigSearch" placeholder="Search by location..." data-key="gig_search_placeholder">
-            <button id="clearSearchBtn" data-key="gig_clear_search">Clear Search</button>
-            <div class="tabs">
-                <button class="tab-link active" data-tab="past2024" data-key="gig_past_2024">Past Gigs (2024)</button>
-                <button class="tab-link" data-tab="festivals" data-key="gig_festivals">Past Festivals</button>
-                <button class="tab-link" data-tab="upcoming2024" data-key="gig_upcoming_2024">Upcoming (2024)</button>
-                <button class="tab-link" data-tab="upcoming2025" data-key="gig_upcoming_2025">Upcoming (2025)</button>
-            </div>
-            <div class="tab-content">
-                <div class="tab-pane active" id="past2024"></div>
-                <div class="tab-pane" id="festivals"></div>
-                <div class="tab-pane" id="upcoming2024"></div>
-                <div class="tab-pane" id="upcoming2025"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section id="testimonials-section" class="container">
-        <h2 class="section-heading" data-key="testimonials_title">Testimonials</h2>
-        <div class="carousel-container">
-            <div class="testimonial active" data-key="testimonial1_text">
-                "An exceptional developer who consistently delivers high-quality work."
-                <br>
-                <span data-key="testimonial1_author">- Jane Doe, Project Manager</span>
-            </div>
-            <div class="testimonial" data-key="testimonial2_text">
-                "A true team player with a knack for problem-solving."
-                <br>
-                <span data-key="testimonial2_author">- John Smith, Team Lead</span>
-            </div>
-            <div class="testimonial" data-key="testimonial3_text">
-                "His expertise in backend development has been invaluable to our projects."
-                <br>
-                <span data-key="testimonial3_author">- Alice Johnson, CTO</span>
-            </div>
-            <div class="testimonial" data-key="testimonial4_text">
-                "Innovative and reliable, always meeting deadlines with excellence."
-                <br>
-                <span data-key="testimonial4_author">- Michael Brown, CEO</span>
-            </div>
-            <div class="testimonial" data-key="testimonial5_text">
-                "A pleasure to work with, bringing creativity and dedication to every task."
-                <br>
-                <span data-key="testimonial5_author">- Emily Davis, Lead Designer</span>
-            </div>
-            <div class="carousel-controls">
-                <button id="prevTestimonial" data-key="carousel_prev">Previous</button>
-                <button id="nextTestimonial" data-key="carousel_next">Next</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="container">
-        <h2 class="section-heading" data-key="contact_title">Contact</h2>
-        <div class="card-custom">
-            <form id="contactForm" novalidate>
-                <label for="contactName" data-key="contact_name_label">Name<span style="color: red;">*</span></label>
-                <input type="text" id="contactName" placeholder="Enter your name" required data-key="contact_name_placeholder">
-                <span class="error-message" id="nameError" style="color: red; display: none;" data-key="contact_name_invalid">Please enter your name.</span>
-
-                <label for="contactEmail" data-key="contact_email_label">Email<span style="color: red;">*</span></label>
-                <input type="email" id="contactEmail" placeholder="Enter your email" required data-key="contact_email_placeholder">
-                <span class="error-message" id="emailError" style="color: red; display: none;" data-key="contact_email_invalid">Please enter a valid email.</span>
-
-                <label for="contactMessage" data-key="contact_message_label">Message<span style="color: red;">*</span></label>
-                <textarea id="contactMessage" rows="5" placeholder="Enter your message" required data-key="contact_message_placeholder"></textarea>
-                <span class="error-message" id="messageError" style="color: red; display: none;" data-key="contact_message_invalid">Please enter your message.</span>
-
-                <button type="submit" data-key="contact_submit">Send</button>
-                <a href="path/to/your_resume.pdf" download class="btn-download" data-key="download_resume">Download Resume</a>
+    <!-- Header Section -->
+    <header id="home" class="container">
+        <section class="greeting">
+            <h1 data-key="greeting">Hello!</h1>
+            <p data-key="welcome_message">Welcome to my portfolio.</p>
+            <form id="visitor-name-form">
+                <label for="visitor-name-input" class="visually-hidden">Enter your name</label>
+                <input type="text" id="visitor-name-input" placeholder="Enter your name" data-key="visitor_name_placeholder" aria-label="Enter your name">
+                <button type="submit" class="button button--primary" data-key="submit_button">Submit</button>
             </form>
-        </div>
-    </section>
+            <p id="visitorNamePlaceholder" data-key="personalized_greeting" aria-live="polite"></p>
+        </section>
+    </header>
 
-    <!-- Fixed Bottom Navigation Bar -->
-    <nav class="bottom-nav">
-        <a href="#home" class="nav-link active" data-key="nav_home">
-            <i class="bi bi-house"></i>
-            <span>Home</span>
-        </a>
-        <a href="#about" class="nav-link" data-key="nav_about">
-            <i class="bi bi-person"></i>
-            <span>About</span>
-        </a>
-        <a href="#skills-section" class="nav-link" data-key="nav_skills">
-            <i class="bi bi-star"></i>
-            <span>Skills</span>
-        </a>
-        <a href="#portfolio-section" class="nav-link" data-key="nav_portfolio">
-            <i class="bi bi-briefcase"></i>
-            <span>Portfolio</span>
-        </a>
-        <a href="#gig-section" class="nav-link" data-key="nav_gigs">
-            <i class="bi bi-music-note-beamed"></i>
-            <span>Gigs</span>
-        </a>
-        <a href="#testimonials-section" class="nav-link" data-key="nav_testimonials">
-            <i class="bi bi-chat-left-text"></i>
-            <span>Testimonials</span>
-        </a>
-        <a href="#faq-section" class="nav-link" data-key="nav_faq">
-            <i class="bi bi-question-circle"></i>
-            <span>FAQ</span>
-        </a>
-        <a href="#contact" class="nav-link" data-key="nav_contact">
-            <i class="bi bi-envelope"></i>
-            <span>Contact</span>
-        </a>
-    </nav>
+    <!-- Main Content -->
+    <main>
+        <!-- About Section -->
+        <section id="about" class="container">
+            <h2 class="section-heading" data-key="about_title">About Me</h2>
+            <article class="card-custom">
+                <p data-key="about_description">
+                    I'm a UK-based Software Engineer with a passion for developing innovative programs that expedite the efficiency and effectiveness of organizational success.
+                    Well-versed in technology and writing code to create reliable and user-friendly systems.
+                </p>
+            </article>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills-section" class="container">
+            <h2 class="section-heading" data-key="skills_title">Skills</h2>
+            <div class="card-custom">
+                <div class="chart-container">
+                    <canvas id="skillChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq-section" class="container">
+            <h2 class="section-heading" data-key="faq_title">Frequently Asked Questions</h2>
+            <div class="card-custom">
+                <div class="faq-item">
+                    <div class="faq-question" data-key="faq1_question" tabindex="0">What technologies do you specialize in?</div>
+                    <div class="faq-answer" data-key="faq1_answer"></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" data-key="faq2_question" tabindex="0">How do you handle project deadlines?</div>
+                    <div class="faq-answer" data-key="faq2_answer"></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" data-key="faq3_question" tabindex="0">Can you work remotely?</div>
+                    <div class="faq-answer" data-key="faq3_answer"></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" data-key="faq4_question" tabindex="0">Do you offer support after project completion?</div>
+                    <div class="faq-answer" data-key="faq4_answer"></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" data-key="faq5_question" tabindex="0">What is your approach to learning new technologies?</div>
+                    <div class="faq-answer" data-key="faq5_answer"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Section -->
+        <section id="portfolio-section" class="container">
+            <h2 class="section-heading" data-key="portfolio_title">Portfolio</h2>
+            <div class="portfolio-gallery">
+                <!-- Portfolio Item 1 -->
+                <div class="portfolio-item">
+                    <img src="https://via.placeholder.com/400x300" alt="Screenshot of Project Title 1 showing user interface design" class="lazy" data-key="portfolio1_image_alt">
+                    <div class="portfolio-overlay">
+                        <h5 data-key="portfolio1_title">Project Title 1</h5>
+                        <p data-key="portfolio1_description">Short description of Project 1.</p>
+                        <a href="#" class="button button--secondary" data-key="portfolio1_view">View Project</a>
+                    </div>
+                </div>
+                <!-- Portfolio Item 2 -->
+                <div class="portfolio-item">
+                    <img src="https://via.placeholder.com/400x300" alt="Screenshot of Project Title 2 showcasing backend architecture" class="lazy" data-key="portfolio2_image_alt">
+                    <div class="portfolio-overlay">
+                        <h5 data-key="portfolio2_title">Project Title 2</h5>
+                        <p data-key="portfolio2_description">Short description of Project 2.</p>
+                        <a href="#" class="button button--secondary" data-key="portfolio2_view">View Project</a>
+                    </div>
+                </div>
+                <!-- Portfolio Item 3 -->
+                <div class="portfolio-item">
+                    <img src="https://via.placeholder.com/400x300" alt="Screenshot of Project Title 3 demonstrating API integration" class="lazy" data-key="portfolio3_image_alt">
+                    <div class="portfolio-overlay">
+                        <h5 data-key="portfolio3_title">Project Title 3</h5>
+                        <p data-key="portfolio3_description">Short description of Project 3.</p>
+                        <a href="#" class="button button--secondary" data-key="portfolio3_view">View Project</a>
+                    </div>
+                </div>
+                <!-- Add more portfolio items as needed -->
+            </div>
+        </section>
+
+        <!-- Gig Tracker Section -->
+        <section id="gig-section" class="container">
+            <h2 class="section-heading" data-key="gig_title">Gig Tracker</h2>
+            <div class="card-custom">
+                <input type="text" id="gigSearch" placeholder="Search by location..." data-key="gig_search_placeholder" aria-label="Search gigs by location">
+                <button id="clearSearchBtn" class="button button--secondary" data-key="gig_clear_search">Clear Search</button>
+                <div class="gig-tabs">
+                    <button class="gig-tab active" data-tab="past2024" data-key="gig_past_2024">Past Gigs (2024)</button>
+                    <button class="gig-tab" data-tab="festivals" data-key="gig_festivals">Past Festivals</button>
+                    <button class="gig-tab" data-tab="upcoming2024" data-key="gig_upcoming_2024">Upcoming (2024)</button>
+                    <button class="gig-tab" data-tab="upcoming2025" data-key="gig_upcoming_2025">Upcoming (2025)</button>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="past2024"></div>
+                    <div class="tab-pane" id="festivals"></div>
+                    <div class="tab-pane" id="upcoming2024"></div>
+                    <div class="tab-pane" id="upcoming2025"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials-section" class="container">
+            <h2 class="section-heading" data-key="testimonials_title">Testimonials</h2>
+            <div class="carousel-container" aria-label="Testimonials Carousel">
+                <div class="testimonial active" data-key="testimonial1_text">
+                    "An exceptional developer who consistently delivers high-quality work."
+                    <br>
+                    <span data-key="testimonial1_author">- Jane Doe, Project Manager</span>
+                </div>
+                <div class="testimonial" data-key="testimonial2_text">
+                    "A true team player with a knack for problem-solving."
+                    <br>
+                    <span data-key="testimonial2_author">- John Smith, Team Lead</span>
+                </div>
+                <div class="testimonial" data-key="testimonial3_text">
+                    "His expertise in backend development has been invaluable to our projects."
+                    <br>
+                    <span data-key="testimonial3_author">- Alice Johnson, CTO</span>
+                </div>
+                <div class="testimonial" data-key="testimonial4_text">
+                    "Innovative and reliable, always meeting deadlines with excellence."
+                    <br>
+                    <span data-key="testimonial4_author">- Michael Brown, CEO</span>
+                </div>
+                <div class="testimonial" data-key="testimonial5_text">
+                    "A pleasure to work with, bringing creativity and dedication to every task."
+                    <br>
+                    <span data-key="testimonial5_author">- Emily Davis, Lead Designer</span>
+                </div>
+                <div class="carousel-controls">
+                    <button id="prevTestimonial" class="button button--secondary" data-key="carousel_prev">Previous</button>
+                    <button id="nextTestimonial" class="button button--secondary" data-key="carousel_next">Next</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="container">
+            <h2 class="section-heading" data-key="contact_title">Contact</h2>
+            <div class="card-custom">
+                <form id="contactForm" novalidate>
+                    <label for="contactName" data-key="contact_name_label">Name<span aria-hidden="true" style="color: red;">*</span></label>
+                    <input type="text" id="contactName" placeholder="Enter your name" required data-key="contact_name_placeholder" aria-describedby="nameError">
+                    <span class="error-message" id="nameError" data-key="contact_name_invalid">Please enter your name.</span>
+
+                    <label for="contactEmail" data-key="contact_email_label">Email<span aria-hidden="true" style="color: red;">*</span></label>
+                    <input type="email" id="contactEmail" placeholder="Enter your email" required data-key="contact_email_placeholder" aria-describedby="emailError">
+                    <span class="error-message" id="emailError" data-key="contact_email_invalid">Please enter a valid email.</span>
+
+                    <label for="contactMessage" data-key="contact_message_label">Message<span aria-hidden="true" style="color: red;">*</span></label>
+                    <textarea id="contactMessage" rows="5" placeholder="Enter your message" required data-key="contact_message_placeholder" aria-describedby="messageError"></textarea>
+                    <span class="error-message" id="messageError" data-key="contact_message_invalid">Please enter your message.</span>
+
+                    <button type="submit" class="button button--primary" data-key="contact_submit">Send</button>
+                    <a href="path/to/your_resume.pdf" download class="btn-download button button--secondary" data-key="download_resume">Download Resume</a>
+                </form>
+            </div>
+        </section>
+    </main>
 
     <!-- Footer -->
     <footer>
         &copy; <span id="year"></span> UK-based Software Engineer. All rights reserved.
     </footer>
+
+    <!-- Fixed Bottom Navigation Bar -->
+    <nav class="bottom-nav" role="navigation" aria-label="Main Navigation">
+        <a href="#home" class="nav-link active" data-key="nav_home">
+            <i class="bi bi-house" aria-hidden="true"></i>
+            <span>Home</span>
+        </a>
+        <a href="#about" class="nav-link" data-key="nav_about">
+            <i class="bi bi-person" aria-hidden="true"></i>
+            <span>About</span>
+        </a>
+        <a href="#skills-section" class="nav-link" data-key="nav_skills">
+            <i class="bi bi-star" aria-hidden="true"></i>
+            <span>Skills</span>
+        </a>
+        <a href="#portfolio-section" class="nav-link" data-key="nav_portfolio">
+            <i class="bi bi-briefcase" aria-hidden="true"></i>
+            <span>Portfolio</span>
+        </a>
+        <a href="#gig-section" class="nav-link" data-key="nav_gigs">
+            <i class="bi bi-music-note-beamed" aria-hidden="true"></i>
+            <span>Gigs</span>
+        </a>
+        <a href="#testimonials-section" class="nav-link" data-key="nav_testimonials">
+            <i class="bi bi-chat-left-text" aria-hidden="true"></i>
+            <span>Testimonials</span>
+        </a>
+        <a href="#faq-section" class="nav-link" data-key="nav_faq">
+            <i class="bi bi-question-circle" aria-hidden="true"></i>
+            <span>FAQ</span>
+        </a>
+        <a href="#contact" class="nav-link" data-key="nav_contact">
+            <i class="bi bi-envelope" aria-hidden="true"></i>
+            <span>Contact</span>
+        </a>
+    </nav>
 
     <!-- JSON Data for Multi-language Support -->
     <script id="langData" type="application/json">
@@ -738,15 +879,15 @@
             "faq5_question": "What is your approach to learning new technologies?",
             "faq5_answer": "I stay updated with industry trends, engage in continuous learning through courses and projects, and actively participate in developer communities.",
             "portfolio_title": "Portfolio",
-            "portfolio1_image_alt": "Project 1",
+            "portfolio1_image_alt": "Screenshot of Project Title 1 showing user interface design",
             "portfolio1_title": "Project Title 1",
             "portfolio1_description": "Short description of Project 1.",
             "portfolio1_view": "View Project",
-            "portfolio2_image_alt": "Project 2",
+            "portfolio2_image_alt": "Screenshot of Project Title 2 showcasing backend architecture",
             "portfolio2_title": "Project Title 2",
             "portfolio2_description": "Short description of Project 2.",
             "portfolio2_view": "View Project",
-            "portfolio3_image_alt": "Project 3",
+            "portfolio3_image_alt": "Screenshot of Project Title 3 demonstrating API integration",
             "portfolio3_title": "Project Title 3",
             "portfolio3_description": "Short description of Project 3.",
             "portfolio3_view": "View Project",
@@ -797,9 +938,6 @@
     }
     </script>
 
-    <!-- External Icons (Bootstrap Icons CDN) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
 
@@ -818,6 +956,13 @@
                     if (el.tagName.toLowerCase() === 'input' || el.tagName.toLowerCase() === 'textarea') {
                         el.setAttribute('placeholder', langData[lang][key]);
                     } else if (el.tagName.toLowerCase() === 'label') {
+                        el.textContent = langData[lang][key];
+                        // If label contains a span (e.g., asterisk), ensure it remains
+                        const span = el.querySelector('span');
+                        if (span) {
+                            el.appendChild(span);
+                        }
+                    } else if (el.tagName.toLowerCase() === 'span' && el.parentElement.tagName.toLowerCase() === 'a') {
                         el.textContent = langData[lang][key];
                     } else {
                         el.textContent = langData[lang][key];
@@ -952,8 +1097,8 @@
             }
             tabContent.innerHTML = gigsArray.map(g =>
                 `<div class="gig-card" data-location="${(g.location || '').toLowerCase()}">
-                    <p class="gig-date" data-key="gig_date">${g.date}</p>
-                    <p class="gig-description" data-key="gig_description">${g.description}</p>
+                    <p class="gig-card__date" data-key="gig_date">${g.date}</p>
+                    <p class="gig-card__description" data-key="gig_description">${g.description}</p>
                 </div>`
             ).join('');
         }
@@ -1026,6 +1171,29 @@
 
         // Contact Form Validation
         const contactForm = document.getElementById('contactForm');
+
+        // Reusable validation function
+        function validateField(input, errorElement, pattern = null) {
+            const value = input.value.trim();
+            if (pattern) {
+                if (pattern.test(value)) {
+                    errorElement.style.display = 'none';
+                    return true;
+                } else {
+                    errorElement.style.display = 'block';
+                    return false;
+                }
+            } else {
+                if (value !== '') {
+                    errorElement.style.display = 'none';
+                    return true;
+                } else {
+                    errorElement.style.display = 'block';
+                    return false;
+                }
+            }
+        }
+
         contactForm.addEventListener('submit', function(event) {
             event.preventDefault();
             let isValid = true;
@@ -1033,36 +1201,24 @@
             // Name Validation
             const nameInput = document.getElementById('contactName');
             const nameError = document.getElementById('nameError');
-            if (nameInput.value.trim() === '') {
-                nameError.style.display = 'block';
-                isValid = false;
-            } else {
-                nameError.style.display = 'none';
-            }
+            const isNameValid = validateField(nameInput, nameError);
+            isValid = isValid && isNameValid;
 
             // Email Validation
             const emailInput = document.getElementById('contactEmail');
             const emailError = document.getElementById('emailError');
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(emailInput.value.trim())) {
-                emailError.style.display = 'block';
-                isValid = false;
-            } else {
-                emailError.style.display = 'none';
-            }
+            const isEmailValid = validateField(emailInput, emailError, emailPattern);
+            isValid = isValid && isEmailValid;
 
             // Message Validation
             const messageInput = document.getElementById('contactMessage');
             const messageError = document.getElementById('messageError');
-            if (messageInput.value.trim() === '') {
-                messageError.style.display = 'block';
-                isValid = false;
-            } else {
-                messageError.style.display = 'none';
-            }
+            const isMessageValid = validateField(messageInput, messageError);
+            isValid = isValid && isMessageValid;
 
             if (isValid) {
-                // Handle form submission (e.g., send email)
+                // Handle form submission (e.g., send email via backend)
                 alert(langData[currentLang]["contact_submit_success"] || "Thank you for your message!");
                 contactForm.reset();
                 visitorNamePlaceholder.textContent = '';
@@ -1083,6 +1239,9 @@
                         observer.unobserve(img);
                     }
                 });
+            }, {
+                rootMargin: '0px 0px 50px 0px',
+                threshold: 0.01
             });
 
             lazyImages.forEach(img => {
@@ -1091,82 +1250,107 @@
         });
 
         // Testimonials Carousel
-        let currentTestimonial = 0;
-        const testimonials = document.querySelectorAll('.testimonial');
-        const totalTestimonials = testimonials.length;
+        (function() {
+            const testimonials = document.querySelectorAll('.testimonial');
+            let currentTestimonial = 0;
+            const totalTestimonials = testimonials.length;
+            const carouselControls = document.querySelector('.carousel-controls');
 
-        const prevTestimonialBtn = document.getElementById('prevTestimonial');
-        const nextTestimonialBtn = document.getElementById('nextTestimonial');
+            // Function to show a specific testimonial
+            const showTestimonial = (index) => {
+                testimonials.forEach((testimonial, i) => {
+                    testimonial.classList.toggle('active', i === index);
+                });
+            };
 
-        prevTestimonialBtn.addEventListener('click', () => {
-            testimonials[currentTestimonial].classList.remove('active');
-            currentTestimonial = (currentTestimonial - 1 + totalTestimonials) % totalTestimonials;
-            testimonials[currentTestimonial].classList.add('active');
-        });
+            // Event delegation for carousel buttons
+            carouselControls.addEventListener('click', (e) => {
+                if (e.target.id === 'nextTestimonial') {
+                    currentTestimonial = (currentTestimonial + 1) % totalTestimonials;
+                    showTestimonial(currentTestimonial);
+                } else if (e.target.id === 'prevTestimonial') {
+                    currentTestimonial = (currentTestimonial - 1 + totalTestimonials) % totalTestimonials;
+                    showTestimonial(currentTestimonial);
+                }
+            });
 
-        nextTestimonialBtn.addEventListener('click', () => {
-            testimonials[currentTestimonial].classList.remove('active');
-            currentTestimonial = (currentTestimonial + 1) % totalTestimonials;
-            testimonials[currentTestimonial].classList.add('active');
-        });
+            // Initialize the first testimonial
+            showTestimonial(currentTestimonial);
+        })();
 
         // FAQ Collapsible Functionality
-        const faqQuestions = document.querySelectorAll('.faq-question');
+        (function() {
+            const faqQuestions = document.querySelectorAll('.faq-question');
 
-        faqQuestions.forEach(question => {
-            question.addEventListener('click', () => {
-                const answer = question.nextElementSibling;
-                const isOpen = answer.classList.contains('open');
+            faqQuestions.forEach(question => {
+                // Make the question focusable
+                question.setAttribute('tabindex', '0');
 
-                // Close all answers
-                document.querySelectorAll('.faq-answer').forEach(ans => {
-                    ans.classList.remove('open');
-                });
-                faqQuestions.forEach(q => q.classList.remove('active'));
+                // Toggle answer on click
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const isOpen = answer.classList.contains('open');
 
-                // Toggle current answer
-                if (!isOpen) {
-                    answer.classList.add('open');
-                    question.classList.add('active');
-                }
-            });
-        });
-
-        // Smooth Scrolling for Navigation Links
-        const navLinks = document.querySelectorAll('.bottom-nav a');
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href').substring(1);
-                const targetSection = document.getElementById(targetId);
-                if (targetSection) {
-                    window.scrollTo({
-                        top: targetSection.offsetTop - 60, // Adjust for nav height
-                        behavior: 'smooth'
+                    // Close all answers
+                    document.querySelectorAll('.faq-answer').forEach(ans => {
+                        ans.classList.remove('open');
                     });
+                    faqQuestions.forEach(q => q.classList.remove('active'));
 
-                    // Update active link
-                    navLinks.forEach(nav => nav.classList.remove('active'));
-                    this.classList.add('active');
-                }
-            });
-        });
-
-        // Highlight Active Nav Link on Scroll
-        window.addEventListener('scroll', () => {
-            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
-            navLinks.forEach(link => {
-                const section = document.querySelector(link.getAttribute('href'));
-                if (section) {
-                    if (scrollPosition >= section.offsetTop - 70 && scrollPosition < section.offsetTop + section.offsetHeight - 70) {
-                        link.classList.add('active');
-                    } else {
-                        link.classList.remove('active');
+                    // Toggle current answer
+                    if (!isOpen) {
+                        answer.classList.add('open');
+                        question.classList.add('active');
                     }
-                }
+                });
+
+                // Toggle answer on keypress (Enter or Space)
+                question.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        question.click();
+                    }
+                });
             });
-        });
+        })();
+
+        // Smooth Scrolling and Active Link Highlighting
+        (function() {
+            const navLinks = document.querySelectorAll('.bottom-nav a');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        window.scrollTo({
+                            top: targetSection.offsetTop - 60, // Adjust for nav height
+                            behavior: 'smooth'
+                        });
+
+                        // Update active link
+                        navLinks.forEach(nav => nav.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                });
+            });
+
+            // Highlight Active Nav Link on Scroll
+            window.addEventListener('scroll', () => {
+                const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+                navLinks.forEach(link => {
+                    const section = document.querySelector(link.getAttribute('href'));
+                    if (section) {
+                        if (scrollPosition >= section.offsetTop - 70 && scrollPosition < section.offsetTop + section.offsetHeight - 70) {
+                            link.classList.add('active');
+                        } else {
+                            link.classList.remove('active');
+                        }
+                    }
+                });
+            });
+        })();
     </script>
 </body>
 </html>
