@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" style="font-family:sans-serif; margin:0; padding:0; box-sizing:border-box;">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
+    <title>My Portfolio</title>
+    <style>
+        body {
+            margin: 0; 
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        header, section, footer {
+            width: 100%;
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin: 0;
+            color: #222;
+        }
+
+        header p {
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+        }
+
+        nav {
+            margin-top: 30px;
+        }
+
+        nav a {
+            margin-right: 20px;
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .section-title {
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .projects, .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .project {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            flex: 1 1 calc(50% - 40px);
+            box-sizing: border-box;
+        }
+
+        .project h3 {
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+
+        .project p {
+            margin: 10px 0 0 0;
+        }
+
+        .contact-info div {
+            flex: 1 1 100%;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px solid #ddd;
+        }
+
+        @media(max-width: 600px) {
+            .project {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Hello, I'm a UK-based Software Engineer</h1>
+        <p>
+            Welcome to my online portfolio. I’m passionate about designing and implementing 
+            scalable, maintainable software solutions, and continually refining my craft.
+        </p>
+        <nav>
+            <a href="#about">About</a>
+            <a href="#projects">Projects</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <section id="about">
+        <h2 class="section-title">About Me</h2>
+        <p>
+            I’m a software engineer currently based in the UK. I specialize in building 
+            web applications, APIs, and tools that streamline development workflows. 
+            Over the years, I’ve worked on a range of projects spanning front-end interfaces, 
+            back-end services, and continuous integration pipelines. My focus is on 
+            writing clean, testable code while leveraging modern technologies 
+            to solve complex problems.
+        </p>
+        <p>
+            When I’m not coding, I enjoy exploring the UK's vibrant tech scene, 
+            participating in local meetups, and staying up-to-date with emerging 
+            industry trends. I take pride in my strong communication skills, my 
+            adaptability, and my love for collaborating with others to deliver 
+            exceptional software.
+        </p>
+    </section>
+
+    <section id="projects">
+        <h2 class="section-title">Selected Projects</h2>
+        <div class="projects">
+            <div class="project">
+                <h3>Project One: Scalable Web Service</h3>
+                <p>
+                    A highly scalable web service designed to handle thousands of 
+                    concurrent requests, featuring a load-balanced architecture, 
+                    caching layers, and comprehensive monitoring tools. 
+                    Technologies: Node.js, Docker, AWS.
+                </p>
+            </div>
+            <div class="project">
+                <h3>Project Two: Developer Toolkit</h3>
+                <p>
+                    A CLI-based developer toolkit aimed at improving internal engineering 
+                    productivity. It automates repetitive tasks, integrates with CI/CD 
+                    pipelines, and enables developers to bootstrap new services quickly. 
+                    Technologies: Go, GitHub Actions, Terraform.
+                </p>
+            </div>
+            <div class="project">
+                <h3>Project Three: Interactive Front-End App</h3>
+                <p>
+                    A responsive front-end web application for exploring custom datasets, 
+                    visualizing results, and exporting information. 
+                    Technologies: React, TypeScript, D3.js.
+                </p>
+            </div>
+            <div class="project">
+                <h3>Project Four: Authentication & Authorization Module</h3>
+                <p>
+                    A secure authentication and authorization module integrated with 
+                    existing microservices. Implemented role-based access control and 
+                    OAuth2 token management. 
+                    Technologies: Python, Flask, JWT.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2 class="section-title">Contact</h2>
+        <div class="contact-info">
+            <div>
+                <p>
+                    Interested in collaborating or want to know more about my work? 
+                    Feel free to get in touch.
+                </p>
+                <p><strong>Email:</strong> your.email@example.com</p>
+                <p><strong>Location:</strong> United Kingdom</p>
+                <p>
+                    Let’s build something great together!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        &copy; <span id="year"></span> UK Software Engineer. All rights reserved.
+    </footer>
+
+    <script>
+        // Update the footer year dynamically
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
