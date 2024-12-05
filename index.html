@@ -182,8 +182,6 @@
             margin: auto;
         }
 
-        /* For Gig Section enhancement:
-           Use tabs and cards for a more visually appealing layout. */
         .gig-card {
             background: var(--card-bg);
             border: 1px solid #ddd;
@@ -200,6 +198,10 @@
         }
         .gig-description {
             margin: 0;
+        }
+
+        .gig-search {
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -334,11 +336,13 @@
         </div>
     </section>
 
-    <!-- Improved Gig Section with Tabs and Cards -->
+    <!-- Improved Gig Section with Tabs and Cards, with location next to date and searchable -->
     <section id="gigs-section" class="container py-5">
         <h2 class="section-heading">Gig Tracker <span class="collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#gigs-collapse"><i class="bi bi-chevron-down"></i></span></h2>
         <div id="gigs-collapse" class="collapse">
             <div class="info-card">
+                <input type="text" class="form-control gig-search" id="gigSearch" placeholder="Search by location..." />
+
                 <ul class="nav nav-tabs mb-3" id="gigTabs" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="past2024-tab" data-bs-toggle="tab" data-bs-target="#past2024" type="button" role="tab" aria-controls="past2024" aria-selected="true">
@@ -361,117 +365,118 @@
                         </button>
                     </li>
                 </ul>
+
                 <div class="tab-content" id="gigTabContent">
                     <!-- Past Gigs 2024 -->
                     <div class="tab-pane fade show active" id="past2024" role="tabpanel" aria-labelledby="past2024-tab">
-                        <div class="row">
+                        <div class="row" id="past2024-gigs">
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">June 10</p>
-                                    <p class="gig-description">Mt. Joy (Ritz)</p>
+                                <div class="gig-card" data-location="Ritz">
+                                    <p class="gig-date">June 10 (Ritz)</p>
+                                    <p class="gig-description">Mt. Joy</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">July 10</p>
-                                    <p class="gig-description">Kings of Leon (Co-Op)</p>
+                                <div class="gig-card" data-location="Co-Op">
+                                    <p class="gig-date">July 10 (Co-Op)</p>
+                                    <p class="gig-description">Kings of Leon</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
+                                <div class="gig-card" data-location="">
                                     <p class="gig-date">August 8</p>
                                     <p class="gig-description">Pete Doherty</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">August 24</p>
-                                    <p class="gig-description">New Order + Johnny Marr (Wythenshawe Park)</p>
+                                <div class="gig-card" data-location="Wythenshawe Park">
+                                    <p class="gig-date">August 24 (Wythenshawe Park)</p>
+                                    <p class="gig-description">New Order + Johnny Marr</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">August 25</p>
-                                    <p class="gig-description">Blossoms (Wythenshawe Park)</p>
+                                <div class="gig-card" data-location="Wythenshawe Park">
+                                    <p class="gig-date">August 25 (Wythenshawe Park)</p>
+                                    <p class="gig-description">Blossoms</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">September 1</p>
-                                    <p class="gig-description">girl in red (Apollo)</p>
+                                <div class="gig-card" data-location="Apollo">
+                                    <p class="gig-date">September 1 (Apollo)</p>
+                                    <p class="gig-description">girl in red</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">September 28</p>
-                                    <p class="gig-description">Sea Girls (Apollo)</p>
+                                <div class="gig-card" data-location="Apollo">
+                                    <p class="gig-date">September 28 (Apollo)</p>
+                                    <p class="gig-description">Sea Girls</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">October 1</p>
-                                    <p class="gig-description">The Struts (Albert Hall)</p>
+                                <div class="gig-card" data-location="Albert Hall">
+                                    <p class="gig-date">October 1 (Albert Hall)</p>
+                                    <p class="gig-description">The Struts</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">October 2</p>
-                                    <p class="gig-description">Driver Era (Apollo)</p>
+                                <div class="gig-card" data-location="Apollo">
+                                    <p class="gig-date">October 2 (Apollo)</p>
+                                    <p class="gig-description">Driver Era</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">October 4</p>
-                                    <p class="gig-description">Aurora (Apollo)</p>
+                                <div class="gig-card" data-location="Apollo">
+                                    <p class="gig-date">October 4 (Apollo)</p>
+                                    <p class="gig-description">Aurora</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">October 5</p>
-                                    <p class="gig-description">Neighbourhood Festival (Manchester): Red Rum Club, Brooke Combe, Antony Szmierek</p>
+                                <div class="gig-card" data-location="Manchester">
+                                    <p class="gig-date">October 5 (Manchester)</p>
+                                    <p class="gig-description">Neighbourhood Festival: Red Rum Club, Brooke Combe, Antony Szmierek</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">October 11</p>
-                                    <p class="gig-description">Saint Motel (New Century Hall)</p>
+                                <div class="gig-card" data-location="New Century Hall">
+                                    <p class="gig-date">October 11 (New Century Hall)</p>
+                                    <p class="gig-description">Saint Motel</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">October 15</p>
-                                    <p class="gig-description">Leap (Yes Basement)</p>
+                                <div class="gig-card" data-location="Yes Basement">
+                                    <p class="gig-date">October 15 (Yes Basement)</p>
+                                    <p class="gig-description">Leap</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">November 2</p>
-                                    <p class="gig-description">Glass Animals (Co-Op)</p>
+                                <div class="gig-card" data-location="Co-Op">
+                                    <p class="gig-date">November 2 (Co-Op)</p>
+                                    <p class="gig-description">Glass Animals</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">November 4</p>
-                                    <p class="gig-description">Blossoms (Plaza Stockport)</p>
+                                <div class="gig-card" data-location="Plaza Stockport">
+                                    <p class="gig-date">November 4 (Plaza Stockport)</p>
+                                    <p class="gig-description">Blossoms</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">November 7</p>
-                                    <p class="gig-description">Jack Jones (Yes Basement)</p>
+                                <div class="gig-card" data-location="Yes Basement">
+                                    <p class="gig-date">November 7 (Yes Basement)</p>
+                                    <p class="gig-description">Jack Jones</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">November 20</p>
-                                    <p class="gig-description">Blossoms (Ritz)</p>
+                                <div class="gig-card" data-location="Ritz">
+                                    <p class="gig-date">November 20 (Ritz)</p>
+                                    <p class="gig-description">Blossoms</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <!-- Past Festivals -->
                     <div class="tab-pane fade" id="festivals" role="tabpanel" aria-labelledby="festivals-tab">
-                        <div class="mb-4 gig-card">
+                        <div class="gig-card" data-location="Manchester, Tennessee">
                             <p class="gig-date">Bonnaroo 2024 (Manchester, Tennessee)</p>
                             <p class="gig-description">
                                 Acts: Pretty Lights, FISHER, GWAR, Post Malone, Interpol, T-Pain, The Japanese House, 
@@ -479,7 +484,7 @@
                                 Megan Thee Stallion, Carly Rae Jepsen, Taking Back Sunday.
                             </p>
                         </div>
-                        <div class="gig-card">
+                        <div class="gig-card" data-location="Chicago">
                             <p class="gig-date">Lollapalooza 2023 (Chicago)</p>
                             <p class="gig-description">
                                 Acts: Billie Eilish, Portugal. The Man, The 1975, Foals, Odesza, 
@@ -491,15 +496,15 @@
                     <div class="tab-pane fade" id="upcoming2024" role="tabpanel" aria-labelledby="upcoming2024-tab">
                         <div class="row">
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">December 7</p>
-                                    <p class="gig-description">Idles (Apollo) + Idles DJ set (YES)</p>
+                                <div class="gig-card" data-location="Apollo/YES">
+                                    <p class="gig-date">December 7 (Apollo/YES)</p>
+                                    <p class="gig-description">Idles + Idles DJ set</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">December 16</p>
-                                    <p class="gig-description">Paul Heaton (Co-Op)</p>
+                                <div class="gig-card" data-location="Co-Op">
+                                    <p class="gig-date">December 16 (Co-Op)</p>
+                                    <p class="gig-description">Paul Heaton</p>
                                 </div>
                             </div>
                         </div>
@@ -508,33 +513,33 @@
                     <div class="tab-pane fade" id="upcoming2025" role="tabpanel" aria-labelledby="upcoming2025-tab">
                         <div class="row">
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">February 14</p>
-                                    <p class="gig-description">Cage the Elephant (Apollo)</p>
+                                <div class="gig-card" data-location="Apollo">
+                                    <p class="gig-date">February 14 (Apollo)</p>
+                                    <p class="gig-description">Cage the Elephant</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">March 2</p>
-                                    <p class="gig-description">You Are Not Alone Festival (Stockport)</p>
+                                <div class="gig-card" data-location="Stockport">
+                                    <p class="gig-date">March 2 (Stockport)</p>
+                                    <p class="gig-description">You Are Not Alone Festival</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">April 18</p>
-                                    <p class="gig-description">Finneas (Apollo)</p>
+                                <div class="gig-card" data-location="Apollo">
+                                    <p class="gig-date">April 18 (Apollo)</p>
+                                    <p class="gig-description">Finneas</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">June</p>
-                                    <p class="gig-description">Bonnaroo (Manchester, Tennessee)</p>
+                                <div class="gig-card" data-location="Manchester, Tennessee">
+                                    <p class="gig-date">June (Manchester, Tennessee)</p>
+                                    <p class="gig-description">Bonnaroo</p>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-4">
-                                <div class="gig-card">
-                                    <p class="gig-date">July 5</p>
-                                    <p class="gig-description">Fontaines D.C. (Finsbury Park)</p>
+                                <div class="gig-card" data-location="Finsbury Park">
+                                    <p class="gig-date">July 5 (Finsbury Park)</p>
+                                    <p class="gig-description">Fontaines D.C.</p>
                                 </div>
                             </div>
                         </div>
@@ -687,6 +692,21 @@
                     sections[currentSectionIndex].scrollIntoView({behavior:'smooth'});
                 }
             }
+        });
+
+        // Gigs search by location
+        const gigSearch = document.getElementById('gigSearch');
+        gigSearch.addEventListener('input', () => {
+            const query = gigSearch.value.toLowerCase();
+            const gigCards = document.querySelectorAll('.gig-card');
+            gigCards.forEach(card => {
+                const loc = card.getAttribute('data-location').toLowerCase();
+                if (loc.includes(query)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         });
     </script>
 </body>
