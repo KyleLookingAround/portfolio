@@ -10,51 +10,129 @@
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
           crossorigin="anonymous">
     <style>
+        :root {
+            --accent-color: #0d6efd; /* Bootstrap primary default */
+            --light-bg: #f8f9fa;
+            --light-text: #212529;
+            --dark-bg: #121212;
+            --dark-text: #e0e0e0;
+            --dark-card-bg: #1e1e1e;
+            --transition-speed: 0.3s;
+        }
+
         body {
             margin: 0;
             padding: 0;
-            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
+            font-size: 1rem;
+            background-color: var(--light-bg);
+            color: var(--light-text);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
         }
+
+        /* Dark Mode Overrides */
         .dark-mode {
-            background-color: #1a1a1a !important;
-            color: #f1f1f1 !important;
+            background-color: var(--dark-bg) !important;
+            color: var(--dark-text) !important;
         }
+
+        .dark-mode .navbar {
+            background-color: #222;
+        }
+
+        .dark-mode .project-card, 
+        .dark-mode .info-card {
+            background-color: var(--dark-card-bg);
+            color: var(--dark-text);
+        }
+
+        .dark-mode .nav-link {
+            color: var(--dark-text) !important;
+        }
+
+        .dark-mode .form-check-label {
+            color: var(--dark-text);
+        }
+
+        .dark-mode h1, 
+        .dark-mode h2, 
+        .dark-mode h3, 
+        .dark-mode h4, 
+        .dark-mode h5, 
+        .dark-mode h6 {
+            color: #ffffff;
+        }
+
+        .dark-mode a.navbar-brand,
+        .dark-mode .navbar-toggler-icon {
+            filter: invert(1);
+        }
+
+        /* General styling improvements */
+        h1, h2, h3 {
+            font-weight: 700;
+        }
+
         .section-heading {
             margin-top: 2rem;
             margin-bottom: 1rem;
-            font-weight: 600;
+            font-weight: 700;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
         }
+
+        p, li {
+            font-size: 1.05rem;
+        }
+
+        a.nav-link {
+            position: relative;
+        }
+
+        a.nav-link::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width var(--transition-speed);
+        }
+
+        a.nav-link:hover::after {
+            width: 100%;
+        }
+
         .project-card, .info-card {
-            background: var(--bs-light);
+            background: #ffffff;
             border: none;
             border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
             margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            transition: background-color var(--transition-speed), color var(--transition-speed), box-shadow var(--transition-speed);
         }
-        .dark-mode .project-card, .dark-mode .info-card {
-            background: #2a2a2a;
+
+        .project-card:hover, .info-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .nav-link {
-            cursor: pointer;
-        }
-        .dark-mode .nav-link {
-            color: #f1f1f1 !important;
-        }
-        .dark-mode .navbar {
-            background-color: #333;
-        }
-        .dark-mode .form-check-label {
-            color: #f1f1f1;
-        }
+
         @media (max-width: 576px) {
             h1 {
                 font-size: 1.75rem;
             }
         }
+
+        footer {
+            font-size: 0.9rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+        }
     </style>
 </head>
-<body class="bg-light text-dark">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="#home">UK Software Engineer</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
@@ -117,7 +195,7 @@
         <h2 class="section-heading">About Me</h2>
         <div class="row">
             <div class="col-12 col-md-6 mb-4">
-                <div class="card info-card p-3">
+                <div class="info-card">
                     <p>
                         I’m a passionate software engineer focusing on backend systems 
                         and process improvement. My primary tech stack includes C#, Git, and 
@@ -135,7 +213,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-6 mb-4">
-                <div class="card info-card p-3">
+                <div class="info-card">
                     <p>
                         Outside of coding, I stay active in the UK’s tech scene, always learning 
                         and adapting to new methodologies. My interest in Bootstrap 5 
@@ -157,7 +235,7 @@
         <h2 class="section-heading">Interests & Skills</h2>
         <div class="row">
             <div class="col-12 mb-4">
-                <div class="card info-card p-3">
+                <div class="info-card">
                     <ul class="list-unstyled mb-0">
                         <li><strong>Software Development:</strong> Expertise in C#, Git, and modern web technologies.</li>
                         <li><strong>Backend & Database:</strong> Advanced SQL, JSON handling, and optimized table joins.</li>
@@ -173,7 +251,7 @@
         <h2 class="section-heading">Personal Interests</h2>
         <div class="row">
             <div class="col-12 col-md-4 mb-4">
-                <div class="card project-card p-3">
+                <div class="project-card">
                     <h3>Music Enthusiast</h3>
                     <p>
                         A frequent concert-goer, I enjoy indie, alternative, and rock. 
@@ -183,7 +261,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-4 mb-4">
-                <div class="card project-card p-3">
+                <div class="project-card">
                     <h3>Fitness Aspirations</h3>
                     <p>
                         Currently training for a Hyrox event, I’m dedicated to improving overall fitness 
@@ -192,7 +270,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-4 mb-4">
-                <div class="card project-card p-3">
+                <div class="project-card">
                     <h3>Community Support</h3>
                     <p>
                         I value inclusivity and knowledge-sharing, demonstrated by mentoring individuals 
@@ -207,7 +285,7 @@
         <h2 class="section-heading">Projects & Goals</h2>
         <div class="row">
             <div class="col-12 col-md-4 mb-4">
-                <div class="card project-card p-3">
+                <div class="project-card">
                     <h3>Portfolio Website</h3>
                     <p>
                         A dynamic and responsive site built with a modern tech stack to showcase 
@@ -216,7 +294,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-4 mb-4">
-                <div class="card project-card p-3">
+                <div class="project-card">
                     <h3>Advocacy for Tools</h3>
                     <p>
                         Championing the use of Mermaid.js to improve workflow clarity and documentation 
@@ -225,7 +303,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-4 mb-4">
-                <div class="card project-card p-3">
+                <div class="project-card">
                     <h3>Fitness Journey</h3>
                     <p>
                         Documenting my journey to Hyrox participation, focusing on personal improvement, 
@@ -240,7 +318,7 @@
         <h2 class="section-heading">Contact</h2>
         <div class="row">
             <div class="col-12">
-                <div class="card info-card p-3">
+                <div class="info-card">
                     <p>
                         Interested in collaborating or learning more about my work? 
                         Feel free to reach out.
@@ -268,15 +346,17 @@
 
         // Check system preference for dark mode on load
         const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+        const body = document.body;
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+
         if (prefersDarkScheme.matches) {
-            document.body.classList.add('dark-mode');
-            document.getElementById('darkModeSwitch').checked = true;
+            body.classList.add('dark-mode');
+            darkModeSwitch.checked = true;
         }
 
         // Dark Mode Toggle
-        const darkModeSwitch = document.getElementById('darkModeSwitch');
         darkModeSwitch.addEventListener('change', function() {
-            document.body.classList.toggle('dark-mode', this.checked);
+            body.classList.toggle('dark-mode', this.checked);
         });
     </script>
 </body>
