@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" style="font-family: sans-serif;">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Portfolio - UK-based Software Engineer</title>
     <!-- Bootstrap 5 CSS -->
@@ -16,7 +16,6 @@
 
     <style>
         :root {
-            /* Light Mode Variables */
             --accent-color: #0d6efd;
             --bg: #f8f9fa;
             --text: #212529;
@@ -28,7 +27,6 @@
         }
 
         body.dark-mode {
-            /* Dark Mode Variables */
             --bg: #121212;
             --text: #e0e0e0;
             --card-bg: #1e1e1e;
@@ -38,305 +36,133 @@
         }
 
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: var(--bg);
             color: var(--text);
-            line-height: 1.6;
-            font-size: 1rem;
+            font-size: 1rem; line-height:1.6;
+            overscroll-behavior:none; scroll-behavior:smooth;
             transition: background-color var(--transition-speed), color var(--transition-speed);
-            scroll-behavior: smooth; 
-            overscroll-behavior: none;
         }
 
-        .navbar, .bottom-nav {
-            background-color: var(--nav-bg);
-            color: var(--nav-text);
-        }
-
-        body.dark-mode .navbar-toggler-icon {
-            filter: invert(1);
-        }
+        .navbar, .bottom-nav { background-color: var(--nav-bg); color: var(--nav-text); }
+        body.dark-mode .navbar-toggler-icon { filter: invert(1); }
 
         .nav-link {
-            position: relative;
-            transition: color var(--transition-speed);
-            color: var(--nav-text);
+            position: relative; color: var(--nav-text); transition: color var(--transition-speed);
         }
         .nav-link::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0%;
-            height: 2px;
-            background: var(--accent-color);
-            transition: width var(--transition-speed);
+            content:""; position:absolute; bottom:0; left:0; width:0%; height:2px;
+            background: var(--accent-color); transition: width var(--transition-speed);
         }
-        .nav-link:hover::after {
-            width: 100%;
-        }
+        .nav-link:hover::after { width:100%; }
 
         .project-card, .info-card, .chart-card {
             background: var(--card-bg);
-            border: none;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            padding: 1.5rem;
+            border:none; border-radius:8px; padding:1.5rem;
+            box-shadow:0 2px 6px rgba(0,0,0,0.05);
             transition: background-color var(--transition-speed), color var(--transition-speed), box-shadow var(--transition-speed);
         }
-        .project-card:hover, .info-card:hover, .chart-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+        .project-card:hover, .info-card:hover, .chart-card:hover { box-shadow:0 4px 12px rgba(0,0,0,0.1); }
 
-        h1, h2, h3 {
-            font-weight: 700;
-        }
-
+        h1,h2,h3 { font-weight:700; }
         .section-heading {
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 0.5rem;
+            margin-top:2rem; margin-bottom:1rem; font-weight:700;
+            border-bottom:2px solid var(--accent-color); padding-bottom:0.5rem;
         }
-
-        p, li {
-            font-size: 1.05rem;
-        }
+        p, li { font-size:1.05rem; }
 
         #home {
-            background: var(--hero-gradient);
-            color: #fff;
-            padding-top: 5rem;
-            padding-bottom: 5rem;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s forwards ease-in-out;
+            background: var(--hero-gradient); color:#fff; padding-top:5rem; padding-bottom:5rem;
+            opacity:0; transform:translateY(20px);
+            animation:fadeInUp 1s forwards ease-in-out;
         }
-
         @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            to {opacity:1; transform:translateY(0);}
         }
 
-        .collapsible-header {
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .collapsible-header i {
-            transition: transform 0.3s;
-        }
-        .collapsed i {
-            transform: rotate(-90deg);
-        }
+        .collapsible-header {cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+        .collapsible-header i {transition: transform 0.3s;}
+        .collapsed i {transform:rotate(-90deg);}
 
         #scroll-indicator {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 4px;
-            background: var(--accent-color);
-            width: 0;
-            z-index: 9999;
+            position:fixed;top:0;left:0;height:4px;background:var(--accent-color);width:0;z-index:9999;
         }
 
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            border-top: 1px solid #ccc;
+            position:fixed;bottom:0;width:100%;border-top:1px solid #ccc;
         }
-        .bottom-nav .nav-link {
-            text-align: center;
-            padding: 10px;
-        }
-        @media(min-width: 992px) {
-            .bottom-nav {
-                display: none;
-            }
-        }
+        .bottom-nav .nav-link {text-align:center;padding:10px;}
+        @media(min-width:992px) {.bottom-nav {display:none;}}
 
-        #greeting {
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-        #visitor-name-form {
-            display: flex;
-            gap: 0.5rem;
-            max-width: 300px;
-            margin-bottom: 1.5rem;
-        }
+        #greeting {margin-bottom:1rem;font-size:1.5rem;font-weight:600;}
+        #visitor-name-form {display:flex;gap:0.5rem;max-width:300px;margin-bottom:1.5rem;}
 
-        section, header {
-            scroll-snap-align: start;
-        }
-
-        .chart-container {
-            width: 100%;
-            max-width: 600px;
-            margin: auto;
-        }
+        .chart-container {width:100%;max-width:600px;margin:auto;}
 
         .gig-card {
             background: var(--card-bg);
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            transition: box-shadow 0.3s;
+            border:1px solid #ddd; border-radius:5px; padding:1rem; margin-bottom:1rem;
+            transition:box-shadow 0.3s;
         }
-        .gig-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .gig-date {
-            font-weight: bold;
-        }
-        .gig-description {
-            margin: 0;
-        }
+        .gig-card:hover { box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+        .gig-date {font-weight:bold;}
+        .gig-description {margin:0;}
+        .gig-search {margin-bottom:1rem;}
 
-        .gig-search {
-            margin-bottom: 1rem;
-        }
-
-        /* Timeline Styling: A vertical timeline with cards */
+        /* Timeline */
         .timeline-wrapper {
-            position: relative;
-            padding-left: 40px;
-            margin-top: 2rem;
+            position:relative; padding-left:40px; margin-top:2rem;
         }
-
         .timeline-wrapper::before {
-            content: '';
-            position: absolute;
-            left: 16px;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--accent-color);
-            border-radius: 2px;
+            content:''; position:absolute; left:16px; top:0; bottom:0; width:4px; background:var(--accent-color); border-radius:2px;
         }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-        }
-
+        .timeline-item {position:relative; margin-bottom:2rem;}
         .timeline-marker {
-            position: absolute;
-            left: 0;
-            width: 34px;
-            height: 34px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            top: 0;
-            transform: translate(-50%, 0);
+            position:absolute; left:0; width:34px; height:34px; background:var(--accent-color);
+            border-radius:50%; top:0; transform:translate(-50%,0);
         }
-
         .timeline-content {
-            background: var(--card-bg);
-            border-radius: 8px;
-            padding: 1rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            margin-left: 60px;
-            transition: background-color var(--transition-speed), color var(--transition-speed);
+            background: var(--card-bg); border-radius:8px; padding:1rem; box-shadow:0 2px 6px rgba(0,0,0,0.05);
+            margin-left:60px; transition: background-color var(--transition-speed), color var(--transition-speed);
         }
-
-        .timeline-date {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: var(--accent-color);
-        }
-
-        .timeline-role {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-description {
-            margin: 0;
-        }
+        .timeline-date {font-weight:bold;margin-bottom:0.5rem;color:var(--accent-color);}
+        .timeline-role {font-size:1.1rem;font-weight:600;margin-bottom:0.5rem;}
+        .timeline-description {margin:0;}
 
         /* Dinosaur and Trees */
         .dino {
-            position: fixed;
-            bottom: 20px;
-            left: -100px;
-            width: 100px;
-            height: 100px;
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Google_Dinosaur_Game_dino_sprite.png/120px-Google_Dinosaur_Game_dino_sprite.png');
-            background-size: contain;
-            background-repeat: no-repeat;
+            position:fixed;bottom:20px;left:-100px;width:100px;height:100px;
+            background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Google_Dinosaur_Game_dino_sprite.png/120px-Google_Dinosaur_Game_dino_sprite.png');
+            background-size:contain;background-repeat:no-repeat;
             animation: runDino 10s linear infinite;
-            z-index: 50; 
+            z-index:50;
         }
-
         @keyframes runDino {
-            0% {
-                left: -100px; 
-                transform: scaleX(1);
-            }
-            25% {
-                left: 50%;
-                transform: scaleX(1);
-            }
-            50% {
-                left: calc(100% + 100px);
-                transform: scaleX(1);
-            }
-            51% {
-                transform: scaleX(-1);
-            }
-            75% {
-                left: 50%;
-                transform: scaleX(-1);
-            }
-            100% {
-                left: -100px;
-                transform: scaleX(-1);
-            }
+            0% { left:-100px; transform:scaleX(1); }
+            25% { left:50%; transform:scaleX(1); }
+            50% { left:calc(100%+100px); transform:scaleX(1); }
+            51% { transform:scaleX(-1); }
+            75% { left:50%; transform:scaleX(-1); }
+            100% { left:-100px; transform:scaleX(-1);}
         }
-
-        .dino.jump {
-            animation: none;
-            transition: bottom 0.5s ease, left 0.5s ease;
-            bottom: 200px;
-            left: calc(100% + 200px);
-        }
+        .dino.jump { animation:none;transition:bottom 0.5s ease,left 0.5s ease;bottom:200px;left:calc(100%+200px); }
 
         .tree {
-            position: fixed;
-            bottom: 0;
-            width: 80px;
-            height: 120px;
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Christmas_tree_icon.png/80px-Christmas_tree_icon.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            cursor: pointer;
-            z-index: 100; 
+            position:fixed;bottom:0;width:80px;height:120px;
+            background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Christmas_tree_icon.png/80px-Christmas_tree_icon.png');
+            background-size:contain;background-repeat:no-repeat;cursor:pointer;z-index:100;
         }
-        .tree:nth-child(1) { left: 20%; }
-        .tree:nth-child(2) { left: 50%; }
-        .tree:nth-child(3) { left: 80%; }
-
+        .tree:nth-child(1) {left:20%;}
+        .tree:nth-child(2) {left:50%;}
+        .tree:nth-child(3) {left:80%;}
     </style>
 </head>
 <body>
     <div id="scroll-indicator"></div>
-
-    <!-- Trees -->
+    <!-- Trees & Dino -->
     <div class="tree"></div>
     <div class="tree"></div>
     <div class="tree"></div>
-
-    <!-- Dinosaur -->
     <div class="dino" id="dino"></div>
 
     <nav class="navbar navbar-expand-lg border-bottom sticky-top">
@@ -349,24 +175,12 @@
             </button>
             <div class="collapse navbar-collapse flex-row-reverse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 text-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">About Me</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#skills-section">Skills</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#timeline-section">Timeline</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#achievements-section">Achievements</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#gigs-section">Gig Tracker</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About Me</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#skills-section">Skills</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#timeline-section">Timeline</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#achievements-section">Achievements</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#gigs-section">Gig Tracker</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                 </ul>
                 <form class="d-flex align-items-center ms-3">
                     <div class="form-check form-switch">
@@ -387,15 +201,11 @@
                     <button type="submit" class="btn btn-primary">Go</button>
                 </form>
                 <h1 class="fw-bold">Hello<span id="visitorNamePlaceholder"></span>, I'm a UK-based Software Engineer</h1>
-                <p class="lead">
-                    I specialize in backend development using <strong>C#</strong>, prefer working 
+                <p class="lead">I specialize in backend development using <strong>C#</strong>, prefer working 
                     in <strong>Visual Studio</strong> and <strong>Azure DevOps</strong>, and I'm integrating tools like 
-                    <strong>Bootstrap 5</strong> into my projects.
-                </p>
-                <p class="lead">
-                    Also, I advocate for modern visualization tools to enhance efficiency and 
-                    team collaboration.
-                </p>
+                    <strong>Bootstrap 5</strong> into my projects.</p>
+                <p class="lead">Also, I advocate for modern visualization tools to enhance efficiency and 
+                    team collaboration.</p>
             </div>
         </div>
     </header>
@@ -403,13 +213,9 @@
     <section id="about" class="container py-5">
         <h2 class="section-heading">About Me</h2>
         <div class="info-card">
-            <p>
-                I’m a passionate software engineer focusing on backend systems and process improvement. My primary tech stack includes C#, Git, and 
-                modern web technologies. I ensure code quality, scalability, and maintainability, dealing extensively with SQL and JSON-based queries.
-            </p>
-            <p>
-                I strive to make documentation accessible and advocate for tools that reduce overhead and improve clarity.
-            </p>
+            <p>I’m a passionate software engineer focusing on backend systems and process improvement. My primary tech stack includes C#, Git, and 
+            modern web technologies. I ensure code quality, scalability, and maintainability, dealing extensively with SQL and JSON-based queries.</p>
+            <p>I strive to make documentation accessible and advocate for tools that reduce overhead and improve clarity.</p>
         </div>
     </section>
 
@@ -426,14 +232,11 @@
             </div>
             <div class="chart-card">
                 <h3>Skill Proficiency</h3>
-                <div class="chart-container">
-                    <canvas id="skillChart"></canvas>
-                </div>
+                <div class="chart-container"><canvas id="skillChart"></canvas></div>
             </div>
         </div>
     </section>
 
-    <!-- Redesigned Timeline Section -->
     <section id="timeline-section" class="container py-5">
         <h2 class="section-heading">Timeline</h2>
         <div class="timeline-wrapper">
@@ -458,7 +261,7 @@
                 <div class="timeline-content">
                     <p class="timeline-date">Feb 2022 - Jul 2022</p>
                     <p class="timeline-role">Developer at finova</p>
-                    <p class="timeline-description">Transitioned to a larger role, building core technical solutions in JavaScript and C#.</p>
+                    <p class="timeline-description">Transitioned to a larger role, building core solutions in JavaScript and C#.</p>
                 </div>
             </div>
             <div class="timeline-item">
@@ -466,7 +269,7 @@
                 <div class="timeline-content">
                     <p class="timeline-date">Jul 2022 - Dec 2023</p>
                     <p class="timeline-role">Senior Developer at finova</p>
-                    <p class="timeline-description">Took ownership of projects, focused on team collaboration, and expanded technical skills.</p>
+                    <p class="timeline-description">Owned projects, focused on collaboration, expanded tech skills.</p>
                 </div>
             </div>
             <div class="timeline-item">
@@ -474,7 +277,7 @@
                 <div class="timeline-content">
                     <p class="timeline-date">Dec 2023 - Present</p>
                     <p class="timeline-role">Lead Engineer at finova</p>
-                    <p class="timeline-description">Leading teams, managing resources, and driving strategic initiatives with expertise in team leadership and resource management.</p>
+                    <p class="timeline-description">Leading teams, managing resources, driving strategic initiatives.</p>
                 </div>
             </div>
         </div>
@@ -486,222 +289,30 @@
             <div class="info-card">
                 <ul class="list-unstyled mb-0">
                     <li>Implemented enterprise-grade backend integrations</li>
-                    <li>Introduced modern visualization tools into documentation processes</li>
+                    <li>Introduced modern visualization tools into documentation</li>
                     <li>Optimized SQL queries, reducing execution time significantly</li>
-                    <li>Mentored junior developers, enhancing team collaboration</li>
+                    <li>Mentored junior developers, improving team collaboration</li>
                 </ul>
             </div>
         </div>
     </section>
 
-    <!-- Gig Section -->
     <section id="gigs-section" class="container py-5">
         <h2 class="section-heading">Gig Tracker <span class="collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#gigs-collapse"><i class="bi bi-chevron-down"></i></span></h2>
         <div id="gigs-collapse" class="collapse">
             <div class="info-card">
                 <input type="text" class="form-control gig-search" id="gigSearch" placeholder="Search by location..." />
-
                 <ul class="nav nav-tabs mb-3" id="gigTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="past2024-tab" data-bs-toggle="tab" data-bs-target="#past2024" type="button" role="tab" aria-controls="past2024" aria-selected="true">
-                            Past Gigs (2024)
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="festivals-tab" data-bs-toggle="tab" data-bs-target="#festivals" type="button" role="tab" aria-controls="festivals" aria-selected="false">
-                            Past Festivals
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="upcoming2024-tab" data-bs-toggle="tab" data-bs-target="#upcoming2024" type="button" role="tab" aria-controls="upcoming2024" aria-selected="false">
-                            Upcoming (2024)
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="upcoming2025-tab" data-bs-toggle="tab" data-bs-target="#upcoming2025" type="button" role="tab" aria-controls="upcoming2025" aria-selected="false">
-                            Upcoming (2025)
-                        </button>
-                    </li>
+                    <li class="nav-item"><button class="nav-link active" id="past2024-tab" data-bs-toggle="tab" data-bs-target="#past2024" type="button" role="tab" aria-controls="past2024" aria-selected="true">Past Gigs (2024)</button></li>
+                    <li class="nav-item"><button class="nav-link" id="festivals-tab" data-bs-toggle="tab" data-bs-target="#festivals" type="button" role="tab" aria-controls="festivals" aria-selected="false">Past Festivals</button></li>
+                    <li class="nav-item"><button class="nav-link" id="upcoming2024-tab" data-bs-toggle="tab" data-bs-target="#upcoming2024" type="button" role="tab" aria-controls="upcoming2024" aria-selected="false">Upcoming (2024)</button></li>
+                    <li class="nav-item"><button class="nav-link" id="upcoming2025-tab" data-bs-toggle="tab" data-bs-target="#upcoming2025" type="button" role="tab" aria-controls="upcoming2025" aria-selected="false">Upcoming (2025)</button></li>
                 </ul>
-
                 <div class="tab-content" id="gigTabContent">
-                    <!-- Past Gigs (2024) -->
-                    <div class="tab-pane fade show active" id="past2024" role="tabpanel" aria-labelledby="past2024-tab">
-                        <div class="row">
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Ritz">
-                                    <p class="gig-date">June 10 (Ritz)</p>
-                                    <p class="gig-description">Mt. Joy</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Co-Op">
-                                    <p class="gig-date">July 10 (Co-Op)</p>
-                                    <p class="gig-description">Kings of Leon</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="">
-                                    <p class="gig-date">August 8</p>
-                                    <p class="gig-description">Pete Doherty</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Wythenshawe Park">
-                                    <p class="gig-date">August 24 (Wythenshawe Park)</p>
-                                    <p class="gig-description">New Order + Johnny Marr</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Wythenshawe Park">
-                                    <p class="gig-date">August 25 (Wythenshawe Park)</p>
-                                    <p class="gig-description">Blossoms</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Apollo">
-                                    <p class="gig-date">September 1 (Apollo)</p>
-                                    <p class="gig-description">girl in red</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Apollo">
-                                    <p class="gig-date">September 28 (Apollo)</p>
-                                    <p class="gig-description">Sea Girls</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Albert Hall">
-                                    <p class="gig-date">October 1 (Albert Hall)</p>
-                                    <p class="gig-description">The Struts</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Apollo">
-                                    <p class="gig-date">October 2 (Apollo)</p>
-                                    <p class="gig-description">Driver Era</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Apollo">
-                                    <p class="gig-date">October 4 (Apollo)</p>
-                                    <p class="gig-description">Aurora</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Manchester">
-                                    <p class="gig-date">October 5 (Manchester)</p>
-                                    <p class="gig-description">Neighbourhood Festival: Red Rum Club, Brooke Combe, Antony Szmierek</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="New Century Hall">
-                                    <p class="gig-date">October 11 (New Century Hall)</p>
-                                    <p class="gig-description">Saint Motel</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Yes Basement">
-                                    <p class="gig-date">October 15 (Yes Basement)</p>
-                                    <p class="gig-description">Leap</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Co-Op">
-                                    <p class="gig-date">November 2 (Co-Op)</p>
-                                    <p class="gig-description">Glass Animals</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Plaza Stockport">
-                                    <p class="gig-date">November 4 (Plaza Stockport)</p>
-                                    <p class="gig-description">Blossoms</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Yes Basement">
-                                    <p class="gig-date">November 7 (Yes Basement)</p>
-                                    <p class="gig-description">Jack Jones</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Ritz">
-                                    <p class="gig-date">November 20 (Ritz)</p>
-                                    <p class="gig-description">Blossoms</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Past Festivals -->
-                    <div class="tab-pane fade" id="festivals" role="tabpanel" aria-labelledby="festivals-tab">
-                        <div class="gig-card" data-location="Manchester, Tennessee">
-                            <p class="gig-date">Bonnaroo 2024 (Manchester, Tennessee)</p>
-                            <p class="gig-description">
-                                Acts: Pretty Lights, FISHER, GWAR, Post Malone, Interpol, T-Pain, The Japanese House, 
-                                Red Hot Chili Peppers, Cage the Elephant, Cigarettes After Sex, Fred again.., 
-                                Megan Thee Stallion, Carly Rae Jepsen, Taking Back Sunday.
-                            </p>
-                        </div>
-                        <div class="gig-card" data-location="Chicago">
-                            <p class="gig-date">Lollapalooza 2023 (Chicago)</p>
-                            <p class="gig-description">
-                                Acts: Billie Eilish, Portugal. The Man, The 1975, Foals, Odesza, 
-                                Red Hot Chili Peppers, Mt. Joy.
-                            </p>
-                        </div>
-                    </div>
-                    <!-- Upcoming 2024 -->
-                    <div class="tab-pane fade" id="upcoming2024" role="tabpanel" aria-labelledby="upcoming2024-tab">
-                        <div class="row">
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Apollo/YES">
-                                    <p class="gig-date">December 7 (Apollo/YES)</p>
-                                    <p class="gig-description">Idles + Idles DJ set</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Co-Op">
-                                    <p class="gig-date">December 16 (Co-Op)</p>
-                                    <p class="gig-description">Paul Heaton</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Upcoming 2025 -->
-                    <div class="tab-pane fade" id="upcoming2025" role="tabpanel" aria-labelledby="upcoming2025-tab">
-                        <div class="row">
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Apollo">
-                                    <p class="gig-date">February 14 (Apollo)</p>
-                                    <p class="gig-description">Cage the Elephant</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Stockport">
-                                    <p class="gig-date">March 2 (Stockport)</p>
-                                    <p class="gig-description">You Are Not Alone Festival</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Apollo">
-                                    <p class="gig-date">April 18 (Apollo)</p>
-                                    <p class="gig-description">Finneas</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Manchester, Tennessee">
-                                    <p class="gig-date">June (Manchester, Tennessee)</p>
-                                    <p class="gig-description">Bonnaroo</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="gig-card" data-location="Finsbury Park">
-                                    <p class="gig-date">July 5 (Finsbury Park)</p>
-                                    <p class="gig-description">Fontaines D.C.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="tab-pane fade show active" id="past2024" role="tabpanel" aria-labelledby="past2024-tab"></div>
+                    <div class="tab-pane fade" id="festivals" role="tabpanel" aria-labelledby="festivals-tab"></div>
+                    <div class="tab-pane fade" id="upcoming2024" role="tabpanel" aria-labelledby="upcoming2024-tab"></div>
+                    <div class="tab-pane fade" id="upcoming2025" role="tabpanel" aria-labelledby="upcoming2025-tab"></div>
                 </div>
             </div>
         </div>
@@ -735,6 +346,52 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
     <script>
+        // Gigs Data in JSON (inline)
+        const gigsData = {
+          "past2024": [
+            {"date":"June 10 (Ritz)","location":"Ritz","description":"Mt. Joy"},
+            {"date":"July 10 (Co-Op)","location":"Co-Op","description":"Kings of Leon"},
+            {"date":"August 8","location":"","description":"Pete Doherty"},
+            {"date":"August 24 (Wythenshawe Park)","location":"Wythenshawe Park","description":"New Order + Johnny Marr"},
+            {"date":"August 25 (Wythenshawe Park)","location":"Wythenshawe Park","description":"Blossoms"},
+            {"date":"September 1 (Apollo)","location":"Apollo","description":"girl in red"},
+            {"date":"September 28 (Apollo)","location":"Apollo","description":"Sea Girls"},
+            {"date":"October 1 (Albert Hall)","location":"Albert Hall","description":"The Struts"},
+            {"date":"October 2 (Apollo)","location":"Apollo","description":"Driver Era"},
+            {"date":"October 4 (Apollo)","location":"Apollo","description":"Aurora"},
+            {"date":"October 5 (Manchester)","location":"Manchester","description":"Neighbourhood Festival: Red Rum Club, Brooke Combe, Antony Szmierek"},
+            {"date":"October 11 (New Century Hall)","location":"New Century Hall","description":"Saint Motel"},
+            {"date":"October 15 (Yes Basement)","location":"Yes Basement","description":"Leap"},
+            {"date":"November 2 (Co-Op)","location":"Co-Op","description":"Glass Animals"},
+            {"date":"November 4 (Plaza Stockport)","location":"Plaza Stockport","description":"Blossoms"},
+            {"date":"November 7 (Yes Basement)","location":"Yes Basement","description":"Jack Jones"},
+            {"date":"November 20 (Ritz)","location":"Ritz","description":"Blossoms"}
+          ],
+          "festivals": [
+            {
+              "date":"Bonnaroo 2024 (Manchester, Tennessee)",
+              "location":"Manchester, Tennessee",
+              "description":"Acts: Pretty Lights, FISHER, GWAR, Post Malone, Interpol, T-Pain, The Japanese House, Red Hot Chili Peppers, Cage the Elephant, Cigarettes After Sex, Fred again.., Megan Thee Stallion, Carly Rae Jepsen, Taking Back Sunday."
+            },
+            {
+              "date":"Lollapalooza 2023 (Chicago)",
+              "location":"Chicago",
+              "description":"Acts: Billie Eilish, Portugal. The Man, The 1975, Foals, Odesza, Red Hot Chili Peppers, Mt. Joy."
+            }
+          ],
+          "upcoming2024": [
+            {"date":"December 7 (Apollo/YES)","location":"Apollo/YES","description":"Idles + Idles DJ set"},
+            {"date":"December 16 (Co-Op)","location":"Co-Op","description":"Paul Heaton"}
+          ],
+          "upcoming2025": [
+            {"date":"February 14 (Apollo)","location":"Apollo","description":"Cage the Elephant"},
+            {"date":"March 2 (Stockport)","location":"Stockport","description":"You Are Not Alone Festival"},
+            {"date":"April 18 (Apollo)","location":"Apollo","description":"Finneas"},
+            {"date":"June (Manchester, Tennessee)","location":"Manchester, Tennessee","description":"Bonnaroo"},
+            {"date":"July 5 (Finsbury Park)","location":"Finsbury Park","description":"Fontaines D.C."}
+          ]
+        };
+
         // Update the footer year
         document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -747,8 +404,8 @@
             darkModeSwitch.checked = true;
         }
 
-        darkModeSwitch.addEventListener('change', function() {
-            const isDark = this.checked;
+        darkModeSwitch.addEventListener('change', () => {
+            const isDark = darkModeSwitch.checked;
             body.classList.toggle('dark-mode', isDark);
             localStorage.setItem('darkMode', isDark);
         });
@@ -757,22 +414,16 @@
         const now = new Date();
         const hour = now.getHours();
         let greetingText = "Hello";
-        if (hour < 12) {
-            greetingText = "Good morning";
-        } else if (hour < 18) {
-            greetingText = "Good afternoon";
-        } else {
-            greetingText = "Good evening";
-        }
+        if (hour < 12) greetingText = "Good morning";
+        else if (hour < 18) greetingText = "Good afternoon";
+        else greetingText = "Good evening";
         greetingEl.textContent = greetingText + "!";
 
         const visitorNameInput = document.getElementById('visitor-name-input');
         const visitorNameForm = document.getElementById('visitor-name-form');
         const visitorNamePlaceholder = document.getElementById('visitorNamePlaceholder');
         const storedName = localStorage.getItem('visitorName');
-        if (storedName) {
-            setVisitorName(storedName);
-        }
+        if (storedName) setVisitorName(storedName);
 
         visitorNameForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -786,23 +437,18 @@
         function setVisitorName(name) {
             let displayName = name;
             const lowerName = name.toLowerCase();
-            if (lowerName.includes("daniel") || lowerName.includes("denise")) {
-                displayName = "silly goose";
-            }
+            if (lowerName.includes("daniel") || lowerName.includes("denise")) displayName = "silly goose";
             visitorNamePlaceholder.textContent = `, ${displayName}`;
         }
 
         document.querySelectorAll('.collapsible-header').forEach(header => {
-            header.addEventListener('click', () => {
-                header.classList.toggle('collapsed');
-            });
+            header.addEventListener('click', () => header.classList.toggle('collapsed'));
         });
 
         window.addEventListener('scroll', () => {
             const scrollIndicator = document.getElementById('scroll-indicator');
-            const scrollTop = window.scrollY;
             const docHeight = document.body.scrollHeight - window.innerHeight;
-            const scrollPercent = (scrollTop / docHeight) * 100;
+            const scrollPercent = (window.scrollY / docHeight) * 100;
             scrollIndicator.style.width = scrollPercent + '%';
         });
 
@@ -820,35 +466,42 @@
                 },
                 options: {
                     scales: {
-                        r: {
-                            suggestedMin: 0,
-                            suggestedMax: 10
-                        }
+                        r: { suggestedMin: 0, suggestedMax: 10 }
                     }
                 }
             });
         }
 
-        // Gigs search by location
+        // Render gigs from JSON data
+        function renderGigs(tabId, gigsArray) {
+            const tabContent = document.getElementById(tabId);
+            tabContent.innerHTML = gigsArray.map(g =>
+                `<div class="gig-card" data-location="${(g.location||'').toLowerCase()}">
+                    <p class="gig-date">${g.date}</p>
+                    <p class="gig-description">${g.description}</p>
+                </div>`
+            ).join('');
+        }
+
+        renderGigs('past2024', gigsData.past2024);
+        renderGigs('festivals', gigsData.festivals);
+        renderGigs('upcoming2024', gigsData.upcoming2024);
+        renderGigs('upcoming2025', gigsData.upcoming2025);
+
         const gigSearch = document.getElementById('gigSearch');
-        gigSearch?.addEventListener('input', () => {
+        gigSearch.addEventListener('input', () => {
             const query = gigSearch.value.toLowerCase();
-            const gigCards = document.querySelectorAll('.gig-card');
-            gigCards.forEach(card => {
-                const loc = card.getAttribute('data-location').toLowerCase();
-                if (loc.includes(query)) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
+            document.querySelectorAll('.gig-card').forEach(card => {
+                const loc = card.getAttribute('data-location');
+                card.style.display = loc && loc.includes(query) ? '' : (query === '' ? '' : 'none');
             });
         });
 
         // Dino Jump Logic
         const dino = document.getElementById('dino');
         const trees = document.querySelectorAll('.tree');
+        let dinoPos = {left:0};
 
-        let dinoPos = {left: 0};
         setInterval(() => {
             const rect = dino.getBoundingClientRect();
             dinoPos.left = rect.left + rect.width/2;
@@ -858,12 +511,9 @@
             tree.addEventListener('click', () => {
                 const treeRect = tree.getBoundingClientRect();
                 const treeCenter = treeRect.left + treeRect.width/2;
-                // If dino is close to the tree (within 100px)
                 if (Math.abs(dinoPos.left - treeCenter) < 100) {
                     dino.classList.add('jump');
-                    setTimeout(() => {
-                        dino.style.display = 'none';
-                    }, 1000);
+                    setTimeout(() => { dino.style.display = 'none'; }, 1000);
                 }
             });
         });
