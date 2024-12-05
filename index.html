@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UK-based Software Engineer Portfolio</title>
     
+    <!-- External Icons (Bootstrap Icons CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js" defer></script>
+    
     <!-- CSS Styles -->
     <style>
         /* CSS Variables for Theming */
@@ -26,6 +32,7 @@
             --border-color: #dee2e6;
             --error-color: #dc3545;
             --focus-color: var(--primary-color);
+            --transition-speed: 0.3s;
         }
 
         /* Dark Mode Overrides */
@@ -48,7 +55,7 @@
             color: var(--text-color);
             margin: 0;
             padding-bottom: 70px; /* Prevent content from being hidden behind the nav */
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
         }
 
         a {
@@ -121,7 +128,7 @@
             right: 0;
             bottom: 0;
             background-color: #ccc;
-            transition: 0.4s;
+            transition: background-color var(--transition-speed);
             border-radius: 24px;
         }
 
@@ -133,7 +140,7 @@
             left: 3px;
             bottom: 3px;
             background-color: white;
-            transition: 0.4s;
+            transition: transform var(--transition-speed);
             border-radius: 50%;
         }
 
@@ -146,7 +153,7 @@
         }
 
         /* Fixed Bottom Navigation Bar */
-        .bottom-nav {
+        nav.bottom-nav {
             position: fixed;
             bottom: 0;
             width: 100%;
@@ -167,7 +174,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: color 0.3s;
+            transition: color var(--transition-speed);
         }
 
         .bottom-nav a.active, .bottom-nav a:hover {
@@ -178,7 +185,7 @@
             font-size: 1.5rem;
         }
 
-        /* Responsive Layouts */
+        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -186,7 +193,7 @@
         }
 
         /* Greeting Section */
-        #home {
+        header#home {
             text-align: center;
             padding: 4rem 1rem;
         }
@@ -206,6 +213,7 @@
             max-width: 80%;
             border: 1px solid var(--border-color);
             border-radius: 4px;
+            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
         }
 
         #visitor-name-input:focus {
@@ -217,12 +225,15 @@
         .button {
             padding: 0.5rem 1rem;
             font-size: 1rem;
-            background-color: var(--btn-primary-bg);
-            color: var(--btn-primary-text);
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color var(--transition-speed);
+        }
+
+        .button--primary {
+            background-color: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
         }
 
         .button--primary:hover {
@@ -238,14 +249,14 @@
             background-color: #5a6268; /* Darkened secondary color */
         }
 
-        /* About Section */
-        #about .card-custom {
+        /* Card Styles */
+        .card-custom {
             background-color: var(--card-background);
             padding: 2rem;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         /* Skills Section */
@@ -258,16 +269,7 @@
         }
 
         /* FAQ Section */
-        #faq-section .card-custom {
-            background-color: var(--card-background);
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-
-        .faq-item {
+        #faq-section .faq-item {
             margin-bottom: 1rem;
         }
 
@@ -278,14 +280,15 @@
             color: #ffffff;
             border-radius: 4px;
             position: relative;
-            transition: background-color 0.3s;
+            transition: background-color var(--transition-speed);
+            outline: none;
         }
 
         .faq-question::after {
             content: '\25BC';
             position: absolute;
             right: 20px;
-            transition: transform 0.3s;
+            transition: transform var(--transition-speed);
         }
 
         .faq-question.active::after {
@@ -295,7 +298,7 @@
         .faq-answer {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
+            transition: max-height var(--transition-speed) ease, padding var(--transition-speed) ease;
             background-color: var(--card-background);
             padding: 0 1rem;
             border-left: 3px solid var(--primary-color);
@@ -321,7 +324,7 @@
             border-radius: 8px;
             cursor: pointer;
             background-color: var(--card-background);
-            transition: transform 0.3s;
+            transition: transform var(--transition-speed);
         }
 
         .portfolio-item:hover {
@@ -332,7 +335,7 @@
             width: 100%;
             height: auto;
             display: block;
-            transition: transform 0.3s;
+            transition: transform var(--transition-speed);
         }
 
         .portfolio-overlay {
@@ -344,7 +347,7 @@
             background-color: var(--overlay-background);
             color: #ffffff;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity var(--transition-speed);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -366,7 +369,7 @@
             color: #ffffff;
             padding: 0.5rem 1rem;
             border-radius: 4px;
-            transition: background-color 0.3s;
+            transition: background-color var(--transition-speed);
         }
 
         .portfolio-overlay a:hover {
@@ -374,16 +377,7 @@
         }
 
         /* Gig Tracker Section */
-        #gig-section .card-custom {
-            background-color: var(--card-background);
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-
-        #gigSearch {
+        #gig-section input#gigSearch {
             padding: 0.5rem;
             font-size: 1rem;
             width: 100%;
@@ -391,15 +385,16 @@
             border: 1px solid var(--border-color);
             border-radius: 4px;
             margin-bottom: 1rem;
+            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
         }
 
-        #gigSearch:focus {
+        #gig-section input#gigSearch:focus {
             border-color: var(--focus-color);
             outline: none;
             box-shadow: 0 0 5px var(--focus-color);
         }
 
-        #clearSearchBtn {
+        #gig-section #clearSearchBtn {
             padding: 0.5rem 1rem;
             font-size: 1rem;
             background-color: var(--secondary-color);
@@ -407,11 +402,11 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color var(--transition-speed);
             margin-bottom: 1rem;
         }
 
-        #clearSearchBtn:hover {
+        #gig-section #clearSearchBtn:hover {
             background-color: #5a6268; /* Darkened secondary color */
         }
 
@@ -430,7 +425,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
         }
 
         .gig-tab.active, .gig-tab:hover {
@@ -452,16 +447,12 @@
             border-radius: 8px;
             background-color: var(--card-background);
             margin-bottom: 1rem;
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
         .gig-card__date {
             font-weight: bold;
             margin-bottom: 0.5rem;
-        }
-
-        .gig-card__description {
-            /* Additional styles if needed */
         }
 
         /* Testimonials Section */
@@ -499,7 +490,7 @@
             padding: 0.5rem 1rem;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color var(--transition-speed);
         }
 
         .carousel-controls button:hover {
@@ -507,35 +498,26 @@
         }
 
         /* Contact Section */
-        #contact .card-custom {
-            background-color: var(--card-background);
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-
-        #contactForm {
+        #contact-form {
             display: flex;
             flex-direction: column;
         }
 
-        #contactForm label {
+        #contact-form label {
             margin-bottom: 0.5rem;
             font-weight: bold;
         }
 
-        #contactForm input, #contactForm textarea {
+        #contact-form input, #contact-form textarea {
             padding: 0.5rem;
             font-size: 1rem;
             margin-bottom: 0.5rem;
             border: 1px solid var(--border-color);
             border-radius: 4px;
-            transition: border-color 0.3s;
+            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
         }
 
-        #contactForm input:focus, #contactForm textarea:focus {
+        #contact-form input:focus, #contact-form textarea:focus {
             border-color: var(--focus-color);
             outline: none;
             box-shadow: 0 0 5px var(--focus-color);
@@ -556,8 +538,9 @@
             display: inline-block;
             padding: 0.5rem 1rem;
             border-radius: 4px;
-            transition: background-color 0.3s;
+            transition: background-color var(--transition-speed);
             cursor: pointer;
+            margin-top: 1rem;
         }
 
         .btn-download:hover {
@@ -571,7 +554,7 @@
             text-align: center;
             padding: 1rem 0;
             border-top: 1px solid var(--border-color);
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
         }
 
         /* Animations */
@@ -620,17 +603,13 @@
             }
         }
     </style>
-
-    <!-- External Icons (Bootstrap Icons CDN) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
 </head>
 <body>
     <!-- Dark Mode Toggle -->
     <div class="dark-mode-toggle">
         <label class="switch" aria-label="Toggle Dark Mode">
             <input type="checkbox" id="darkModeSwitch">
-            <span class="slider round"></span>
+            <span class="slider"></span>
         </label>
     </div>
 
@@ -666,7 +645,7 @@
             <h2 class="section-heading" data-key="skills_title">Skills</h2>
             <div class="card-custom">
                 <div class="chart-container">
-                    <canvas id="skillChart"></canvas>
+                    <canvas id="skillChart" aria-label="Skills Radar Chart" role="img"></canvas>
                 </div>
             </div>
         </section>
@@ -676,24 +655,24 @@
             <h2 class="section-heading" data-key="faq_title">Frequently Asked Questions</h2>
             <div class="card-custom">
                 <div class="faq-item">
-                    <div class="faq-question" data-key="faq1_question" tabindex="0">What technologies do you specialize in?</div>
-                    <div class="faq-answer" data-key="faq1_answer"></div>
+                    <button class="faq-question" data-key="faq1_question" aria-expanded="false">What technologies do you specialize in?</button>
+                    <div class="faq-answer" data-key="faq1_answer" aria-hidden="true"></div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-question" data-key="faq2_question" tabindex="0">How do you handle project deadlines?</div>
-                    <div class="faq-answer" data-key="faq2_answer"></div>
+                    <button class="faq-question" data-key="faq2_question" aria-expanded="false">How do you handle project deadlines?</button>
+                    <div class="faq-answer" data-key="faq2_answer" aria-hidden="true"></div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-question" data-key="faq3_question" tabindex="0">Can you work remotely?</div>
-                    <div class="faq-answer" data-key="faq3_answer"></div>
+                    <button class="faq-question" data-key="faq3_question" aria-expanded="false">Can you work remotely?</button>
+                    <div class="faq-answer" data-key="faq3_answer" aria-hidden="true"></div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-question" data-key="faq4_question" tabindex="0">Do you offer support after project completion?</div>
-                    <div class="faq-answer" data-key="faq4_answer"></div>
+                    <button class="faq-question" data-key="faq4_question" aria-expanded="false">Do you offer support after project completion?</button>
+                    <div class="faq-answer" data-key="faq4_answer" aria-hidden="true"></div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-question" data-key="faq5_question" tabindex="0">What is your approach to learning new technologies?</div>
-                    <div class="faq-answer" data-key="faq5_answer"></div>
+                    <button class="faq-question" data-key="faq5_question" aria-expanded="false">What is your approach to learning new technologies?</button>
+                    <div class="faq-answer" data-key="faq5_answer" aria-hidden="true"></div>
                 </div>
             </div>
         </section>
@@ -702,7 +681,7 @@
         <section id="portfolio-section" class="container">
             <h2 class="section-heading" data-key="portfolio_title">Portfolio</h2>
             <div class="portfolio-gallery">
-                <!-- Portfolio Item 1 -->
+                <!-- Portfolio Items -->
                 <div class="portfolio-item">
                     <img src="https://via.placeholder.com/400x300" alt="Screenshot of Project Title 1 showing user interface design" class="lazy" data-key="portfolio1_image_alt">
                     <div class="portfolio-overlay">
@@ -711,7 +690,6 @@
                         <a href="#" class="button button--secondary" data-key="portfolio1_view">View Project</a>
                     </div>
                 </div>
-                <!-- Portfolio Item 2 -->
                 <div class="portfolio-item">
                     <img src="https://via.placeholder.com/400x300" alt="Screenshot of Project Title 2 showcasing backend architecture" class="lazy" data-key="portfolio2_image_alt">
                     <div class="portfolio-overlay">
@@ -720,7 +698,6 @@
                         <a href="#" class="button button--secondary" data-key="portfolio2_view">View Project</a>
                     </div>
                 </div>
-                <!-- Portfolio Item 3 -->
                 <div class="portfolio-item">
                     <img src="https://via.placeholder.com/400x300" alt="Screenshot of Project Title 3 demonstrating API integration" class="lazy" data-key="portfolio3_image_alt">
                     <div class="portfolio-overlay">
@@ -729,7 +706,7 @@
                         <a href="#" class="button button--secondary" data-key="portfolio3_view">View Project</a>
                     </div>
                 </div>
-                <!-- Add more portfolio items as needed -->
+                <!-- Additional portfolio items can be added here -->
             </div>
         </section>
 
@@ -795,15 +772,15 @@
             <h2 class="section-heading" data-key="contact_title">Contact</h2>
             <div class="card-custom">
                 <form id="contactForm" novalidate>
-                    <label for="contactName" data-key="contact_name_label">Name<span aria-hidden="true" style="color: red;">*</span></label>
+                    <label for="contactName" data-key="contact_name_label">Name<span class="visually-hidden">*</span></label>
                     <input type="text" id="contactName" placeholder="Enter your name" required data-key="contact_name_placeholder" aria-describedby="nameError">
                     <span class="error-message" id="nameError" data-key="contact_name_invalid">Please enter your name.</span>
 
-                    <label for="contactEmail" data-key="contact_email_label">Email<span aria-hidden="true" style="color: red;">*</span></label>
+                    <label for="contactEmail" data-key="contact_email_label">Email<span class="visually-hidden">*</span></label>
                     <input type="email" id="contactEmail" placeholder="Enter your email" required data-key="contact_email_placeholder" aria-describedby="emailError">
                     <span class="error-message" id="emailError" data-key="contact_email_invalid">Please enter a valid email.</span>
 
-                    <label for="contactMessage" data-key="contact_message_label">Message<span aria-hidden="true" style="color: red;">*</span></label>
+                    <label for="contactMessage" data-key="contact_message_label">Message<span class="visually-hidden">*</span></label>
                     <textarea id="contactMessage" rows="5" placeholder="Enter your message" required data-key="contact_message_placeholder" aria-describedby="messageError"></textarea>
                     <span class="error-message" id="messageError" data-key="contact_message_invalid">Please enter your message.</span>
 
@@ -821,7 +798,7 @@
 
     <!-- Fixed Bottom Navigation Bar -->
     <nav class="bottom-nav" role="navigation" aria-label="Main Navigation">
-        <a href="#home" class="nav-link active" data-key="nav_home">
+        <a href="#home" class="nav-link active" data-key="nav_home" aria-current="page">
             <i class="bi bi-house" aria-hidden="true"></i>
             <span>Home</span>
         </a>
@@ -938,419 +915,405 @@
     }
     </script>
 
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
-
     <!-- JavaScript for Functionality -->
     <script>
-        // Language Data
-        const langData = JSON.parse(document.getElementById('langData').textContent);
-        const currentLang = 'en'; // This can be dynamically set based on user preference
+        document.addEventListener('DOMContentLoaded', () => {
+            // Language Data
+            const langData = JSON.parse(document.getElementById('langData').textContent);
+            const currentLang = 'en'; // This can be dynamically set based on user preference
 
-        // Function to Populate Text Content Based on JSON Data
-        function populateTextContent(lang) {
-            const elements = document.querySelectorAll('[data-key]');
-            elements.forEach(el => {
-                const key = el.getAttribute('data-key');
-                if (langData[lang][key]) {
-                    if (el.tagName.toLowerCase() === 'input' || el.tagName.toLowerCase() === 'textarea') {
-                        el.setAttribute('placeholder', langData[lang][key]);
-                    } else if (el.tagName.toLowerCase() === 'label') {
-                        el.textContent = langData[lang][key];
-                        // If label contains a span (e.g., asterisk), ensure it remains
-                        const span = el.querySelector('span');
-                        if (span) {
-                            el.appendChild(span);
-                        }
-                    } else if (el.tagName.toLowerCase() === 'span' && el.parentElement.tagName.toLowerCase() === 'a') {
-                        el.textContent = langData[lang][key];
-                    } else {
-                        el.textContent = langData[lang][key];
+            // Populate Text Content Based on JSON Data
+            const populateTextContent = (lang) => {
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    const key = el.getAttribute('data-key');
+                    const text = langData[lang][key];
+                    if (!text) return;
+
+                    switch (el.tagName.toLowerCase()) {
+                        case 'input':
+                        case 'textarea':
+                            el.placeholder = text;
+                            break;
+                        case 'label':
+                            el.childNodes.forEach(node => {
+                                if (node.nodeType === Node.TEXT_NODE) node.textContent = text;
+                            });
+                            break;
+                        case 'button':
+                        case 'a':
+                            el.textContent = text;
+                            break;
+                        case 'span':
+                        case 'p':
+                        case 'h1':
+                        case 'h2':
+                        case 'h3':
+                        case 'h4':
+                        case 'h5':
+                        case 'h6':
+                            el.textContent = text;
+                            break;
+                        default:
+                            el.textContent = text;
                     }
-                }
-            });
-        }
-
-        // Initial Population
-        populateTextContent(currentLang);
-
-        // Dark Mode Toggle
-        const body = document.body;
-        const darkModeSwitch = document.getElementById('darkModeSwitch');
-        const storedDarkMode = localStorage.getItem('darkMode');
-
-        if (storedDarkMode === 'true') {
-            body.classList.add('dark-mode');
-            darkModeSwitch.checked = true;
-        }
-
-        darkModeSwitch.addEventListener('change', () => {
-            const isDark = darkModeSwitch.checked;
-            body.classList.toggle('dark-mode', isDark);
-            localStorage.setItem('darkMode', isDark);
-        });
-
-        // Greeting and Visitor Name
-        const greetingEl = document.querySelector('[data-key="greeting"]');
-        const currentHour = new Date().getHours();
-        const greetings = {
-            "morning": "Good morning",
-            "afternoon": "Good afternoon",
-            "evening": "Good evening"
-        };
-        let greetingText = "Hello";
-
-        if (currentHour < 12) {
-            greetingText = greetings.morning;
-        } else if (currentHour < 18) {
-            greetingText = greetings.afternoon;
-        } else {
-            greetingText = greetings.evening;
-        }
-
-        greetingEl.textContent = `${greetingText}!`;
-
-        const visitorNameInput = document.getElementById('visitor-name-input');
-        const visitorNameForm = document.getElementById('visitor-name-form');
-        const visitorNamePlaceholder = document.getElementById('visitorNamePlaceholder');
-        const storedName = localStorage.getItem('visitorName');
-
-        if (storedName) {
-            setVisitorName(storedName);
-        }
-
-        visitorNameForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = visitorNameInput.value.trim();
-            if (name) {
-                localStorage.setItem('visitorName', name);
-                setVisitorName(name);
-                visitorNameInput.value = '';
-            }
-        });
-
-        function setVisitorName(name) {
-            let displayName = name;
-            const lowerName = name.toLowerCase();
-            if (lowerName.includes("daniel") || lowerName.includes("denise")) {
-                displayName = "silly goose";
-            }
-            visitorNamePlaceholder.textContent = `, ${displayName}`;
-        }
-
-        // Update Footer Year
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        // Render Gigs from JSON Data
-        const gigsData = {
-            "past2024": [
-                {"date":"June 10 (Ritz)","location":"Ritz","description":"Mt. Joy"},
-                {"date":"July 10 (Co-Op)","location":"Co-Op","description":"Kings of Leon"},
-                {"date":"August 8","location":"","description":"Pete Doherty"},
-                {"date":"August 24 (Wythenshawe Park)","location":"Wythenshawe Park","description":"New Order + Johnny Marr"},
-                {"date":"August 25 (Wythenshawe Park)","location":"Wythenshawe Park","description":"Blossoms"},
-                {"date":"September 1 (Apollo)","location":"Apollo","description":"girl in red"},
-                {"date":"September 28 (Apollo)","location":"Apollo","description":"Sea Girls"},
-                {"date":"October 1 (Albert Hall)","location":"Albert Hall","description":"The Struts"},
-                {"date":"October 2 (Apollo)","location":"Apollo","description":"Driver Era"},
-                {"date":"October 4 (Apollo)","location":"Apollo","description":"Aurora"},
-                {"date":"October 5 (Manchester)","location":"Manchester","description":"Neighbourhood Festival: Red Rum Club, Brooke Combe, Antony Szmierek"},
-                {"date":"October 11 (New Century Hall)","location":"New Century Hall","description":"Saint Motel"},
-                {"date":"October 15 (Yes Basement)","location":"Yes Basement","description":"Leap"},
-                {"date":"November 2 (Co-Op)","location":"Co-Op","description":"Glass Animals"},
-                {"date":"November 4 (Plaza Stockport)","location":"Plaza Stockport","description":"Blossoms"},
-                {"date":"November 7 (Yes Basement)","location":"Yes Basement","description":"Jack Jones"},
-                {"date":"November 20 (Ritz)","location":"Ritz","description":"Blossoms"}
-            ],
-            "festivals": [
-                {
-                    "date":"Bonnaroo 2024 (Manchester, Tennessee)",
-                    "location":"Manchester, Tennessee",
-                    "description":"Acts: Pretty Lights, FISHER, GWAR, Post Malone, Interpol, T-Pain, The Japanese House, Red Hot Chili Peppers, Cage the Elephant, Cigarettes After Sex, Fred again.., Megan Thee Stallion, Carly Rae Jepsen, Taking Back Sunday."
-                },
-                {
-                    "date":"Lollapalooza 2023 (Chicago)",
-                    "location":"Chicago",
-                    "description":"Acts: Billie Eilish, Portugal. The Man, The 1975, Foals, Odesza, Red Hot Chili Peppers, Mt. Joy."
-                }
-            ],
-            "upcoming2024": [
-                {"date":"December 7 (Apollo/YES)","location":"Apollo/YES","description":"Idles + Idles DJ set"},
-                {"date":"December 16 (Co-Op)","location":"Co-Op","description":"Paul Heaton"}
-            ],
-            "upcoming2025": [
-                {"date":"February 14 (Apollo)","location":"Apollo","description":"Cage the Elephant"},
-                {"date":"March 2 (Stockport)","location":"Stockport","description":"You Are Not Alone Festival"},
-                {"date":"April 18 (Apollo)","location":"Apollo","description":"Finneas"},
-                {"date":"June (Manchester, Tennessee)","location":"Manchester, Tennessee","description":"Bonnaroo"},
-                {"date":"July 5 (Finsbury Park)","location":"Finsbury Park","description":"Fontaines D.C."}
-            ]
-        };
-
-        function renderGigs(tabId, gigsArray) {
-            const tabContent = document.getElementById(tabId);
-            if (!tabContent) return;
-            if (gigsArray.length === 0) {
-                tabContent.innerHTML = '<p data-key="gig_no_gigs">No gigs available.</p>';
-                populateTextContent(currentLang); // To populate the new text
-                return;
-            }
-            tabContent.innerHTML = gigsArray.map(g =>
-                `<div class="gig-card" data-location="${(g.location || '').toLowerCase()}">
-                    <p class="gig-card__date" data-key="gig_date">${g.date}</p>
-                    <p class="gig-card__description" data-key="gig_description">${g.description}</p>
-                </div>`
-            ).join('');
-        }
-
-        // Initial Rendering of Gigs
-        renderGigs('past2024', gigsData.past2024);
-        renderGigs('festivals', gigsData.festivals);
-        renderGigs('upcoming2024', gigsData.upcoming2024);
-        renderGigs('upcoming2025', gigsData.upcoming2025);
-
-        const gigSearch = document.getElementById('gigSearch');
-        const clearSearchBtn = document.getElementById('clearSearchBtn');
-
-        gigSearch.addEventListener('input', () => {
-            const query = gigSearch.value.toLowerCase();
-            document.querySelectorAll('.gig-card').forEach(card => {
-                const loc = card.getAttribute('data-location') || '';
-                if (loc.includes(query)) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-
-        clearSearchBtn.addEventListener('click', () => {
-            gigSearch.value = '';
-            document.querySelectorAll('.gig-card').forEach(card => {
-                card.style.display = '';
-            });
-        });
-
-        // Skills Radar Chart
-        const ctx = document.getElementById('skillChart');
-        if (ctx) {
-            new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: ['C#', 'SQL', 'Git', 'Documentation', 'Process Improvement', 'Web Tech'],
-                    datasets: [{
-                        label: 'Proficiency',
-                        data: [9, 8, 8, 9, 8, 7],
-                        borderWidth: 2,
-                        backgroundColor: 'rgba(13, 110, 253, 0.2)',
-                        borderColor: 'rgba(13, 110, 253, 1)',
-                        pointBackgroundColor: 'rgba(13, 110, 253, 1)'
-                    }]
-                },
-                options: {
-                    scales: {
-                        r: {
-                            suggestedMin: 0,
-                            suggestedMax: 10,
-                            ticks: {
-                                stepSize: 2
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        }
-                    },
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
-        }
-
-        // Contact Form Validation
-        const contactForm = document.getElementById('contactForm');
-
-        // Reusable validation function
-        function validateField(input, errorElement, pattern = null) {
-            const value = input.value.trim();
-            if (pattern) {
-                if (pattern.test(value)) {
-                    errorElement.style.display = 'none';
-                    return true;
-                } else {
-                    errorElement.style.display = 'block';
-                    return false;
-                }
-            } else {
-                if (value !== '') {
-                    errorElement.style.display = 'none';
-                    return true;
-                } else {
-                    errorElement.style.display = 'block';
-                    return false;
-                }
-            }
-        }
-
-        contactForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            let isValid = true;
-
-            // Name Validation
-            const nameInput = document.getElementById('contactName');
-            const nameError = document.getElementById('nameError');
-            const isNameValid = validateField(nameInput, nameError);
-            isValid = isValid && isNameValid;
-
-            // Email Validation
-            const emailInput = document.getElementById('contactEmail');
-            const emailError = document.getElementById('emailError');
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const isEmailValid = validateField(emailInput, emailError, emailPattern);
-            isValid = isValid && isEmailValid;
-
-            // Message Validation
-            const messageInput = document.getElementById('contactMessage');
-            const messageError = document.getElementById('messageError');
-            const isMessageValid = validateField(messageInput, messageError);
-            isValid = isValid && isMessageValid;
-
-            if (isValid) {
-                // Handle form submission (e.g., send email via backend)
-                alert(langData[currentLang]["contact_submit_success"] || "Thank you for your message!");
-                contactForm.reset();
-                visitorNamePlaceholder.textContent = '';
-                localStorage.removeItem('visitorName');
-            }
-        });
-
-        // Lazy Loading Images
-        document.addEventListener("DOMContentLoaded", function() {
-            const lazyImages = document.querySelectorAll('img.lazy');
-
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.src = img.getAttribute('src');
-                        img.classList.remove('lazy');
-                        observer.unobserve(img);
-                    }
-                });
-            }, {
-                rootMargin: '0px 0px 50px 0px',
-                threshold: 0.01
-            });
-
-            lazyImages.forEach(img => {
-                imageObserver.observe(img);
-            });
-        });
-
-        // Testimonials Carousel
-        (function() {
-            const testimonials = document.querySelectorAll('.testimonial');
-            let currentTestimonial = 0;
-            const totalTestimonials = testimonials.length;
-            const carouselControls = document.querySelector('.carousel-controls');
-
-            // Function to show a specific testimonial
-            const showTestimonial = (index) => {
-                testimonials.forEach((testimonial, i) => {
-                    testimonial.classList.toggle('active', i === index);
                 });
             };
 
-            // Event delegation for carousel buttons
-            carouselControls.addEventListener('click', (e) => {
-                if (e.target.id === 'nextTestimonial') {
-                    currentTestimonial = (currentTestimonial + 1) % totalTestimonials;
-                    showTestimonial(currentTestimonial);
-                } else if (e.target.id === 'prevTestimonial') {
-                    currentTestimonial = (currentTestimonial - 1 + totalTestimonials) % totalTestimonials;
-                    showTestimonial(currentTestimonial);
+            populateTextContent(currentLang);
+
+            // Dark Mode Toggle
+            const body = document.body;
+            const darkModeSwitch = document.getElementById('darkModeSwitch');
+            const storedDarkMode = localStorage.getItem('darkMode') === 'true';
+
+            if (storedDarkMode) {
+                body.classList.add('dark-mode');
+                darkModeSwitch.checked = true;
+            }
+
+            darkModeSwitch.addEventListener('change', () => {
+                const isDark = darkModeSwitch.checked;
+                body.classList.toggle('dark-mode', isDark);
+                localStorage.setItem('darkMode', isDark);
+            });
+
+            // Greeting Based on Time
+            const greetingEl = document.querySelector('[data-key="greeting"]');
+            const currentHour = new Date().getHours();
+            const greetings = {
+                morning: "Good morning",
+                afternoon: "Good afternoon",
+                evening: "Good evening"
+            };
+            const greetingText = currentHour < 12 ? greetings.morning :
+                                 currentHour < 18 ? greetings.afternoon :
+                                 greetings.evening;
+            greetingEl.textContent = `${greetingText}!`;
+
+            // Visitor Name Handling
+            const visitorNameForm = document.getElementById('visitor-name-form');
+            const visitorNameInput = document.getElementById('visitor-name-input');
+            const visitorNamePlaceholder = document.getElementById('visitorNamePlaceholder');
+            const storedName = localStorage.getItem('visitorName');
+
+            const setVisitorName = (name) => {
+                const lowerName = name.toLowerCase();
+                const displayName = (lowerName.includes("daniel") || lowerName.includes("denise")) ? "silly goose" : name;
+                visitorNamePlaceholder.textContent = `, ${displayName}`;
+            };
+
+            if (storedName) setVisitorName(storedName);
+
+            visitorNameForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = visitorNameInput.value.trim();
+                if (name) {
+                    localStorage.setItem('visitorName', name);
+                    setVisitorName(name);
+                    visitorNameInput.value = '';
                 }
             });
 
-            // Initialize the first testimonial
-            showTestimonial(currentTestimonial);
-        })();
+            // Update Footer Year
+            document.getElementById('year').textContent = new Date().getFullYear();
 
-        // FAQ Collapsible Functionality
-        (function() {
-            const faqQuestions = document.querySelectorAll('.faq-question');
-
-            faqQuestions.forEach(question => {
-                // Make the question focusable
-                question.setAttribute('tabindex', '0');
-
-                // Toggle answer on click
-                question.addEventListener('click', () => {
-                    const answer = question.nextElementSibling;
-                    const isOpen = answer.classList.contains('open');
-
-                    // Close all answers
-                    document.querySelectorAll('.faq-answer').forEach(ans => {
-                        ans.classList.remove('open');
-                    });
-                    faqQuestions.forEach(q => q.classList.remove('active'));
-
-                    // Toggle current answer
-                    if (!isOpen) {
-                        answer.classList.add('open');
-                        question.classList.add('active');
+            // Gig Tracker Data
+            const gigsData = {
+                past2024: [
+                    {"date":"June 10 (Ritz)","location":"Ritz","description":"Mt. Joy"},
+                    {"date":"July 10 (Co-Op)","location":"Co-Op","description":"Kings of Leon"},
+                    {"date":"August 8","location":"","description":"Pete Doherty"},
+                    {"date":"August 24 (Wythenshawe Park)","location":"Wythenshawe Park","description":"New Order + Johnny Marr"},
+                    {"date":"August 25 (Wythenshawe Park)","location":"Wythenshawe Park","description":"Blossoms"},
+                    {"date":"September 1 (Apollo)","location":"Apollo","description":"girl in red"},
+                    {"date":"September 28 (Apollo)","location":"Apollo","description":"Sea Girls"},
+                    {"date":"October 1 (Albert Hall)","location":"Albert Hall","description":"The Struts"},
+                    {"date":"October 2 (Apollo)","location":"Apollo","description":"Driver Era"},
+                    {"date":"October 4 (Apollo)","location":"Apollo","description":"Aurora"},
+                    {"date":"October 5 (Manchester)","location":"Manchester","description":"Neighbourhood Festival: Red Rum Club, Brooke Combe, Antony Szmierek"},
+                    {"date":"October 11 (New Century Hall)","location":"New Century Hall","description":"Saint Motel"},
+                    {"date":"October 15 (Yes Basement)","location":"Yes Basement","description":"Leap"},
+                    {"date":"November 2 (Co-Op)","location":"Co-Op","description":"Glass Animals"},
+                    {"date":"November 4 (Plaza Stockport)","location":"Plaza Stockport","description":"Blossoms"},
+                    {"date":"November 7 (Yes Basement)","location":"Yes Basement","description":"Jack Jones"},
+                    {"date":"November 20 (Ritz)","location":"Ritz","description":"Blossoms"}
+                ],
+                festivals: [
+                    {
+                        "date":"Bonnaroo 2024 (Manchester, Tennessee)",
+                        "location":"Manchester, Tennessee",
+                        "description":"Acts: Pretty Lights, FISHER, GWAR, Post Malone, Interpol, T-Pain, The Japanese House, Red Hot Chili Peppers, Cage the Elephant, Cigarettes After Sex, Fred again.., Megan Thee Stallion, Carly Rae Jepsen, Taking Back Sunday."
+                    },
+                    {
+                        "date":"Lollapalooza 2023 (Chicago)",
+                        "location":"Chicago",
+                        "description":"Acts: Billie Eilish, Portugal. The Man, The 1975, Foals, Odesza, Red Hot Chili Peppers, Mt. Joy."
                     }
-                });
+                ],
+                upcoming2024: [
+                    {"date":"December 7 (Apollo/YES)","location":"Apollo/YES","description":"Idles + Idles DJ set"},
+                    {"date":"December 16 (Co-Op)","location":"Co-Op","description":"Paul Heaton"}
+                ],
+                upcoming2025: [
+                    {"date":"February 14 (Apollo)","location":"Apollo","description":"Cage the Elephant"},
+                    {"date":"March 2 (Stockport)","location":"Stockport","description":"You Are Not Alone Festival"},
+                    {"date":"April 18 (Apollo)","location":"Apollo","description":"Finneas"},
+                    {"date":"June (Manchester, Tennessee)","location":"Manchester, Tennessee","description":"Bonnaroo"},
+                    {"date":"July 5 (Finsbury Park)","location":"Finsbury Park","description":"Fontaines D.C."}
+                ]
+            };
 
-                // Toggle answer on keypress (Enter or Space)
-                question.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        question.click();
-                    }
+            // Render Gigs
+            const renderGigs = (tabId, gigs) => {
+                const tabContent = document.getElementById(tabId);
+                if (!tabContent) return;
+
+                if (gigs.length === 0) {
+                    tabContent.innerHTML = `<p data-key="gig_no_gigs">No gigs available.</p>`;
+                    populateTextContent(currentLang);
+                    return;
+                }
+
+                tabContent.innerHTML = gigs.map(gig => `
+                    <div class="gig-card" data-location="${gig.location.toLowerCase()}">
+                        <p class="gig-card__date">${gig.date}</p>
+                        <p class="gig-card__description">${gig.description}</p>
+                    </div>
+                `).join('');
+            };
+
+            // Initial Render
+            Object.keys(gigsData).forEach(tabId => renderGigs(tabId, gigsData[tabId]));
+
+            // Gig Search Functionality
+            const gigSearch = document.getElementById('gigSearch');
+            const clearSearchBtn = document.getElementById('clearSearchBtn');
+
+            gigSearch.addEventListener('input', () => {
+                const query = gigSearch.value.toLowerCase();
+                document.querySelectorAll('.gig-card').forEach(card => {
+                    const loc = card.dataset.location || '';
+                    card.style.display = loc.includes(query) ? '' : 'none';
                 });
             });
-        })();
 
-        // Smooth Scrolling and Active Link Highlighting
-        (function() {
-            const navLinks = document.querySelectorAll('.bottom-nav a');
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href').substring(1);
-                    const targetSection = document.getElementById(targetId);
-                    if (targetSection) {
-                        window.scrollTo({
-                            top: targetSection.offsetTop - 60, // Adjust for nav height
-                            behavior: 'smooth'
-                        });
-
-                        // Update active link
-                        navLinks.forEach(nav => nav.classList.remove('active'));
-                        this.classList.add('active');
-                    }
+            clearSearchBtn.addEventListener('click', () => {
+                gigSearch.value = '';
+                document.querySelectorAll('.gig-card').forEach(card => {
+                    card.style.display = '';
                 });
             });
 
-            // Highlight Active Nav Link on Scroll
-            window.addEventListener('scroll', () => {
-                const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
-                navLinks.forEach(link => {
-                    const section = document.querySelector(link.getAttribute('href'));
-                    if (section) {
-                        if (scrollPosition >= section.offsetTop - 70 && scrollPosition < section.offsetTop + section.offsetHeight - 70) {
-                            link.classList.add('active');
-                        } else {
-                            link.classList.remove('active');
+            // Skills Radar Chart
+            const skillChartCtx = document.getElementById('skillChart');
+            if (skillChartCtx) {
+                new Chart(skillChartCtx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['C#', 'SQL', 'Git', 'Documentation', 'Process Improvement', 'Web Tech'],
+                        datasets: [{
+                            label: 'Proficiency',
+                            data: [9, 8, 8, 9, 8, 7],
+                            borderWidth: 2,
+                            backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                            borderColor: 'rgba(13, 110, 253, 1)',
+                            pointBackgroundColor: 'rgba(13, 110, 253, 1)'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            r: {
+                                suggestedMin: 0,
+                                suggestedMax: 10,
+                                ticks: {
+                                    stepSize: 2
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+
+            // Contact Form Validation
+            const contactForm = document.getElementById('contactForm');
+
+            const validateField = (input, errorEl, pattern = null) => {
+                const value = input.value.trim();
+                let valid = true;
+
+                if (pattern) {
+                    valid = pattern.test(value);
+                } else {
+                    valid = value !== '';
+                }
+
+                errorEl.style.display = valid ? 'none' : 'block';
+                return valid;
+            };
+
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                let isValid = true;
+
+                // Validate Name
+                const nameInput = document.getElementById('contactName');
+                const nameError = document.getElementById('nameError');
+                isValid &= validateField(nameInput, nameError);
+
+                // Validate Email
+                const emailInput = document.getElementById('contactEmail');
+                const emailError = document.getElementById('emailError');
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                isValid &= validateField(emailInput, emailError, emailPattern);
+
+                // Validate Message
+                const messageInput = document.getElementById('contactMessage');
+                const messageError = document.getElementById('messageError');
+                isValid &= validateField(messageInput, messageError);
+
+                if (isValid) {
+                    alert(langData[currentLang]["contact_submit_success"] || "Thank you for your message!");
+                    contactForm.reset();
+                    visitorNamePlaceholder.textContent = '';
+                    localStorage.removeItem('visitorName');
+                }
+            });
+
+            // Lazy Loading Images
+            const lazyLoadImages = () => {
+                const images = document.querySelectorAll('img.lazy');
+                const observer = new IntersectionObserver((entries, obs) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src || img.src;
+                            img.classList.remove('lazy');
+                            obs.unobserve(img);
                         }
-                    }
+                    });
+                }, {
+                    rootMargin: '0px 0px 50px 0px',
+                    threshold: 0.01
                 });
-            });
-        })();
+
+                images.forEach(img => observer.observe(img));
+            };
+
+            lazyLoadImages();
+
+            // Testimonials Carousel
+            const setupCarousel = () => {
+                const testimonials = document.querySelectorAll('.testimonial');
+                const prevBtn = document.getElementById('prevTestimonial');
+                const nextBtn = document.getElementById('nextTestimonial');
+                let current = 0;
+
+                const showTestimonial = (index) => {
+                    testimonials.forEach((testimonial, i) => {
+                        testimonial.classList.toggle('active', i === index);
+                    });
+                };
+
+                prevBtn.addEventListener('click', () => {
+                    current = (current - 1 + testimonials.length) % testimonials.length;
+                    showTestimonial(current);
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    current = (current + 1) % testimonials.length;
+                    showTestimonial(current);
+                });
+            };
+
+            setupCarousel();
+
+            // FAQ Collapsible Functionality
+            const setupFAQ = () => {
+                const faqQuestions = document.querySelectorAll('.faq-question');
+
+                faqQuestions.forEach(question => {
+                    const answer = question.nextElementSibling;
+
+                    const toggleFAQ = () => {
+                        const isOpen = answer.classList.contains('open');
+                        document.querySelectorAll('.faq-answer').forEach(ans => {
+                            ans.classList.remove('open');
+                            ans.previousElementSibling.setAttribute('aria-expanded', 'false');
+                        });
+                        if (!isOpen) {
+                            answer.classList.add('open');
+                            question.classList.add('active');
+                            question.setAttribute('aria-expanded', 'true');
+                        }
+                    };
+
+                    question.addEventListener('click', toggleFAQ);
+                    question.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            toggleFAQ();
+                        }
+                    });
+                });
+            };
+
+            setupFAQ();
+
+            // Smooth Scrolling and Active Link Highlighting
+            const setupNavigation = () => {
+                const navLinks = document.querySelectorAll('.bottom-nav a');
+
+                navLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = link.getAttribute('href').slice(1);
+                        const target = document.getElementById(targetId);
+                        if (target) {
+                            window.scrollTo({
+                                top: target.offsetTop - 60, // Adjust for nav height
+                                behavior: 'smooth'
+                            });
+
+                            // Update active link
+                            navLinks.forEach(nav => nav.classList.remove('active'));
+                            link.classList.add('active');
+                            link.setAttribute('aria-current', 'page');
+                        }
+                    });
+                });
+
+                // Highlight Active Nav Link on Scroll
+                window.addEventListener('scroll', () => {
+                    const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+                    navLinks.forEach(link => {
+                        const targetId = link.getAttribute('href').slice(1);
+                        const target = document.getElementById(targetId);
+                        if (target) {
+                            const offsetTop = target.offsetTop - 70;
+                            const offsetBottom = offsetTop + target.offsetHeight;
+                            if (scrollPosition >= offsetTop && scrollPosition < offsetBottom) {
+                                navLinks.forEach(nav => nav.classList.remove('active'));
+                                link.classList.add('active');
+                                link.setAttribute('aria-current', 'page');
+                            } else {
+                                link.classList.remove('active');
+                                link.removeAttribute('aria-current');
+                            }
+                        }
+                    });
+                });
+            };
+
+            setupNavigation();
+        });
     </script>
 </body>
 </html>
