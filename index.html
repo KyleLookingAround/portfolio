@@ -1,725 +1,640 @@
 <!DOCTYPE html>
-<html lang="en" style="font-family: sans-serif;">
+<html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Portfolio - UK-based Software Engineer</title>
-    <!-- Bootstrap 5 CSS -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UK-based Software Engineer Portfolio</title>
     <link 
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
         rel="stylesheet" 
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoA7HVDd8H+uaKcZ6OEdqF0wZpA+IWK5CIjSLbZbGx3+M78" 
         crossorigin="anonymous">
-
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
+    <link 
+        rel="stylesheet" 
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
-        :root {
-            --accent-color: #0d6efd;
-            --bg: #f8f9fa;
-            --text: #212529;
-            --card-bg: #ffffff;
-            --nav-bg: #f8f9fa;
-            --nav-text: #212529;
-            --hero-gradient: linear-gradient(120deg, #3c3c3c, #2e2e2e);
-            --transition-speed: 0.3s;
-            --button-bg: #0d6efd;
-            --button-text: #fff;
-            --button-hover-bg: #0b5ed7;
-        }
-
-        body.dark-mode {
-            --bg: #121212;
-            --text: #e0e0e0;
-            --card-bg: #1e1e1e;
-            --nav-bg: #222;
-            --nav-text: #e0e0e0;
-            --hero-gradient: linear-gradient(120deg, #000000, #333333);
-        }
-
+        /* General Styles */
         body {
-            margin: 0; 
-            padding: 0;
-            background-color: var(--bg);
-            color: var(--text);
-            font-size: 1rem; 
-            line-height: 1.6;
-            overscroll-behavior: none; 
-            scroll-behavior: smooth;
-            transition: background-color var(--transition-speed), color var(--transition-speed);
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
         }
-
-        .navbar, .bottom-nav {
-            background-color: var(--nav-bg); 
-            color: var(--nav-text);
-            transition: background-color var(--transition-speed), color var(--transition-speed);
+        .dark-mode {
+            background-color: #121212;
+            color: #ffffff;
         }
-
-        body.dark-mode .navbar-toggler-icon {
-            filter: invert(1);
-        }
-
-        .nav-link {
-            position: relative; 
-            color: var(--nav-text); 
-            transition: color var(--transition-speed);
-        }
-
-        .nav-link::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0%;
-            height: 2px;
-            background: var(--accent-color);
-            transition: width var(--transition-speed);
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
-        }
-
-        .card-custom {
-            background: var(--card-bg);
-            border: none;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            transition: background-color var(--transition-speed), color var(--transition-speed), box-shadow var(--transition-speed);
-        }
-
-        .card-custom:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        h1, h2, h3 {
-            font-weight: 700;
-        }
-
         .section-heading {
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 0.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            position: relative;
+            display: inline-block;
         }
-
-        p, li {
-            font-size: 1.05rem;
+        .section-heading::after {
+            content: '';
+            width: 50px;
+            height: 3px;
+            background: #0d6efd;
+            display: block;
+            margin: 0.5rem auto 0;
         }
-
-        #home {
-            background: var(--hero-gradient);
-            color: #fff;
-            padding-top: 5rem;
-            padding-bottom: 5rem;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s forwards ease-in-out;
+        .carousel-item {
+            text-align: center;
         }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .testimonial-card {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-
-        .collapsible-header {
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .dark-mode .testimonial-card {
+            background: #1e1e1e;
         }
-
-        .collapsible-header i {
-            transition: transform 0.3s;
-        }
-
-        .collapsed i {
-            transform: rotate(-90deg);
-        }
-
-        #scroll-indicator {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 4px;
-            background: var(--accent-color);
-            width: 0;
-            z-index: 9999;
-            transition: width 0.2s ease;
-        }
-
+        /* Bottom Sticky Nav Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             width: 100%;
-            border-top: 1px solid #ccc;
-            transition: background-color var(--transition-speed), color var(--transition-speed);
+            background-color: #ffffff;
+            border-top: 1px solid #dee2e6;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
         }
-
-        .bottom-nav .nav-link {
-            text-align: center;
-            padding: 10px;
+        .bottom-nav a {
+            color: #0d6efd;
+            text-decoration: none;
+            font-size: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-
-        @media(min-width:992px) {
-            .bottom-nav {
-                display: none;
+        .bottom-nav a.active, .bottom-nav a:hover {
+            color: #0a58ca;
+        }
+        .dark-mode .bottom-nav {
+            background-color: #343a40;
+            border-top: 1px solid #495057;
+        }
+        .dark-mode .bottom-nav a {
+            color: #adb5bd;
+        }
+        .dark-mode .bottom-nav a.active, .dark-mode .bottom-nav a:hover {
+            color: #ffffff;
+        }
+        /* Responsive Adjustments */
+        @media (max-width: 576px) {
+            .section-heading {
+                font-size: 1.5rem;
+            }
+            .bottom-nav a {
+                font-size: 1rem;
             }
         }
-
-        #greeting {
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-            font-weight: 600;
+        /* Additional Styles */
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
         }
-
-        #visitor-name-form {
-            display: flex;
-            gap: 0.5rem;
-            max-width: 300px;
-            margin-bottom: 1.5rem;
-        }
-
-        .chart-container {
+        .portfolio-item img {
             width: 100%;
-            max-width: 600px;
-            margin: auto;
+            height: auto;
+            transition: transform 0.3s;
         }
-
-        /* Gig Cards */
-        .gig-card {
-            background: var(--card-bg);
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        .portfolio-item:hover img {
+            transform: scale(1.1);
+        }
+        .portfolio-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 110, 253, 0.8);
+            color: #ffffff;
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
             padding: 1rem;
-            margin-bottom: 1rem;
-            transition: box-shadow 0.3s;
         }
-
-        .gig-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        .portfolio-item:hover .portfolio-overlay {
+            opacity: 1;
         }
-
+        .gig-card {
+            padding: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background: #f8f9fa;
+            transition: background 0.3s;
+        }
+        .dark-mode .gig-card {
+            background: #1e1e1e;
+            border-color: #495057;
+        }
         .gig-date {
             font-weight: bold;
-            color: var(--accent-color);
         }
-
-        .gig-description {
-            margin: 0;
+        .dark-mode .gig-description {
+            color: #ffffff;
         }
-
-        .gig-search {
-            margin-bottom: 1rem;
-        }
-
-        /* Timeline */
-        .timeline-wrapper {
-            position: relative;
-            padding-left: 40px;
-            margin-top: 2rem;
-        }
-
-        .timeline-wrapper::before {
-            content: '';
-            position: absolute;
-            left: 16px;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--accent-color);
-            border-radius: 2px;
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-        }
-
-        .timeline-marker {
-            position: absolute;
-            left: 0;
-            width: 34px;
-            height: 34px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            top: 0;
-            transform: translate(-50%, 0);
-        }
-
-        .timeline-content {
-            background: var(--card-bg);
+        /* Contact Form Styles */
+        .card-custom {
+            background: #ffffff;
+            padding: 2rem;
             border-radius: 8px;
-            padding: 1rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            margin-left: 60px;
-            transition: background-color var(--transition-speed), color var(--transition-speed);
-            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background 0.3s;
         }
-
-        .timeline-content::before {
-            content: '';
-            position: absolute;
-            left: -10px;
-            top: 15px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: transparent var(--card-bg) transparent transparent;
+        .dark-mode .card-custom {
+            background: #1e1e1e;
+            box-shadow: 0 4px 6px rgba(255,255,255,0.1);
         }
-
-        .timeline-date {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: var(--accent-color);
+        /* Footer Styles */
+        footer {
+            background: #f8f9fa;
+            padding: 1rem 0;
         }
-
-        .timeline-role {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-description {
-            margin: 0;
-        }
-
-        /* Dinosaur and Trees */
-        .dino {
-            position: fixed;
-            bottom: 20px;
-            left: -100px;
-            width: 100px;
-            height: 100px;
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Google_Dinosaur_Game_dino_sprite.png/120px-Google_Dinosaur_Game_dino_sprite.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            animation: runDino 10s linear infinite;
-            z-index: 101; /* Ensure dino is above trees */
-            transition: bottom 0.5s ease, left 0.5s ease;
-        }
-
-        @keyframes runDino {
-            0% {
-                left: -100px; 
-                transform: scaleX(1);
-            }
-            25% {
-                left: 50%;
-                transform: scaleX(1);
-            }
-            50% {
-                left: calc(100% + 100px);
-                transform: scaleX(1);
-            }
-            51% {
-                transform: scaleX(-1);
-            }
-            75% {
-                left: 50%;
-                transform: scaleX(-1);
-            }
-            100% {
-                left: -100px;
-                transform: scaleX(-1);
-            }
-        }
-
-        .dino.jump {
-            animation: none;
-            bottom: 200px;
-            left: calc(100% + 200px);
-        }
-
-        .tree {
-            position: fixed;
-            bottom: 0;
-            width: 80px;
-            height: 120px;
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Christmas_tree_icon.png/80px-Christmas_tree_icon.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            cursor: pointer;
-            z-index: 100; /* Trees below dino */
-        }
-
-        /* Position trees at different locations */
-        .tree:nth-child(1) { left: 20%; }
-        .tree:nth-child(2) { left: 50%; }
-        .tree:nth-child(3) { left: 80%; }
-
-        /* Back-to-Top Button */
-        #backToTopBtn {
-            position: fixed;
-            bottom: 80px;
-            right: 30px;
-            z-index: 1000;
-            display: none;
-            background-color: var(--button-bg);
-            color: var(--button-text);
-            border: none;
-            padding: 10px 15px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background-color var(--transition-speed);
-        }
-
-        #backToTopBtn:hover {
-            background-color: var(--button-hover-bg);
-        }
-
-        /* Testimonials */
-        .testimonial-card {
-            background: var(--card-bg);
-            border: none;
-            border-radius: 8px;
-            padding: 1rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            transition: box-shadow var(--transition-speed);
-        }
-
-        .testimonial-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .testimonial-text {
-            font-style: italic;
-        }
-
-        .testimonial-author {
-            margin-top: 0.5rem;
-            font-weight: bold;
-            text-align: right;
-        }
-
-        /* Testimonials Carousel */
-        .carousel-inner {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .carousel-item {
-            max-width: 600px;
-            width: 100%;
-            display: none;
-        }
-
-        .carousel-item.active {
-            display: block;
-        }
-
-        .carousel-control-prev, .carousel-control-next {
-            filter: invert(1);
+        .dark-mode footer {
+            background: #343a40;
+            color: #ffffff;
         }
     </style>
 </head>
 <body>
-    <div id="scroll-indicator"></div>
+    <!-- Dark Mode Toggle -->
+    <div class="form-check form-switch m-3">
+        <input class="form-check-input" type="checkbox" id="darkModeSwitch">
+        <label class="form-check-label" for="darkModeSwitch" data-key="dark_mode_label">Dark Mode</label>
+    </div>
 
-    <!-- Trees -->
-    <div class="tree"></div>
-    <div class="tree"></div>
-    <div class="tree"></div>
+    <!-- Greeting and Visitor Name -->
+    <section id="home" class="container text-center py-5">
+        <h1 data-key="greeting">Hello!</h1>
+        <p data-key="welcome_message">Welcome to my portfolio.</p>
+        <form id="visitor-name-form" class="d-flex justify-content-center mt-3">
+            <input type="text" class="form-control w-50" id="visitor-name-input" placeholder="Enter your name">
+            <button type="submit" class="btn btn-primary ms-2" data-key="submit_button">Submit</button>
+        </form>
+        <p class="mt-2" data-key="personalized_greeting" id="visitorNamePlaceholder"></p>
+    </section>
 
-    <!-- Dinosaur -->
-    <div class="dino" id="dino"></div>
-
-    <!-- Back-to-Top Button -->
-    <button id="backToTopBtn" title="Go to top"><i class="bi bi-arrow-up"></i></button>
-
-    <nav class="navbar navbar-expand-lg border-bottom sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#home">UK Software Engineer</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#navbarNav" aria-controls="navbarNav" 
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse flex-row-reverse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 text-center">
-                    <li class="nav-item"><a class="nav-link" href="#about">About Me</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#skills-section">Skills</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#timeline-section">Timeline</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#achievements-section">Achievements</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#gigs-section">Gig Tracker</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#testimonials-section">Testimonials</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                </ul>
-                <form class="d-flex align-items-center ms-3">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="darkModeSwitch">
-                        <label class="form-check-label" for="darkModeSwitch"><i class="bi bi-moon"></i></label>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </nav>
-
-    <header id="home" class="container py-5">
-        <div class="row">
-            <div class="col-12">
-                <div id="greeting"></div>
-                <form id="visitor-name-form">
-                    <input type="text" id="visitor-name-input" class="form-control" placeholder="Enter your name...">
-                    <button type="submit" class="btn btn-primary">Go</button>
-                </form>
-                <h1 class="fw-bold">Hello<span id="visitorNamePlaceholder"></span>, I'm a UK-based Software Engineer</h1>
-                <p class="lead">
-                    I specialize in backend development using <strong>C#</strong>, prefer working 
-                    in <strong>Visual Studio</strong> and <strong>Azure DevOps</strong>, and I'm integrating tools like 
-                    <strong>Bootstrap 5</strong> into my projects.
-                </p>
-                <p class="lead">
-                    Also, I advocate for modern visualization tools to enhance efficiency and 
-                    team collaboration.
-                </p>
-            </div>
-        </div>
-    </header>
-
+    <!-- About Section -->
     <section id="about" class="container py-5">
-        <h2 class="section-heading">About Me</h2>
+        <h2 class="section-heading" data-key="about_title">About Me</h2>
         <div class="card-custom">
-            <p>
-                I’m a passionate software engineer focusing on backend systems and process improvement. My primary tech stack includes C#, Git, and 
-                modern web technologies. I ensure code quality, scalability, and maintainability, dealing extensively with SQL and JSON-based queries.
-            </p>
-            <p>
-                I strive to make documentation accessible and advocate for tools that reduce overhead and improve clarity.
+            <p data-key="about_description">
+                I'm a UK-based Software Engineer with a passion for developing innovative programs that expedite the efficiency and effectiveness of organizational success.
+                Well-versed in technology and writing code to create reliable and user-friendly systems.
             </p>
         </div>
     </section>
 
+    <!-- Skills Section -->
     <section id="skills-section" class="container py-5">
-        <h2 class="section-heading">Skills <span class="collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#skills-collapse"><i class="bi bi-chevron-down"></i></span></h2>
-        <div id="skills-collapse" class="collapse">
-            <div class="card-custom mb-4">
-                <ul class="list-unstyled mb-0">
-                    <li><strong>Software Development:</strong> C#, Git, modern web technologies</li>
-                    <li><strong>Backend & Database:</strong> Advanced SQL, JSON handling, optimized table joins</li>
-                    <li><strong>Documentation & Collaboration:</strong> Markdown-driven docs, modern visualization tools</li>
-                    <li><strong>Process Improvement:</strong> Bridging gaps, streamlining workflows, enhancing efficiency</li>
-                </ul>
+        <h2 class="section-heading" data-key="skills_title">Skills</h2>
+        <div class="card-custom">
+            <canvas id="skillChart" width="400" height="400"></canvas>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq-section" class="container py-5">
+        <h2 class="section-heading" data-key="faq_title">Frequently Asked Questions</h2>
+        <div class="card-custom">
+            <div class="faq-item mb-2">
+                <div class="faq-question collapsed" data-bs-toggle="collapse" data-bs-target="#faq1" data-key="faq1_question">
+                    What technologies do you specialize in?
+                </div>
+                <div id="faq1" class="faq-answer collapse" data-key="faq1_answer">
+                    I specialize in backend development using C#, SQL, and modern web technologies like JavaScript and Node.js.
+                </div>
             </div>
-            <div class="card-custom chart-card">
-                <h3>Skill Proficiency</h3>
-                <div class="chart-container">
-                    <canvas id="skillChart"></canvas>
+            <div class="faq-item mb-2">
+                <div class="faq-question collapsed" data-bs-toggle="collapse" data-bs-target="#faq2" data-key="faq2_question">
+                    How do you handle project deadlines?
+                </div>
+                <div id="faq2" class="faq-answer collapse" data-key="faq2_answer">
+                    I prioritize tasks effectively, communicate transparently with stakeholders, and utilize project management tools to ensure deadlines are met.
+                </div>
+            </div>
+            <div class="faq-item mb-2">
+                <div class="faq-question collapsed" data-bs-toggle="collapse" data-bs-target="#faq3" data-key="faq3_question">
+                    Can you work remotely?
+                </div>
+                <div id="faq3" class="faq-answer collapse" data-key="faq3_answer">
+                    Yes, I have extensive experience working remotely and can collaborate effectively with teams across different time zones.
+                </div>
+            </div>
+            <div class="faq-item mb-2">
+                <div class="faq-question collapsed" data-bs-toggle="collapse" data-bs-target="#faq4" data-key="faq4_question">
+                    Do you offer support after project completion?
+                </div>
+                <div id="faq4" class="faq-answer collapse" data-key="faq4_answer">
+                    Absolutely, I provide ongoing support and maintenance to ensure that your projects continue to run smoothly.
+                </div>
+            </div>
+            <div class="faq-item mb-2">
+                <div class="faq-question collapsed" data-bs-toggle="collapse" data-bs-target="#faq5" data-key="faq5_question">
+                    What is your approach to learning new technologies?
+                </div>
+                <div id="faq5" class="faq-answer collapse" data-key="faq5_answer">
+                    I stay updated with industry trends, engage in continuous learning through courses and projects, and actively participate in developer communities.
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="timeline-section" class="container py-5">
-        <h2 class="section-heading">Timeline</h2>
-        <div class="timeline-wrapper">
-            <div class="timeline-item">
-                <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <p class="timeline-date">Nov 2018 - Mar 2020</p>
-                    <p class="timeline-role">Apprentice Developer at BEP Systems Limited</p>
-                    <p class="timeline-description">Focused on C#, OOP, and foundational development skills.</p>
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <p class="timeline-date">Mar 2020 - Feb 2022</p>
-                    <p class="timeline-role">Junior Developer at BEP Systems Limited</p>
-                    <p class="timeline-description">Built expertise in JavaScript and C#, contributing to diverse projects.</p>
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <p class="timeline-date">Feb 2022 - Jul 2022</p>
-                    <p class="timeline-role">Developer at finova</p>
-                    <p class="timeline-description">Transitioned to a larger role, building core solutions in JavaScript and C#.</p>
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <p class="timeline-date">Jul 2022 - Dec 2023</p>
-                    <p class="timeline-role">Senior Developer at finova</p>
-                    <p class="timeline-description">Owned projects, focused on collaboration, expanded tech skills.</p>
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <p class="timeline-date">Dec 2023 - Present</p>
-                    <p class="timeline-role">Lead Engineer at finova</p>
-                    <p class="timeline-description">Leading teams, managing resources, driving strategic initiatives.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="achievements-section" class="container py-5">
-        <h2 class="section-heading">Achievements <span class="collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#achievements-collapse"><i class="bi bi-chevron-down"></i></span></h2>
-        <div id="achievements-collapse" class="collapse">
-            <div class="card-custom">
-                <ul class="list-unstyled mb-0">
-                    <li>Implemented enterprise-grade backend integrations</li>
-                    <li>Introduced modern visualization tools into documentation processes</li>
-                    <li>Optimized SQL queries, reducing execution time significantly</li>
-                    <li>Mentored junior developers, improving team collaboration</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section id="testimonials-section" class="container py-5">
-        <h2 class="section-heading">Testimonials</h2>
-        <div id="testimonialsCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <div class="testimonial-card">
-                        <p class="testimonial-text">"An exceptional developer who consistently delivers high-quality work."</p>
-                        <p class="testimonial-author">- Jane Doe, Project Manager</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="testimonial-card">
-                        <p class="testimonial-text">"A true team player with a knack for problem-solving."</p>
-                        <p class="testimonial-author">- John Smith, Team Lead</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="testimonial-card">
-                        <p class="testimonial-text">"His expertise in backend development has been invaluable to our projects."</p>
-                        <p class="testimonial-author">- Alice Johnson, CTO</p>
+    <!-- Portfolio Gallery Section -->
+    <section id="portfolio-section" class="container py-5">
+        <h2 class="section-heading" data-key="portfolio_title">Portfolio</h2>
+        <div class="row g-4">
+            <!-- Portfolio Item 1 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="portfolio-item">
+                    <img src="https://via.placeholder.com/400x300" alt="Project 1" class="img-fluid lazy" data-key="portfolio1_image_alt">
+                    <div class="portfolio-overlay">
+                        <h5 data-key="portfolio1_title">Project Title 1</h5>
+                        <p data-key="portfolio1_description">Short description of Project 1.</p>
+                        <a href="#" class="btn btn-light btn-sm" data-key="portfolio1_view">View Project</a>
                     </div>
                 </div>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+            <!-- Portfolio Item 2 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="portfolio-item">
+                    <img src="https://via.placeholder.com/400x300" alt="Project 2" class="img-fluid lazy" data-key="portfolio2_image_alt">
+                    <div class="portfolio-overlay">
+                        <h5 data-key="portfolio2_title">Project Title 2</h5>
+                        <p data-key="portfolio2_description">Short description of Project 2.</p>
+                        <a href="#" class="btn btn-light btn-sm" data-key="portfolio2_view">View Project</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Portfolio Item 3 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="portfolio-item">
+                    <img src="https://via.placeholder.com/400x300" alt="Project 3" class="img-fluid lazy" data-key="portfolio3_image_alt">
+                    <div class="portfolio-overlay">
+                        <h5 data-key="portfolio3_title">Project Title 3</h5>
+                        <p data-key="portfolio3_description">Short description of Project 3.</p>
+                        <a href="#" class="btn btn-light btn-sm" data-key="portfolio3_view">View Project</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Add more portfolio items as needed -->
         </div>
     </section>
 
-    <!-- Gig Section -->
-    <section id="gigs-section" class="container py-5">
-        <h2 class="section-heading">Gig Tracker <span class="collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#gigs-collapse"><i class="bi bi-chevron-down"></i></span></h2>
-        <div id="gigs-collapse" class="collapse">
-            <div class="card-custom">
-                <input type="text" class="form-control gig-search mb-3" id="gigSearch" placeholder="Search by location..." />
-                <button class="btn btn-secondary mb-3" id="clearSearchBtn">Clear Search</button>
-                <ul class="nav nav-tabs mb-3" id="gigTabs" role="tablist">
-                    <li class="nav-item">
-                        <button class="nav-link active" id="past2024-tab" data-bs-toggle="tab" data-bs-target="#past2024" type="button" role="tab" aria-controls="past2024" aria-selected="true">Past Gigs (2024)</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="festivals-tab" data-bs-toggle="tab" data-bs-target="#festivals" type="button" role="tab" aria-controls="festivals" aria-selected="false">Past Festivals</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="upcoming2024-tab" data-bs-toggle="tab" data-bs-target="#upcoming2024" type="button" role="tab" aria-controls="upcoming2024" aria-selected="false">Upcoming (2024)</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="upcoming2025-tab" data-bs-toggle="tab" data-bs-target="#upcoming2025" type="button" role="tab" aria-controls="upcoming2025" aria-selected="false">Upcoming (2025)</button>
-                    </li>
-                </ul>
-                <div class="tab-content" id="gigTabContent">
-                    <div class="tab-pane fade show active" id="past2024" role="tabpanel" aria-labelledby="past2024-tab"></div>
-                    <div class="tab-pane fade" id="festivals" role="tabpanel" aria-labelledby="festivals-tab"></div>
-                    <div class="tab-pane fade" id="upcoming2024" role="tabpanel" aria-labelledby="upcoming2024-tab"></div>
-                    <div class="tab-pane fade" id="upcoming2025" role="tabpanel" aria-labelledby="upcoming2025-tab"></div>
-                </div>
+    <!-- Skills Section with Radar Chart -->
+    <section id="skills-section" class="container py-5">
+        <h2 class="section-heading" data-key="skills_title">Skills</h2>
+        <div class="card-custom">
+            <canvas id="skillChart" width="400" height="400"></canvas>
+        </div>
+    </section>
+
+    <!-- Gig Tracker Section -->
+    <section id="gig-section" class="container py-5">
+        <h2 class="section-heading" data-key="gig_title">Gig Tracker</h2>
+        <div class="card-custom">
+            <input type="text" class="form-control gig-search mb-3" id="gigSearch" placeholder="Search by location..." data-key="gig_search_placeholder">
+            <button class="btn btn-secondary mb-3" id="clearSearchBtn" data-key="gig_clear_search">Clear Search</button>
+            <ul class="nav nav-tabs mb-3" id="gigTabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" id="past2024-tab" data-bs-toggle="tab" data-bs-target="#past2024" type="button" role="tab" aria-controls="past2024" aria-selected="true" data-key="gig_past_2024">Past Gigs (2024)</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="festivals-tab" data-bs-toggle="tab" data-bs-target="#festivals" type="button" role="tab" aria-controls="festivals" aria-selected="false" data-key="gig_festivals">Past Festivals</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="upcoming2024-tab" data-bs-toggle="tab" data-bs-target="#upcoming2024" type="button" role="tab" aria-controls="upcoming2024" aria-selected="false" data-key="gig_upcoming_2024">Upcoming (2024)</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="upcoming2025-tab" data-bs-toggle="tab" data-bs-target="#upcoming2025" type="button" role="tab" aria-controls="upcoming2025" aria-selected="false" data-key="gig_upcoming_2025">Upcoming (2025)</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="gigTabContent">
+                <div class="tab-pane fade show active" id="past2024" role="tabpanel" aria-labelledby="past2024-tab"></div>
+                <div class="tab-pane fade" id="festivals" role="tabpanel" aria-labelledby="festivals-tab"></div>
+                <div class="tab-pane fade" id="upcoming2024" role="tabpanel" aria-labelledby="upcoming2024-tab"></div>
+                <div class="tab-pane fade" id="upcoming2025" role="tabpanel" aria-labelledby="upcoming2025-tab"></div>
             </div>
         </div>
     </section>
 
     <!-- Testimonials Section -->
     <section id="testimonials-section" class="container py-5">
-        <h2 class="section-heading">Testimonials</h2>
+        <h2 class="section-heading" data-key="testimonials_title">Testimonials</h2>
         <div id="testimonialsCarousel" class="carousel slide" data-bs-ride="carousel">
+            <!-- Indicators -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Testimonial 1"></button>
+                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="1" aria-label="Testimonial 2"></button>
+                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="2" aria-label="Testimonial 3"></button>
+                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="3" aria-label="Testimonial 4"></button>
+                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="4" aria-label="Testimonial 5"></button>
+            </div>
+            <!-- Carousel Items -->
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <div class="testimonial-card">
-                        <p class="testimonial-text">"An exceptional developer who consistently delivers high-quality work."</p>
-                        <p class="testimonial-author">- Jane Doe, Project Manager</p>
+                        <p class="testimonial-text" data-key="testimonial1_text">"An exceptional developer who consistently delivers high-quality work."</p>
+                        <p class="testimonial-author" data-key="testimonial1_author">- Jane Doe, Project Manager</p>
                     </div>
                 </div>
                 <div class="carousel-item">
                     <div class="testimonial-card">
-                        <p class="testimonial-text">"A true team player with a knack for problem-solving."</p>
-                        <p class="testimonial-author">- John Smith, Team Lead</p>
+                        <p class="testimonial-text" data-key="testimonial2_text">"A true team player with a knack for problem-solving."</p>
+                        <p class="testimonial-author" data-key="testimonial2_author">- John Smith, Team Lead</p>
                     </div>
                 </div>
                 <div class="carousel-item">
                     <div class="testimonial-card">
-                        <p class="testimonial-text">"His expertise in backend development has been invaluable to our projects."</p>
-                        <p class="testimonial-author">- Alice Johnson, CTO</p>
+                        <p class="testimonial-text" data-key="testimonial3_text">"His expertise in backend development has been invaluable to our projects."</p>
+                        <p class="testimonial-author" data-key="testimonial3_author">- Alice Johnson, CTO</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="testimonial-card">
+                        <p class="testimonial-text" data-key="testimonial4_text">"Innovative and reliable, always meeting deadlines with excellence."</p>
+                        <p class="testimonial-author" data-key="testimonial4_author">- Michael Brown, CEO</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="testimonial-card">
+                        <p class="testimonial-text" data-key="testimonial5_text">"A pleasure to work with, bringing creativity and dedication to every task."</p>
+                        <p class="testimonial-author" data-key="testimonial5_author">- Emily Davis, Lead Designer</p>
                     </div>
                 </div>
             </div>
+            <!-- Controls -->
             <button class="carousel-control-prev" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
+                <span class="visually-hidden" data-key="carousel_prev">Previous</span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
+                <span class="visually-hidden" data-key="carousel_next">Next</span>
             </button>
         </div>
     </section>
 
+    <!-- Contact Section with Downloadable Resume Button -->
     <section id="contact" class="container py-5">
-        <h2 class="section-heading">Contact</h2>
+        <h2 class="section-heading" data-key="contact_title">Contact</h2>
         <div class="card-custom">
             <form id="contactForm" novalidate>
                 <div class="mb-3">
-                    <label for="contactName" class="form-label">Name<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="contactName" required>
-                    <div class="invalid-feedback">Please enter your name.</div>
+                    <label for="contactName" class="form-label" data-key="contact_name_label">Name<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="contactName" required data-key="contact_name_placeholder">
+                    <div class="invalid-feedback" data-key="contact_name_invalid">Please enter your name.</div>
                 </div>
                 <div class="mb-3">
-                    <label for="contactEmail" class="form-label">Email<span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" id="contactEmail" required>
-                    <div class="invalid-feedback">Please enter a valid email.</div>
+                    <label for="contactEmail" class="form-label" data-key="contact_email_label">Email<span class="text-danger">*</span></label>
+                    <input type="email" class="form-control" id="contactEmail" required data-key="contact_email_placeholder">
+                    <div class="invalid-feedback" data-key="contact_email_invalid">Please enter a valid email.</div>
                 </div>
                 <div class="mb-3">
-                    <label for="contactMessage" class="form-label">Message<span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="contactMessage" rows="5" required></textarea>
-                    <div class="invalid-feedback">Please enter your message.</div>
+                    <label for="contactMessage" class="form-label" data-key="contact_message_label">Message<span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="contactMessage" rows="5" required data-key="contact_message_placeholder"></textarea>
+                    <div class="invalid-feedback" data-key="contact_message_invalid">Please enter your message.</div>
                 </div>
-                <button type="submit" class="btn btn-primary">Send</button>
+                <button type="submit" class="btn btn-primary" data-key="contact_submit">Send</button>
+                <!-- Download Resume Button -->
+                <a href="path/to/your_resume.pdf" download class="btn btn-success ms-2" id="downloadResumeBtn" data-key="download_resume">Download Resume</a>
             </form>
         </div>
     </section>
 
-    <nav class="navbar bottom-nav">
-        <div class="d-flex justify-content-around w-100">
-            <a class="nav-link" href="#home"><i class="bi bi-house"></i><div>Home</div></a>
-            <a class="nav-link" href="#about"><i class="bi bi-person"></i><div>About</div></a>
-            <a class="nav-link" href="#skills-section"><i class="bi bi-star"></i><div>Skills</div></a>
-            <a class="nav-link" href="#contact"><i class="bi bi-envelope"></i><div>Contact</div></a>
-        </div>
+    <!-- Bottom Sticky Navigation Bar -->
+    <nav class="bottom-nav">
+        <a class="nav-link active" href="#home" data-key="nav_home">
+            <i class="bi bi-house"></i>
+            <div>Home</div>
+        </a>
+        <a class="nav-link" href="#about" data-key="nav_about">
+            <i class="bi bi-person"></i>
+            <div>About</div>
+        </a>
+        <a class="nav-link" href="#skills-section" data-key="nav_skills">
+            <i class="bi bi-star"></i>
+            <div>Skills</div>
+        </a>
+        <a class="nav-link" href="#portfolio-section" data-key="nav_portfolio">
+            <i class="bi bi-briefcase"></i>
+            <div>Portfolio</div>
+        </a>
+        <a class="nav-link" href="#gig-section" data-key="nav_gigs">
+            <i class="bi bi-music-note-beamed"></i>
+            <div>Gigs</div>
+        </a>
+        <a class="nav-link" href="#testimonials-section" data-key="nav_testimonials">
+            <i class="bi bi-chat-left-text"></i>
+            <div>Testimonials</div>
+        </a>
+        <a class="nav-link" href="#faq-section" data-key="nav_faq">
+            <i class="bi bi-question-circle"></i>
+            <div>FAQ</div>
+        </a>
+        <a class="nav-link" href="#contact" data-key="nav_contact">
+            <i class="bi bi-envelope"></i>
+            <div>Contact</div>
+        </a>
     </nav>
 
+    <!-- Footer -->
     <footer class="container-fluid py-3 border-top text-center">
         &copy; <span id="year"></span> UK-based Software Engineer. All rights reserved.
     </footer>
 
+    <!-- JSON Data for Multi-language Support -->
+    <script id="langData" type="application/json">
+    {
+        "en": {
+            "dark_mode_label": "Dark Mode",
+            "greeting": "Hello!",
+            "welcome_message": "Welcome to my portfolio.",
+            "submit_button": "Submit",
+            "personalized_greeting": "",
+            "about_title": "About Me",
+            "about_description": "I'm a UK-based Software Engineer with a passion for developing innovative programs that expedite the efficiency and effectiveness of organizational success. Well-versed in technology and writing code to create reliable and user-friendly systems.",
+            "skills_title": "Skills",
+            "faq_title": "Frequently Asked Questions",
+            "faq1_question": "What technologies do you specialize in?",
+            "faq1_answer": "I specialize in backend development using C#, SQL, and modern web technologies like JavaScript and Node.js.",
+            "faq2_question": "How do you handle project deadlines?",
+            "faq2_answer": "I prioritize tasks effectively, communicate transparently with stakeholders, and utilize project management tools to ensure deadlines are met.",
+            "faq3_question": "Can you work remotely?",
+            "faq3_answer": "Yes, I have extensive experience working remotely and can collaborate effectively with teams across different time zones.",
+            "faq4_question": "Do you offer support after project completion?",
+            "faq4_answer": "Absolutely, I provide ongoing support and maintenance to ensure that your projects continue to run smoothly.",
+            "faq5_question": "What is your approach to learning new technologies?",
+            "faq5_answer": "I stay updated with industry trends, engage in continuous learning through courses and projects, and actively participate in developer communities.",
+            "portfolio_title": "Portfolio",
+            "portfolio1_image_alt": "Project 1",
+            "portfolio1_title": "Project Title 1",
+            "portfolio1_description": "Short description of Project 1.",
+            "portfolio1_view": "View Project",
+            "portfolio2_image_alt": "Project 2",
+            "portfolio2_title": "Project Title 2",
+            "portfolio2_description": "Short description of Project 2.",
+            "portfolio2_view": "View Project",
+            "portfolio3_image_alt": "Project 3",
+            "portfolio3_title": "Project Title 3",
+            "portfolio3_description": "Short description of Project 3.",
+            "portfolio3_view": "View Project",
+            "gig_title": "Gig Tracker",
+            "gig_search_placeholder": "Search by location...",
+            "gig_clear_search": "Clear Search",
+            "gig_past_2024": "Past Gigs (2024)",
+            "gig_festivals": "Past Festivals",
+            "gig_upcoming_2024": "Upcoming (2024)",
+            "gig_upcoming_2025": "Upcoming (2025)",
+            "testimonials_title": "Testimonials",
+            "testimonial1_text": "\"An exceptional developer who consistently delivers high-quality work.\"",
+            "testimonial1_author": "- Jane Doe, Project Manager",
+            "testimonial2_text": "\"A true team player with a knack for problem-solving.\"",
+            "testimonial2_author": "- John Smith, Team Lead",
+            "testimonial3_text": "\"His expertise in backend development has been invaluable to our projects.\"",
+            "testimonial3_author": "- Alice Johnson, CTO",
+            "testimonial4_text": "\"Innovative and reliable, always meeting deadlines with excellence.\"",
+            "testimonial4_author": "- Michael Brown, CEO",
+            "testimonial5_text": "\"A pleasure to work with, bringing creativity and dedication to every task.\"",
+            "testimonial5_author": "- Emily Davis, Lead Designer",
+            "carousel_prev": "Previous",
+            "carousel_next": "Next",
+            "contact_title": "Contact",
+            "contact_name_label": "Name",
+            "contact_name_placeholder": "Enter your name",
+            "contact_name_invalid": "Please enter your name.",
+            "contact_email_label": "Email",
+            "contact_email_placeholder": "Enter your email",
+            "contact_email_invalid": "Please enter a valid email.",
+            "contact_message_label": "Message",
+            "contact_message_placeholder": "Enter your message",
+            "contact_message_invalid": "Please enter your message.",
+            "contact_submit": "Send",
+            "contact_submit_success": "Thank you for your message!",
+            "download_resume": "Download Resume",
+            "nav_home": "Home",
+            "nav_about": "About",
+            "nav_skills": "Skills",
+            "nav_portfolio": "Portfolio",
+            "nav_gigs": "Gigs",
+            "nav_testimonials": "Testimonials",
+            "nav_faq": "FAQ",
+            "nav_contact": "Contact",
+            "gig_no_gigs": "No gigs available."
+        }
+        // Additional languages can be added here
+    }
+    </script>
+
+    <!-- JavaScript to Handle Dynamic Content and Functionality -->
     <script 
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous">
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
     <script>
-        // Gigs Data in JSON (inline)
+        // Language Data
+        const langData = JSON.parse(document.getElementById('langData').textContent);
+        const currentLang = 'en'; // This can be dynamically set based on user preference
+
+        // Function to Populate Text Content Based on JSON Data
+        function populateTextContent(lang) {
+            const elements = document.querySelectorAll('[data-key]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (langData[lang][key]) {
+                    if (el.tagName.toLowerCase() === 'input' || el.tagName.toLowerCase() === 'textarea') {
+                        el.setAttribute('placeholder', langData[lang][key]);
+                    } else if (el.tagName.toLowerCase() === 'label') {
+                        el.textContent = langData[lang][key];
+                    } else {
+                        el.textContent = langData[lang][key];
+                    }
+                }
+            });
+        }
+
+        // Initial Population
+        populateTextContent(currentLang);
+
+        // Dark Mode Toggle
+        const body = document.body;
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+        const storedDarkMode = localStorage.getItem('darkMode');
+
+        if (storedDarkMode === 'true') {
+            body.classList.add('dark-mode');
+            darkModeSwitch.checked = true;
+        }
+
+        darkModeSwitch.addEventListener('change', () => {
+            const isDark = darkModeSwitch.checked;
+            body.classList.toggle('dark-mode', isDark);
+            localStorage.setItem('darkMode', isDark);
+        });
+
+        // Greeting and Visitor Name
+        const greetingEl = document.querySelector('[data-key="greeting"]');
+        const currentHour = new Date().getHours();
+        const greetings = {
+            "morning": "Good morning",
+            "afternoon": "Good afternoon",
+            "evening": "Good evening"
+        };
+        let greetingText = "Hello";
+
+        if (currentHour < 12) {
+            greetingText = greetings.morning;
+        } else if (currentHour < 18) {
+            greetingText = greetings.afternoon;
+        } else {
+            greetingText = greetings.evening;
+        }
+
+        greetingEl.textContent = `${greetingText}!`;
+
+        const visitorNameInput = document.getElementById('visitor-name-input');
+        const visitorNameForm = document.getElementById('visitor-name-form');
+        const visitorNamePlaceholder = document.getElementById('visitorNamePlaceholder');
+        const storedName = localStorage.getItem('visitorName');
+
+        if (storedName) {
+            setVisitorName(storedName);
+        }
+
+        visitorNameForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = visitorNameInput.value.trim();
+            if (name) {
+                localStorage.setItem('visitorName', name);
+                setVisitorName(name);
+                visitorNameInput.value = '';
+            }
+        });
+
+        function setVisitorName(name) {
+            let displayName = name;
+            const lowerName = name.toLowerCase();
+            if (lowerName.includes("daniel") || lowerName.includes("denise")) {
+                displayName = "silly goose";
+            }
+            visitorNamePlaceholder.textContent = `, ${displayName}`;
+        }
+
+        // Update Footer Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Render Gigs from JSON Data
         const gigsData = {
             "past2024": [
                 {"date":"June 10 (Ritz)","location":"Ritz","description":"Mt. Joy"},
@@ -765,92 +680,51 @@
             ]
         };
 
-        // Update the footer year
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        const body = document.body;
-        const darkModeSwitch = document.getElementById('darkModeSwitch');
-        const storedDarkMode = localStorage.getItem('darkMode');
-
-        if (storedDarkMode === 'true') {
-            body.classList.add('dark-mode');
-            darkModeSwitch.checked = true;
-        }
-
-        darkModeSwitch.addEventListener('change', () => {
-            const isDark = darkModeSwitch.checked;
-            body.classList.toggle('dark-mode', isDark);
-            localStorage.setItem('darkMode', isDark);
-        });
-
-        const greetingEl = document.getElementById('greeting');
-        const currentHour = new Date().getHours();
-        const greetings = ["Good morning", "Good afternoon", "Good evening"];
-        let greetingText = "Hello";
-
-        if (currentHour < 12) {
-            greetingText = greetings[0];
-        } else if (currentHour < 18) {
-            greetingText = greetings[1];
-        } else {
-            greetingText = greetings[2];
-        }
-
-        greetingEl.textContent = `${greetingText}!`;
-
-        const visitorNameInput = document.getElementById('visitor-name-input');
-        const visitorNameForm = document.getElementById('visitor-name-form');
-        const visitorNamePlaceholder = document.getElementById('visitorNamePlaceholder');
-        const storedName = localStorage.getItem('visitorName');
-
-        if (storedName) {
-            setVisitorName(storedName);
-        }
-
-        visitorNameForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = visitorNameInput.value.trim();
-            if (name) {
-                localStorage.setItem('visitorName', name);
-                setVisitorName(name);
-                visitorNameInput.value = '';
+        function renderGigs(tabId, gigsArray) {
+            const tabContent = document.getElementById(tabId);
+            if (!tabContent) return;
+            if (gigsArray.length === 0) {
+                tabContent.innerHTML = '<p data-key="gig_no_gigs">No gigs available.</p>';
+                populateTextContent(currentLang); // To populate the new text
+                return;
             }
-        });
-
-        function setVisitorName(name) {
-            let displayName = name;
-            const lowerName = name.toLowerCase();
-            if (lowerName.includes("daniel") || lowerName.includes("denise")) {
-                displayName = "silly goose";
-            }
-            visitorNamePlaceholder.textContent = `, ${displayName}`;
+            tabContent.innerHTML = gigsArray.map(g =>
+                `<div class="gig-card mb-3" data-location="${(g.location || '').toLowerCase()}">
+                    <p class="gig-date fw-bold" data-key="gig_date">${g.date}</p>
+                    <p class="gig-description" data-key="gig_description">${g.description}</p>
+                </div>`
+            ).join('');
         }
 
-        document.querySelectorAll('.collapsible-header').forEach(header => {
-            header.addEventListener('click', () => header.classList.toggle('collapsed'));
+        // Initial Rendering of Gigs
+        renderGigs('past2024', gigsData.past2024);
+        renderGigs('festivals', gigsData.festivals);
+        renderGigs('upcoming2024', gigsData.upcoming2024);
+        renderGigs('upcoming2025', gigsData.upcoming2025);
+
+        const gigSearch = document.getElementById('gigSearch');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+
+        gigSearch.addEventListener('input', () => {
+            const query = gigSearch.value.toLowerCase();
+            document.querySelectorAll('.gig-card').forEach(card => {
+                const loc = card.getAttribute('data-location') || '';
+                if (loc.includes(query)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         });
 
-        window.addEventListener('scroll', () => {
-            const scrollIndicator = document.getElementById('scroll-indicator');
-            const docHeight = document.body.scrollHeight - window.innerHeight;
-            const scrollPercent = (window.scrollY / docHeight) * 100;
-            scrollIndicator.style.width = `${scrollPercent}%`;
-
-            // Back-to-Top Button Visibility
-            const backToTopBtn = document.getElementById('backToTopBtn');
-            if (window.scrollY > 300) {
-                backToTopBtn.style.display = "block";
-            } else {
-                backToTopBtn.style.display = "none";
-            }
+        clearSearchBtn.addEventListener('click', () => {
+            gigSearch.value = '';
+            document.querySelectorAll('.gig-card').forEach(card => {
+                card.style.display = '';
+            });
         });
 
-        // Back-to-Top Button Functionality
-        const backToTopBtn = document.getElementById('backToTopBtn');
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
+        // Skills Radar Chart
         const ctx = document.getElementById('skillChart');
         if (ctx) {
             new Chart(ctx, {
@@ -888,81 +762,6 @@
             });
         }
 
-        // Render gigs from JSON data
-        function renderGigs(tabId, gigsArray) {
-            const tabContent = document.getElementById(tabId);
-            if (!tabContent) return;
-            if (gigsArray.length === 0) {
-                tabContent.innerHTML = '<p>No gigs available.</p>';
-                return;
-            }
-            tabContent.innerHTML = gigsArray.map(g =>
-                `<div class="gig-card" data-location="${(g.location || '').toLowerCase()}">
-                    <p class="gig-date">${g.date}</p>
-                    <p class="gig-description">${g.description}</p>
-                </div>`
-            ).join('');
-        }
-
-        // Initial rendering of gigs
-        renderGigs('past2024', gigsData.past2024);
-        renderGigs('festivals', gigsData.festivals);
-        renderGigs('upcoming2024', gigsData.upcoming2024);
-        renderGigs('upcoming2025', gigsData.upcoming2025);
-
-        const gigSearch = document.getElementById('gigSearch');
-        const clearSearchBtn = document.getElementById('clearSearchBtn');
-
-        gigSearch.addEventListener('input', () => {
-            const query = gigSearch.value.toLowerCase();
-            document.querySelectorAll('.gig-card').forEach(card => {
-                const loc = card.getAttribute('data-location') || '';
-                if (loc.includes(query)) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-
-        clearSearchBtn.addEventListener('click', () => {
-            gigSearch.value = '';
-            document.querySelectorAll('.gig-card').forEach(card => {
-                card.style.display = '';
-            });
-        });
-
-        // Testimonials Carousel (no JS needed as Bootstrap handles it)
-
-        // Dino Jump Logic
-        const dino = document.getElementById('dino');
-        const trees = document.querySelectorAll('.tree');
-        let dinoPos = {left: 0};
-
-        // Update dino's position periodically
-        setInterval(() => {
-            const rect = dino.getBoundingClientRect();
-            dinoPos.left = rect.left + rect.width / 2;
-        }, 100);
-
-        trees.forEach(tree => {
-            tree.addEventListener('click', () => {
-                const treeRect = tree.getBoundingClientRect();
-                const treeCenter = treeRect.left + treeRect.width / 2;
-                if (Math.abs(dinoPos.left - treeCenter) < 100) {
-                    dino.classList.add('jump');
-                    setTimeout(() => {
-                        dino.style.display = 'none';
-                        // Reset dino after jump
-                        setTimeout(() => {
-                            dino.style.display = 'block';
-                            dino.classList.remove('jump');
-                        }, 1000);
-                    }, 1000);
-                }
-            });
-        });
-
         // Contact Form Validation
         const contactForm = document.getElementById('contactForm');
         contactForm.addEventListener('submit', function(event) {
@@ -971,14 +770,36 @@
 
             if (contactForm.checkValidity()) {
                 // Handle form submission (e.g., send email)
-                alert('Thank you for your message!');
+                alert(langData[currentLang]["contact_submit_success"] || "Thank you for your message!");
                 contactForm.reset();
                 visitorNamePlaceholder.textContent = '';
                 localStorage.removeItem('visitorName');
+                // Reset validation states
+                contactForm.classList.remove('was-validated');
             }
 
             contactForm.classList.add('was-validated');
         }, false);
+
+        // Lazy Loading Images
+        document.addEventListener("DOMContentLoaded", function() {
+            const lazyImages = document.querySelectorAll('img.lazy');
+
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.src; // Assuming src is already set; otherwise set data-src
+                        img.classList.remove('lazy');
+                        observer.unobserve(img);
+                    }
+                });
+            });
+
+            lazyImages.forEach(img => {
+                imageObserver.observe(img);
+            });
+        });
     </script>
 </body>
 </html>
