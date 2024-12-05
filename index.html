@@ -22,7 +22,7 @@
             --dark-text: #e0e0e0;
             --dark-card-bg: #1e1e1e;
             --transition-speed: 0.3s;
-            --hero-gradient: linear-gradient(120deg, #2e2e2e, #1a1a1a);
+            --hero-gradient: linear-gradient(120deg, #3c3c3c, #2e2e2e);
         }
 
         body {
@@ -34,20 +34,13 @@
             color: var(--light-text);
             transition: background-color var(--transition-speed), color var(--transition-speed);
             scroll-behavior: smooth; /* Smooth Scrolling */
+            overscroll-behavior: none;
         }
 
         /* Dark mode */
         .dark-mode {
             background-color: var(--dark-bg)!important;
             color: var(--dark-text)!important;
-        }
-
-        .dark-mode .project-card, 
-        .dark-mode .info-card, 
-        .dark-mode .chart-card, 
-        .dark-mode .timeline-card {
-            background-color: var(--dark-card-bg);
-            color: var(--dark-text);
         }
 
         .dark-mode .navbar, 
@@ -67,6 +60,25 @@
         .dark-mode h5, 
         .dark-mode h6 {
             color: #fff;
+        }
+
+        .dark-mode .project-card, 
+        .dark-mode .info-card, 
+        .dark-mode .chart-card, 
+        .dark-mode .timeline-card {
+            background-color: var(--dark-card-bg);
+            color: var(--dark-text);
+        }
+
+        /* Dark mode for header and footer */
+        .dark-mode #home {
+            background: linear-gradient(120deg, #000000, #333333)!important;
+            color: #f1f1f1!important;
+        }
+
+        .dark-mode footer {
+            background-color: #222;
+            color: var(--dark-text);
         }
 
         /* Nav links hover */
@@ -104,6 +116,7 @@
         h1, h2, h3 {
             font-weight: 700;
         }
+
         .section-heading {
             margin-top: 2rem;
             margin-bottom: 1rem;
@@ -133,7 +146,7 @@
             }
         }
 
-        /* Collapsible sections (we'll make the skills and achievements collapsible) */
+        /* Collapsible sections */
         .collapsible-header {
             cursor: pointer;
             display: flex;
@@ -207,8 +220,6 @@
             }
         }
 
-        /* Microinteractions: subtle transitions done above */
-        /* Greeting & Visitor Name */
         #greeting {
             margin-bottom: 1rem;
             font-size: 1.5rem;
@@ -222,37 +233,23 @@
         }
 
         /* Swipe Navigation */
-        /* We'll consider horizontal sections or detect swipe events */
-        section {
+        section, header {
             scroll-snap-align: start;
         }
-        html, body {
-            overscroll-behavior: none;
-        }
 
-        /* Skill Charts */
         .chart-container {
             width: 100%;
             max-width: 600px;
             margin: auto;
         }
 
-        /* Indie Rock theme accentuations */
-        body:not(.dark-mode) #home {
-            background: linear-gradient(120deg, #3c3c3c, #2e2e2e);
-        }
-
-        /* Gig tracker styling */
         .gig-list {
             list-style: none;
             padding: 0;
         }
         .gig-list li {
             margin-bottom: 0.5rem;
-            display: flex;
-            justify-content: space-between;
         }
-
     </style>
 </head>
 <body>
@@ -314,8 +311,8 @@
                     <strong>Bootstrap 5</strong> into my projects.
                 </p>
                 <p class="lead">
-                    Also, I'm an advocate of modern visualization tools replacing traditional diagramming solutions, 
-                    aiming to enhance efficiency and team collaboration.
+                    Also, I advocate for modern visualization tools to enhance efficiency and 
+                    team collaboration.
                 </p>
             </div>
         </div>
@@ -369,15 +366,15 @@
                     </li>
                     <li>
                         <h5>2021</h5>
-                        <p>Transitioned to managing SQL optimizations and JSON data handling.</p>
+                        <p>Focused on SQL optimizations and JSON data handling.</p>
                     </li>
                     <li>
                         <h5>2022</h5>
-                        <p>Advocated and implemented visualization tools to streamline documentation.</p>
+                        <p>Introduced modern visualization tools to improve documentation workflows.</p>
                     </li>
                     <li>
                         <h5>2023</h5>
-                        <p>Began integrating HTMX and Bootstrap 5 into projects for improved UX.</p>
+                        <p>Integrated HTMX and Bootstrap 5 for a better UX.</p>
                     </li>
                 </ul>
             </div>
@@ -390,10 +387,10 @@
         <div id="achievements-collapse" class="collapse">
             <div class="info-card">
                 <ul class="list-unstyled mb-0">
-                    <li>Completed multiple enterprise-grade backend integrations</li>
-                    <li>Successfully introduced Mermaid-based diagrams into company documentation workflow</li>
-                    <li>Optimized SQL queries, cutting down execution time by up to 40%</li>
-                    <li>Mentored junior developers and improved team collaboration practices</li>
+                    <li>Implemented enterprise-grade backend integrations</li>
+                    <li>Introduced Mermaid-based diagrams into documentation</li>
+                    <li>Optimized SQL queries, reducing execution time significantly</li>
+                    <li>Mentored junior developers, enhancing team collaboration</li>
                 </ul>
             </div>
         </div>
@@ -404,11 +401,47 @@
         <h2 class="section-heading">Gig Tracker <span class="collapsible-header collapsed" data-bs-toggle="collapse" data-bs-target="#gigs-collapse"><i class="bi bi-chevron-down"></i></span></h2>
         <div id="gigs-collapse" class="collapse">
             <div class="info-card">
-                <p>Check out the gigs I've attended and the ones I'm planning:</p>
+                <h3>Past Gigs (2024)</h3>
                 <ul class="gig-list">
-                    <li><span>Dec 7: Idles (Apollo)</span><span>Upcoming</span></li>
-                    <li><span>Dec 16: Paul Heaton (Co-Op)</span><span>Upcoming</span></li>
-                    <li><span>Past: Mt. Joy (Ritz), Kings of Leon (Co-Op)...</span><span>Attended</span></li>
+                    <li>June 10: Mt. Joy (Ritz)</li>
+                    <li>July 10: Kings of Leon (Co-Op)</li>
+                    <li>August 8: Pete Doherty</li>
+                    <li>August 24: New Order + Johnny Marr (Wythenshawe Park)</li>
+                    <li>August 25: Blossoms (Wythenshawe Park)</li>
+                    <li>September 1: girl in red (Apollo)</li>
+                    <li>September 28: Sea Girls (Apollo)</li>
+                    <li>October 1: The Struts (Albert Hall)</li>
+                    <li>October 2: Driver Era (Apollo)</li>
+                    <li>October 4: Aurora (Apollo)</li>
+                    <li>October 5: Neighbourhood Festival (Manchester) - Red Rum Club, Brooke Combe, Antony Szmierek</li>
+                    <li>October 11: Saint Motel (New Century Hall)</li>
+                    <li>October 15: Leap (Yes Basement)</li>
+                    <li>November 2: Glass Animals (Co-Op)</li>
+                    <li>November 4: Blossoms (Plaza Stockport)</li>
+                    <li>November 7: Jack Jones (Yes Basement)</li>
+                    <li>November 20: Blossoms (Ritz)</li>
+                </ul>
+
+                <h3 class="mt-4">Past Festivals</h3>
+                <p><strong>Bonnaroo 2024 (Manchester, Tennessee)</strong></p>
+                <p>Acts: Pretty Lights, FISHER, GWAR, Post Malone, Interpol, T-Pain, The Japanese House, Red Hot Chili Peppers, Cage the Elephant, Cigarettes After Sex, Fred again.., Megan Thee Stallion, Carly Rae Jepsen, Taking Back Sunday.</p>
+                
+                <p><strong>Lollapalooza 2023 (Chicago)</strong></p>
+                <p>Acts: Billie Eilish, Portugal. The Man, The 1975, Foals, Odesza, Red Hot Chili Peppers, Mt. Joy.</p>
+
+                <h3 class="mt-4">Upcoming Gigs (2024)</h3>
+                <ul class="gig-list">
+                    <li>December 7: Idles (Apollo) + Idles DJ set (YES)</li>
+                    <li>December 16: Paul Heaton (Co-Op)</li>
+                </ul>
+
+                <h3 class="mt-4">Upcoming Gigs (2025)</h3>
+                <ul class="gig-list">
+                    <li>February 14: Cage the Elephant (Apollo)</li>
+                    <li>March 2: You Are Not Alone Festival (Stockport)</li>
+                    <li>April 18: Finneas (Apollo)</li>
+                    <li>June: Bonnaroo (Manchester, Tennessee)</li>
+                    <li>July 5: Fontaines D.C. (Finsbury Park)</li>
                 </ul>
             </div>
         </div>
@@ -543,7 +576,7 @@
             });
         }
 
-        // Swipe Navigation (simplistic approach)
+        // Swipe Navigation
         let startX;
         let currentSectionIndex = 0;
         const sections = Array.from(document.querySelectorAll('section, header'));
@@ -565,7 +598,6 @@
                 }
             }
         });
-
     </script>
 </body>
 </html>
