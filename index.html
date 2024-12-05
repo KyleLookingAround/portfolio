@@ -17,6 +17,7 @@
         body {
             font-family: Arial, sans-serif;
             transition: background-color 0.3s, color 0.3s;
+            padding-bottom: 70px; /* Prevent content from being hidden behind the nav */
         }
         .dark-mode {
             background-color: #121212;
@@ -60,6 +61,7 @@
             display: flex;
             justify-content: space-around;
             padding: 0.5rem 0;
+            height: 60px; /* Fixed height for padding */
         }
         .bottom-nav a {
             color: #0d6efd;
@@ -89,6 +91,9 @@
             }
             .bottom-nav a {
                 font-size: 1rem;
+            }
+            .gig-card {
+                padding: 0.75rem;
             }
         }
         /* Additional Styles */
@@ -198,7 +203,9 @@
     <section id="skills-section" class="container py-5">
         <h2 class="section-heading" data-key="skills_title">Skills</h2>
         <div class="card-custom">
-            <canvas id="skillChart" width="400" height="400"></canvas>
+            <div class="chart-container" style="position: relative; height:40vh; width:80vw; max-width:600px; margin: auto;">
+                <canvas id="skillChart"></canvas>
+            </div>
         </div>
     </section>
 
@@ -287,14 +294,6 @@
                 </div>
             </div>
             <!-- Add more portfolio items as needed -->
-        </div>
-    </section>
-
-    <!-- Skills Section with Radar Chart -->
-    <section id="skills-section" class="container py-5">
-        <h2 class="section-heading" data-key="skills_title">Skills</h2>
-        <div class="card-custom">
-            <canvas id="skillChart" width="400" height="400"></canvas>
         </div>
     </section>
 
@@ -798,6 +797,39 @@
 
             lazyImages.forEach(img => {
                 imageObserver.observe(img);
+            });
+        });
+
+        // Smooth Scrolling
+        document.querySelectorAll('.bottom-nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 60, // Adjust for nav height
+                        behavior: 'smooth'
+                    });
+                    // Update active link
+                    document.querySelectorAll('.bottom-nav a').forEach(link => link.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Highlight Active Nav Link on Scroll
+        window.addEventListener('scroll', () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            document.querySelectorAll('.bottom-nav a').forEach(link => {
+                const section = document.querySelector(link.getAttribute('href'));
+                if (section) {
+                    if (scrollPosition >= section.offsetTop - 70 && scrollPosition < section.offsetTop + section.offsetHeight - 70) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                }
             });
         });
     </script>
