@@ -1,207 +1,280 @@
 <!DOCTYPE html>
-<html lang="en" style="font-family:sans-serif; margin:0; padding:0; box-sizing:border-box;">
+<html lang="en" style="font-family: sans-serif;">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
-    <title>My Portfolio</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Portfolio - UK-based Software Engineer</title>
+    <!-- Bootstrap 5 CSS (CDN) -->
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
+        rel="stylesheet" 
+        integrity="sha384-9ndCyUa1Tb5mCj1p8y+UznxyI8VVygbJTKVo3Z7r3tZLXw72aFZpHhfO1E5w5y1N" 
+        crossorigin="anonymous"
+    >
+    <!-- HTMX (CDN) -->
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
     <style>
         body {
-            margin: 0; 
-            background: #f9f9f9;
-            color: #333;
-        }
-
-        header, section, footer {
-            width: 100%;
-            padding: 40px 20px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        header {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: center;
-        }
-
-        header h1 {
-            font-size: 3em;
             margin: 0;
-            color: #222;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
         }
-
-        header p {
-            font-size: 1.2em;
-            margin: 10px 0 0 0;
+        .dark-mode {
+            background-color: #1a1a1a !important;
+            color: #f1f1f1 !important;
         }
-
-        nav {
-            margin-top: 30px;
+        .section-heading {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
         }
-
-        nav a {
-            margin-right: 20px;
-            text-decoration: none;
-            color: #555;
-            font-weight: 500;
+        .project-card, .info-card {
+            background: var(--bs-light);
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
         }
-
-        nav a:hover {
-            text-decoration: underline;
+        .dark-mode .project-card, .dark-mode .info-card {
+            background: #2a2a2a;
         }
-
-        .section-title {
-            font-size: 2em;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
+        .nav-link {
+            cursor: pointer;
         }
-
-        .projects, .contact-info {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+        .dark-mode .nav-link {
+            color: #f1f1f1 !important;
         }
-
-        .project {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 20px;
-            flex: 1 1 calc(50% - 40px);
-            box-sizing: border-box;
+        .dark-mode .navbar {
+            background-color: #333;
         }
-
-        .project h3 {
-            margin-top: 0;
-            font-size: 1.4em;
+        .dark-mode .form-check-label {
+            color: #f1f1f1;
         }
-
-        .project p {
-            margin: 10px 0 0 0;
-        }
-
-        .contact-info div {
-            flex: 1 1 100%;
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 20px;
-        }
-
-        footer {
-            text-align: center;
-            font-size: 0.9em;
-            color: #666;
-            border-top: 1px solid #ddd;
-        }
-
-        @media(max-width: 600px) {
-            .project {
-                flex: 1 1 100%;
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 1.75rem;
             }
         }
     </style>
 </head>
-<body>
-    <header>
-        <h1>Hello, I'm a UK-based Software Engineer</h1>
-        <p>
-            Welcome to my online portfolio. I’m passionate about designing and implementing 
-            scalable, maintainable software solutions, and continually refining my craft.
-        </p>
-        <nav>
-            <a href="#about">About</a>
-            <a href="#projects">Projects</a>
-            <a href="#contact">Contact</a>
-        </nav>
+<body class="bg-light text-dark">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#home">UK Software Engineer</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#navbarNav" aria-controls="navbarNav" 
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse flex-row-reverse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About Me</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#skills">Interests & Skills</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#interests">Personal Interests</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#projects">Projects & Goals</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+                <form class="d-flex align-items-center">
+                    <div class="form-check form-switch ms-3">
+                        <input class="form-check-input" type="checkbox" id="darkModeSwitch">
+                        <label class="form-check-label" for="darkModeSwitch">Dark Mode</label>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <header id="home" class="container py-5">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="fw-bold">Hello, I'm a UK-based Software Engineer</h1>
+                <p class="lead">
+                    I specialize in backend development using <strong>C#</strong>, and I prefer working 
+                    in <strong>Visual Studio</strong> and <strong>Azure DevOps</strong>. 
+                    Currently, I’m expanding my portfolio by integrating <strong>HTMX</strong> 
+                    and <strong>Bootstrap 5</strong> into my projects. My experience involves 
+                    building solutions that handle complex SQL queries with JSON and optimize 
+                    various table joins. I’m committed to producing clear, accessible markdown 
+                    documentation for developers of all levels.
+                </p>
+                <p class="lead">
+                    Additionally, I advocate for modern visualization tools like 
+                    <strong>Mermaid.js</strong> to streamline documentation workflows and 
+                    replace traditional diagramming tools like Visio, enhancing efficiency and 
+                    collaboration across teams.
+                </p>
+            </div>
+        </div>
     </header>
 
-    <section id="about">
-        <h2 class="section-title">About Me</h2>
-        <p>
-            I’m a software engineer currently based in the UK. I specialize in building 
-            web applications, APIs, and tools that streamline development workflows. 
-            Over the years, I’ve worked on a range of projects spanning front-end interfaces, 
-            back-end services, and continuous integration pipelines. My focus is on 
-            writing clean, testable code while leveraging modern technologies 
-            to solve complex problems.
-        </p>
-        <p>
-            When I’m not coding, I enjoy exploring the UK's vibrant tech scene, 
-            participating in local meetups, and staying up-to-date with emerging 
-            industry trends. I take pride in my strong communication skills, my 
-            adaptability, and my love for collaborating with others to deliver 
-            exceptional software.
-        </p>
-    </section>
-
-    <section id="projects">
-        <h2 class="section-title">Selected Projects</h2>
-        <div class="projects">
-            <div class="project">
-                <h3>Project One: Scalable Web Service</h3>
-                <p>
-                    A highly scalable web service designed to handle thousands of 
-                    concurrent requests, featuring a load-balanced architecture, 
-                    caching layers, and comprehensive monitoring tools. 
-                    Technologies: Node.js, Docker, AWS.
-                </p>
+    <section id="about" class="container">
+        <h2 class="section-heading">About Me</h2>
+        <div class="row">
+            <div class="col-12 col-md-6 mb-4">
+                <div class="card info-card p-3">
+                    <p>
+                        I’m a passionate software engineer focusing on backend systems 
+                        and process improvement. My primary tech stack includes C#, Git, and 
+                        a range of modern web technologies. Beyond building APIs and server-side 
+                        applications, I’m deeply involved in ensuring code quality, scalability, 
+                        and maintainability, especially when dealing with complex database structures 
+                        and JSON-embedded queries.
+                    </p>
+                    <p>
+                        I strive to make documentation clear and accessible through rich markdown 
+                        formatting and visual workflows. By advocating the use of Mermaid.js diagrams, 
+                        I aim to foster more collaborative environments, reducing overhead and 
+                        promoting transparency in complex projects.
+                    </p>
+                </div>
             </div>
-            <div class="project">
-                <h3>Project Two: Developer Toolkit</h3>
-                <p>
-                    A CLI-based developer toolkit aimed at improving internal engineering 
-                    productivity. It automates repetitive tasks, integrates with CI/CD 
-                    pipelines, and enables developers to bootstrap new services quickly. 
-                    Technologies: Go, GitHub Actions, Terraform.
-                </p>
-            </div>
-            <div class="project">
-                <h3>Project Three: Interactive Front-End App</h3>
-                <p>
-                    A responsive front-end web application for exploring custom datasets, 
-                    visualizing results, and exporting information. 
-                    Technologies: React, TypeScript, D3.js.
-                </p>
-            </div>
-            <div class="project">
-                <h3>Project Four: Authentication & Authorization Module</h3>
-                <p>
-                    A secure authentication and authorization module integrated with 
-                    existing microservices. Implemented role-based access control and 
-                    OAuth2 token management. 
-                    Technologies: Python, Flask, JWT.
-                </p>
+            <div class="col-12 col-md-6 mb-4">
+                <div class="card info-card p-3">
+                    <p>
+                        Outside of coding, I stay active in the UK’s tech scene, always learning 
+                        and adapting to new methodologies. My interest in HTMX and Bootstrap 5 
+                        drives me to create efficient, interactive front-end components that integrate 
+                        seamlessly with robust backends.
+                    </p>
+                    <p>
+                        I take pride in bridging gaps between teams, aligning stakeholders, and 
+                        ensuring everyone has the resources they need. Through mentoring and 
+                        training material development, I support inclusive growth and skill 
+                        building for diverse audiences.
+                    </p>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="contact">
-        <h2 class="section-title">Contact</h2>
-        <div class="contact-info">
-            <div>
-                <p>
-                    Interested in collaborating or want to know more about my work? 
-                    Feel free to get in touch.
-                </p>
-                <p><strong>Email:</strong> your.email@example.com</p>
-                <p><strong>Location:</strong> United Kingdom</p>
-                <p>
-                    Let’s build something great together!
-                </p>
+    <section id="skills" class="container">
+        <h2 class="section-heading">Interests & Skills</h2>
+        <div class="row">
+            <div class="col-12 mb-4">
+                <div class="card info-card p-3">
+                    <ul class="list-unstyled mb-0">
+                        <li><strong>Software Development:</strong> Expertise in C#, Git, HTMX, and Bootstrap 5.</li>
+                        <li><strong>Backend & Database:</strong> Advanced SQL, JSON handling, and optimized table joins.</li>
+                        <li><strong>Documentation & Collaboration:</strong> Markdown-driven docs, Mermaid.js diagrams, and training materials.</li>
+                        <li><strong>Process Improvement:</strong> Bridging gaps, streamlining workflows, and enhancing developer efficiency.</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>
 
-    <footer>
-        &copy; <span id="year"></span> UK Software Engineer. All rights reserved.
+    <section id="interests" class="container">
+        <h2 class="section-heading">Personal Interests</h2>
+        <div class="row">
+            <div class="col-12 col-md-4 mb-4">
+                <div class="card project-card p-3">
+                    <h3>Music Enthusiast</h3>
+                    <p>
+                        A frequent concert-goer, I enjoy indie, alternative, and rock. 
+                        I’ve attended festivals like Bonnaroo and Lollapalooza, relishing both 
+                        established artists and emerging talent.
+                    </p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 mb-4">
+                <div class="card project-card p-3">
+                    <h3>Fitness Aspirations</h3>
+                    <p>
+                        Currently training for a Hyrox event, I’m dedicated to improving overall fitness 
+                        and health through structured workouts and a balanced lifestyle.
+                    </p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 mb-4">
+                <div class="card project-card p-3">
+                    <h3>Community Support</h3>
+                    <p>
+                        I value inclusivity and knowledge-sharing, demonstrated by mentoring individuals 
+                        with unique learning needs, helping them build confidence and technical competence.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="container">
+        <h2 class="section-heading">Projects & Goals</h2>
+        <div class="row">
+            <div class="col-12 col-md-4 mb-4">
+                <div class="card project-card p-3">
+                    <h3>Portfolio Website</h3>
+                    <p>
+                        A dynamic and responsive site built with C#, HTMX, and Bootstrap 5 to showcase 
+                        my backend expertise, with scalability, elegance, and maintainability at its core.
+                    </p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 mb-4">
+                <div class="card project-card p-3">
+                    <h3>Advocacy for Tools</h3>
+                    <p>
+                        Championing the use of Mermaid.js to improve workflow clarity and documentation 
+                        efficiency, moving beyond traditional diagramming tools and embracing modern solutions.
+                    </p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 mb-4">
+                <div class="card project-card p-3">
+                    <h3>Fitness Journey</h3>
+                    <p>
+                        Documenting my journey to Hyrox participation, focusing on personal improvement, 
+                        resilience, and the continuous pursuit of new challenges.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="container mb-5">
+        <h2 class="section-heading">Contact</h2>
+        <div class="row">
+            <div class="col-12">
+                <div class="card info-card p-3">
+                    <p>
+                        Interested in collaborating or learning more about my work? 
+                        Feel free to reach out.
+                    </p>
+                    <p><strong>Email:</strong> your.email@example.com</p>
+                    <p><strong>Location:</strong> United Kingdom</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="container-fluid py-3 border-top text-center">
+        &copy; <span id="year"></span> UK-based Software Engineer. All rights reserved.
     </footer>
 
+    <!-- Bootstrap 5 JS Bundle (CDN) -->
+    <script 
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-BOt1VJArN+AGBQc6VnN+f75/Bvt60LZ9g8Yl0G5Z6c9tGhn+w1Dh3LM9M7w4aal7" 
+        crossorigin="anonymous">
+    </script>
     <script>
-        // Update the footer year dynamically
+        // Update the footer year
         document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Dark Mode Toggle
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+        darkModeSwitch.addEventListener('change', function() {
+            document.body.classList.toggle('dark-mode', this.checked);
+        });
     </script>
 </body>
 </html>
