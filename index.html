@@ -4,25 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UK-based Software Engineer Portfolio</title>
-    <link 
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
-        rel="stylesheet" 
-        integrity="sha384-ENjdO4Dr2bkBIFxQpeoA7HVDd8H+uaKcZ6OEdqF0wZpA+IWK5CIjSLbZbGx3+M78" 
-        crossorigin="anonymous">
-    <link 
-        rel="stylesheet" 
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
+        /* CSS Variables for Theming */
+        :root {
+            --background-color: #ffffff;
+            --text-color: #000000;
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --card-background: #f8f9fa;
+            --nav-background: #ffffff;
+            --nav-text-color: #0d6efd;
+            --footer-background: #f8f9fa;
+            --footer-text-color: #000000;
+            --overlay-background: rgba(13, 110, 253, 0.8);
+            --btn-primary-bg: #0d6efd;
+            --btn-primary-text: #ffffff;
+            --btn-secondary-bg: #6c757d;
+            --btn-secondary-text: #ffffff;
+            --border-color: #dee2e6;
+        }
+
+        .dark-mode {
+            --background-color: #121212;
+            --text-color: #ffffff;
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --card-background: #1e1e1e;
+            --nav-background: #343a40;
+            --nav-text-color: #adb5bd;
+            --footer-background: #343a40;
+            --footer-text-color: #ffffff;
+            --overlay-background: rgba(13, 110, 253, 0.8);
+            --btn-primary-bg: #0d6efd;
+            --btn-primary-text: #ffffff;
+            --btn-secondary-bg: #6c757d;
+            --btn-secondary-text: #ffffff;
+            --border-color: #495057;
+        }
+
         /* General Styles */
         body {
             font-family: Arial, sans-serif;
-            transition: background-color 0.3s, color 0.3s;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
             padding-bottom: 70px; /* Prevent content from being hidden behind the nav */
+            transition: background-color 0.3s, color 0.3s;
         }
-        .dark-mode {
-            background-color: #121212;
-            color: #ffffff;
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
         }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color);
+        }
+
+        /* Section Headings */
         .section-heading {
             text-align: center;
             margin-bottom: 2rem;
@@ -30,93 +69,197 @@
             position: relative;
             display: inline-block;
         }
+
         .section-heading::after {
             content: '';
             width: 50px;
             height: 3px;
-            background: #0d6efd;
+            background: var(--primary-color);
             display: block;
             margin: 0.5rem auto 0;
         }
-        .carousel-item {
-            text-align: center;
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
         }
-        .testimonial-card {
-            padding: 1.5rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .dark-mode .testimonial-card {
-            background: #1e1e1e;
-        }
-        /* Bottom Sticky Nav Bar */
+
+        /* Fixed Bottom Navigation Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             width: 100%;
-            background-color: #ffffff;
-            border-top: 1px solid #dee2e6;
+            background-color: var(--nav-background);
+            border-top: 1px solid var(--border-color);
             z-index: 1000;
             display: flex;
             justify-content: space-around;
-            padding: 0.5rem 0;
-            height: 60px; /* Fixed height for padding */
+            align-items: center;
+            height: 60px;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
         }
+
         .bottom-nav a {
-            color: #0d6efd;
+            color: var(--nav-text-color);
             text-decoration: none;
-            font-size: 1.2rem;
+            font-size: 1rem;
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: color 0.3s;
         }
+
         .bottom-nav a.active, .bottom-nav a:hover {
-            color: #0a58ca;
+            color: var(--primary-color);
         }
-        .dark-mode .bottom-nav {
-            background-color: #343a40;
-            border-top: 1px solid #495057;
+
+        .bottom-nav a i {
+            font-size: 1.5rem;
         }
-        .dark-mode .bottom-nav a {
-            color: #adb5bd;
+
+        /* Responsive Layouts */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
         }
-        .dark-mode .bottom-nav a.active, .dark-mode .bottom-nav a:hover {
+
+        /* Greeting Section */
+        #home {
+            text-align: center;
+            padding: 4rem 1rem;
+        }
+
+        #visitor-name-form {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        #visitor-name-input {
+            padding: 0.5rem;
+            font-size: 1rem;
+            width: 250px;
+            max-width: 80%;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        #visitor-name-form button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            background-color: var(--primary-color);
+            color: var(--btn-primary-text);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #visitor-name-form button:hover {
+            background-color: darken(var(--primary-color), 10%);
+        }
+
+        /* About Section */
+        #about .card-custom {
+            background-color: var(--card-background);
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        /* Skills Section */
+        #skills-section .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* FAQ Section */
+        #faq-section .card-custom {
+            background-color: var(--card-background);
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+        }
+
+        .faq-question {
+            cursor: pointer;
+            padding: 1rem;
+            background-color: var(--primary-color);
             color: #ffffff;
+            border-radius: 4px;
+            position: relative;
+            transition: background-color 0.3s;
         }
-        /* Responsive Adjustments */
-        @media (max-width: 576px) {
-            .section-heading {
-                font-size: 1.5rem;
-            }
-            .bottom-nav a {
-                font-size: 1rem;
-            }
-            .gig-card {
-                padding: 0.75rem;
-            }
+
+        .faq-question::after {
+            content: '\25BC';
+            position: absolute;
+            right: 20px;
+            transition: transform 0.3s;
         }
-        /* Additional Styles */
-        .portfolio-item {
+
+        .faq-question.active::after {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background-color: var(--card-background);
+            padding: 0 1rem;
+            border-left: 3px solid var(--primary-color);
+            margin-top: 0.5rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .faq-answer.open {
+            max-height: 200px; /* Adjust as needed */
+            padding: 1rem;
+        }
+
+        /* Portfolio Section */
+        #portfolio-section .portfolio-item {
             position: relative;
             overflow: hidden;
             cursor: pointer;
+            border-radius: 8px;
         }
-        .portfolio-item img {
+
+        #portfolio-section .portfolio-item img {
             width: 100%;
             height: auto;
+            display: block;
             transition: transform 0.3s;
         }
-        .portfolio-item:hover img {
+
+        #portfolio-section .portfolio-item:hover img {
             transform: scale(1.1);
         }
-        .portfolio-overlay {
+
+        #portfolio-section .portfolio-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(13, 110, 253, 0.8);
+            background-color: var(--overlay-background);
             color: #ffffff;
             opacity: 0;
             transition: opacity 0.3s;
@@ -127,69 +270,248 @@
             text-align: center;
             padding: 1rem;
         }
-        .portfolio-item:hover .portfolio-overlay {
+
+        #portfolio-section .portfolio-item:hover .portfolio-overlay {
             opacity: 1;
         }
-        .gig-card {
-            padding: 1rem;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            background: #f8f9fa;
-            transition: background 0.3s;
+
+        #portfolio-section .portfolio-overlay h5 {
+            margin-bottom: 0.5rem;
         }
-        .dark-mode .gig-card {
-            background: #1e1e1e;
-            border-color: #495057;
-        }
-        .gig-date {
-            font-weight: bold;
-        }
-        .dark-mode .gig-description {
+
+        #portfolio-section .portfolio-overlay a {
+            background-color: rgba(255, 255, 255, 0.2);
             color: #ffffff;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
         }
-        /* Contact Form Styles */
-        .card-custom {
-            background: #ffffff;
+
+        #portfolio-section .portfolio-overlay a:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Gig Tracker Section */
+        #gig-section .card-custom {
+            background-color: var(--card-background);
             padding: 2rem;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: background 0.3s;
+            transition: background-color 0.3s, border-color 0.3s;
         }
-        .dark-mode .card-custom {
-            background: #1e1e1e;
-            box-shadow: 0 4px 6px rgba(255,255,255,0.1);
+
+        #gigSearch {
+            padding: 0.5rem;
+            font-size: 1rem;
+            width: 100%;
+            max-width: 300px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
         }
-        /* Footer Styles */
-        footer {
-            background: #f8f9fa;
-            padding: 1rem 0;
+
+        #clearSearchBtn {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            background-color: var(--secondary-color);
+            color: var(--btn-secondary-text);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        .dark-mode footer {
-            background: #343a40;
+
+        #clearSearchBtn:hover {
+            background-color: darken(var(--secondary-color), 10%);
+        }
+
+        .gig-card {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--card-background);
+            margin-bottom: 1rem;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .gig-card .gig-date {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Testimonials Section */
+        #testimonials-section .carousel-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        #testimonials-section .testimonial {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        #testimonials-section .testimonial.active {
+            display: block;
+            animation: fadeIn 1s;
+        }
+
+        #testimonials-section .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        #testimonials-section .carousel-controls button {
+            background-color: var(--primary-color);
+            border: none;
             color: #ffffff;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #testimonials-section .carousel-controls button:hover {
+            background-color: darken(var(--primary-color), 10%);
+        }
+
+        /* Contact Section */
+        #contact .card-custom {
+            background-color: var(--card-background);
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        #contactForm {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #contactForm label {
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        #contactForm input, #contactForm textarea {
+            padding: 0.5rem;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+        #contactForm input:focus, #contactForm textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        #contactForm button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            background-color: var(--primary-color);
+            color: var(--btn-primary-text);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 0.5rem;
+        }
+
+        #contactForm button:hover {
+            background-color: darken(var(--primary-color), 10%);
+        }
+
+        #contactForm .btn-download {
+            background-color: var(--secondary-color);
+            color: var(--btn-secondary-text);
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        #contactForm .btn-download:hover {
+            background-color: darken(var(--secondary-color), 10%);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--footer-background);
+            color: var(--footer-text-color);
+            text-align: center;
+            padding: 1rem 0;
+            border-top: 1px solid var(--border-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            .portfolio-item {
+                margin-bottom: 1rem;
+            }
+
+            .gig-card {
+                padding: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-heading {
+                font-size: 1.5rem;
+            }
+
+            .bottom-nav a {
+                font-size: 0.875rem;
+            }
+
+            #visitor-name-input {
+                width: 100%;
+            }
+
+            #visitor-name-form button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Dark Mode Toggle -->
-    <div class="form-check form-switch m-3">
-        <input class="form-check-input" type="checkbox" id="darkModeSwitch">
-        <label class="form-check-label" for="darkModeSwitch" data-key="dark_mode_label">Dark Mode</label>
+    <div class="dark-mode-toggle">
+        <label class="switch">
+            <input type="checkbox" id="darkModeSwitch">
+            <span class="slider round"></span>
+        </label>
     </div>
 
     <!-- Greeting and Visitor Name -->
-    <section id="home" class="container text-center py-5">
+    <section id="home" class="container">
         <h1 data-key="greeting">Hello!</h1>
         <p data-key="welcome_message">Welcome to my portfolio.</p>
-        <form id="visitor-name-form" class="d-flex justify-content-center mt-3">
-            <input type="text" class="form-control w-50" id="visitor-name-input" placeholder="Enter your name">
-            <button type="submit" class="btn btn-primary ms-2" data-key="submit_button">Submit</button>
+        <form id="visitor-name-form">
+            <input type="text" id="visitor-name-input" placeholder="Enter your name" data-key="visitor_name_placeholder">
+            <button type="submit" data-key="submit_button">Submit</button>
         </form>
-        <p class="mt-2" data-key="personalized_greeting" id="visitorNamePlaceholder"></p>
+        <p id="visitorNamePlaceholder" data-key="personalized_greeting"></p>
     </section>
 
     <!-- About Section -->
-    <section id="about" class="container py-5">
+    <section id="about" class="container">
         <h2 class="section-heading" data-key="about_title">About Me</h2>
         <div class="card-custom">
             <p data-key="about_description">
@@ -200,97 +522,71 @@
     </section>
 
     <!-- Skills Section -->
-    <section id="skills-section" class="container py-5">
+    <section id="skills-section" class="container">
         <h2 class="section-heading" data-key="skills_title">Skills</h2>
         <div class="card-custom">
-            <div class="chart-container" style="position: relative; height:40vh; width:80vw; max-width:600px; margin: auto;">
+            <div class="chart-container">
                 <canvas id="skillChart"></canvas>
             </div>
         </div>
     </section>
 
     <!-- FAQ Section -->
-    <section id="faq-section" class="container py-5">
+    <section id="faq-section" class="container">
         <h2 class="section-heading" data-key="faq_title">Frequently Asked Questions</h2>
         <div class="card-custom">
-            <div class="faq-item mb-2">
-                <div class="faq-question collapsed" data-bs-toggle="collapse" data-bs-target="#faq1" data-key="faq1_question">
-                    What technologies do you specialize in?
-                </div>
-                <div id="faq1" class="faq-answer collapse" data-key="faq1_answer">
-                    I specialize in backend development using C#, SQL, and modern web technologies like JavaScript and Node.js.
-                </div>
+            <div class="faq-item">
+                <div class="faq-question" data-key="faq1_question">What technologies do you specialize in?</div>
+                <div class="faq-answer" data-key="faq1_answer"></div>
             </div>
-            <div class="faq-item mb-2">
-                <div class="faq-question collapsed" data-bs-toggle="collapse" data-bs-target="#faq2" data-key="faq2_question">
-                    How do you handle project deadlines?
-                </div>
-                <div id="faq2" class="faq-answer collapse" data-key="faq2_answer">
-                    I prioritize tasks effectively, communicate transparently with stakeholders, and utilize project management tools to ensure deadlines are met.
-                </div>
+            <div class="faq-item">
+                <div class="faq-question" data-key="faq2_question">How do you handle project deadlines?</div>
+                <div class="faq-answer" data-key="faq2_answer"></div>
             </div>
-            <div class="faq-item mb-2">
-                <div class="faq-question collapsed" data-bs-toggle="collapse" data-bs-target="#faq3" data-key="faq3_question">
-                    Can you work remotely?
-                </div>
-                <div id="faq3" class="faq-answer collapse" data-key="faq3_answer">
-                    Yes, I have extensive experience working remotely and can collaborate effectively with teams across different time zones.
-                </div>
+            <div class="faq-item">
+                <div class="faq-question" data-key="faq3_question">Can you work remotely?</div>
+                <div class="faq-answer" data-key="faq3_answer"></div>
             </div>
-            <div class="faq-item mb-2">
-                <div class="faq-question collapsed" data-bs-toggle="collapse" data-bs-target="#faq4" data-key="faq4_question">
-                    Do you offer support after project completion?
-                </div>
-                <div id="faq4" class="faq-answer collapse" data-key="faq4_answer">
-                    Absolutely, I provide ongoing support and maintenance to ensure that your projects continue to run smoothly.
-                </div>
+            <div class="faq-item">
+                <div class="faq-question" data-key="faq4_question">Do you offer support after project completion?</div>
+                <div class="faq-answer" data-key="faq4_answer"></div>
             </div>
-            <div class="faq-item mb-2">
-                <div class="faq-question collapsed" data-bs-toggle="collapse" data-bs-target="#faq5" data-key="faq5_question">
-                    What is your approach to learning new technologies?
-                </div>
-                <div id="faq5" class="faq-answer collapse" data-key="faq5_answer">
-                    I stay updated with industry trends, engage in continuous learning through courses and projects, and actively participate in developer communities.
-                </div>
+            <div class="faq-item">
+                <div class="faq-question" data-key="faq5_question">What is your approach to learning new technologies?</div>
+                <div class="faq-answer" data-key="faq5_answer"></div>
             </div>
         </div>
     </section>
 
     <!-- Portfolio Gallery Section -->
-    <section id="portfolio-section" class="container py-5">
+    <section id="portfolio-section" class="container">
         <h2 class="section-heading" data-key="portfolio_title">Portfolio</h2>
-        <div class="row g-4">
+        <div class="grid">
             <!-- Portfolio Item 1 -->
-            <div class="col-md-6 col-lg-4">
-                <div class="portfolio-item">
-                    <img src="https://via.placeholder.com/400x300" alt="Project 1" class="img-fluid lazy" data-key="portfolio1_image_alt">
-                    <div class="portfolio-overlay">
-                        <h5 data-key="portfolio1_title">Project Title 1</h5>
-                        <p data-key="portfolio1_description">Short description of Project 1.</p>
-                        <a href="#" class="btn btn-light btn-sm" data-key="portfolio1_view">View Project</a>
-                    </div>
+            <div class="portfolio-item">
+                <img src="https://via.placeholder.com/400x300" alt="Project 1" class="lazy" data-key="portfolio1_image_alt">
+                <div class="portfolio-overlay">
+                    <h5 data-key="portfolio1_title">Project Title 1</h5>
+                    <p data-key="portfolio1_description">Short description of Project 1.</p>
+                    <a href="#" data-key="portfolio1_view">View Project</a>
                 </div>
             </div>
             <!-- Portfolio Item 2 -->
-            <div class="col-md-6 col-lg-4">
-                <div class="portfolio-item">
-                    <img src="https://via.placeholder.com/400x300" alt="Project 2" class="img-fluid lazy" data-key="portfolio2_image_alt">
-                    <div class="portfolio-overlay">
-                        <h5 data-key="portfolio2_title">Project Title 2</h5>
-                        <p data-key="portfolio2_description">Short description of Project 2.</p>
-                        <a href="#" class="btn btn-light btn-sm" data-key="portfolio2_view">View Project</a>
-                    </div>
+            <div class="portfolio-item">
+                <img src="https://via.placeholder.com/400x300" alt="Project 2" class="lazy" data-key="portfolio2_image_alt">
+                <div class="portfolio-overlay">
+                    <h5 data-key="portfolio2_title">Project Title 2</h5>
+                    <p data-key="portfolio2_description">Short description of Project 2.</p>
+                    <a href="#" data-key="portfolio2_view">View Project</a>
                 </div>
             </div>
             <!-- Portfolio Item 3 -->
-            <div class="col-md-6 col-lg-4">
-                <div class="portfolio-item">
-                    <img src="https://via.placeholder.com/400x300" alt="Project 3" class="img-fluid lazy" data-key="portfolio3_image_alt">
-                    <div class="portfolio-overlay">
-                        <h5 data-key="portfolio3_title">Project Title 3</h5>
-                        <p data-key="portfolio3_description">Short description of Project 3.</p>
-                        <a href="#" class="btn btn-light btn-sm" data-key="portfolio3_view">View Project</a>
-                    </div>
+            <div class="portfolio-item">
+                <img src="https://via.placeholder.com/400x300" alt="Project 3" class="lazy" data-key="portfolio3_image_alt">
+                <div class="portfolio-overlay">
+                    <h5 data-key="portfolio3_title">Project Title 3</h5>
+                    <p data-key="portfolio3_description">Short description of Project 3.</p>
+                    <a href="#" data-key="portfolio3_view">View Project</a>
                 </div>
             </div>
             <!-- Add more portfolio items as needed -->
@@ -298,156 +594,123 @@
     </section>
 
     <!-- Gig Tracker Section -->
-    <section id="gig-section" class="container py-5">
+    <section id="gig-section" class="container">
         <h2 class="section-heading" data-key="gig_title">Gig Tracker</h2>
         <div class="card-custom">
-            <input type="text" class="form-control gig-search mb-3" id="gigSearch" placeholder="Search by location..." data-key="gig_search_placeholder">
-            <button class="btn btn-secondary mb-3" id="clearSearchBtn" data-key="gig_clear_search">Clear Search</button>
-            <ul class="nav nav-tabs mb-3" id="gigTabs" role="tablist">
-                <li class="nav-item">
-                    <button class="nav-link active" id="past2024-tab" data-bs-toggle="tab" data-bs-target="#past2024" type="button" role="tab" aria-controls="past2024" aria-selected="true" data-key="gig_past_2024">Past Gigs (2024)</button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="festivals-tab" data-bs-toggle="tab" data-bs-target="#festivals" type="button" role="tab" aria-controls="festivals" aria-selected="false" data-key="gig_festivals">Past Festivals</button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="upcoming2024-tab" data-bs-toggle="tab" data-bs-target="#upcoming2024" type="button" role="tab" aria-controls="upcoming2024" aria-selected="false" data-key="gig_upcoming_2024">Upcoming (2024)</button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="upcoming2025-tab" data-bs-toggle="tab" data-bs-target="#upcoming2025" type="button" role="tab" aria-controls="upcoming2025" aria-selected="false" data-key="gig_upcoming_2025">Upcoming (2025)</button>
-                </li>
-            </ul>
-            <div class="tab-content" id="gigTabContent">
-                <div class="tab-pane fade show active" id="past2024" role="tabpanel" aria-labelledby="past2024-tab"></div>
-                <div class="tab-pane fade" id="festivals" role="tabpanel" aria-labelledby="festivals-tab"></div>
-                <div class="tab-pane fade" id="upcoming2024" role="tabpanel" aria-labelledby="upcoming2024-tab"></div>
-                <div class="tab-pane fade" id="upcoming2025" role="tabpanel" aria-labelledby="upcoming2025-tab"></div>
+            <input type="text" id="gigSearch" placeholder="Search by location..." data-key="gig_search_placeholder">
+            <button id="clearSearchBtn" data-key="gig_clear_search">Clear Search</button>
+            <div class="tabs">
+                <button class="tab-link active" data-tab="past2024" data-key="gig_past_2024">Past Gigs (2024)</button>
+                <button class="tab-link" data-tab="festivals" data-key="gig_festivals">Past Festivals</button>
+                <button class="tab-link" data-tab="upcoming2024" data-key="gig_upcoming_2024">Upcoming (2024)</button>
+                <button class="tab-link" data-tab="upcoming2025" data-key="gig_upcoming_2025">Upcoming (2025)</button>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane active" id="past2024"></div>
+                <div class="tab-pane" id="festivals"></div>
+                <div class="tab-pane" id="upcoming2024"></div>
+                <div class="tab-pane" id="upcoming2025"></div>
             </div>
         </div>
     </section>
 
     <!-- Testimonials Section -->
-    <section id="testimonials-section" class="container py-5">
+    <section id="testimonials-section" class="container">
         <h2 class="section-heading" data-key="testimonials_title">Testimonials</h2>
-        <div id="testimonialsCarousel" class="carousel slide" data-bs-ride="carousel">
-            <!-- Indicators -->
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Testimonial 1"></button>
-                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="1" aria-label="Testimonial 2"></button>
-                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="2" aria-label="Testimonial 3"></button>
-                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="3" aria-label="Testimonial 4"></button>
-                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="4" aria-label="Testimonial 5"></button>
+        <div class="carousel-container">
+            <div class="testimonial active" data-key="testimonial1_text">
+                "An exceptional developer who consistently delivers high-quality work."
+                <br>
+                <span data-key="testimonial1_author">- Jane Doe, Project Manager</span>
             </div>
-            <!-- Carousel Items -->
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <div class="testimonial-card">
-                        <p class="testimonial-text" data-key="testimonial1_text">"An exceptional developer who consistently delivers high-quality work."</p>
-                        <p class="testimonial-author" data-key="testimonial1_author">- Jane Doe, Project Manager</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="testimonial-card">
-                        <p class="testimonial-text" data-key="testimonial2_text">"A true team player with a knack for problem-solving."</p>
-                        <p class="testimonial-author" data-key="testimonial2_author">- John Smith, Team Lead</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="testimonial-card">
-                        <p class="testimonial-text" data-key="testimonial3_text">"His expertise in backend development has been invaluable to our projects."</p>
-                        <p class="testimonial-author" data-key="testimonial3_author">- Alice Johnson, CTO</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="testimonial-card">
-                        <p class="testimonial-text" data-key="testimonial4_text">"Innovative and reliable, always meeting deadlines with excellence."</p>
-                        <p class="testimonial-author" data-key="testimonial4_author">- Michael Brown, CEO</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="testimonial-card">
-                        <p class="testimonial-text" data-key="testimonial5_text">"A pleasure to work with, bringing creativity and dedication to every task."</p>
-                        <p class="testimonial-author" data-key="testimonial5_author">- Emily Davis, Lead Designer</p>
-                    </div>
-                </div>
+            <div class="testimonial" data-key="testimonial2_text">
+                "A true team player with a knack for problem-solving."
+                <br>
+                <span data-key="testimonial2_author">- John Smith, Team Lead</span>
             </div>
-            <!-- Controls -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden" data-key="carousel_prev">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden" data-key="carousel_next">Next</span>
-            </button>
+            <div class="testimonial" data-key="testimonial3_text">
+                "His expertise in backend development has been invaluable to our projects."
+                <br>
+                <span data-key="testimonial3_author">- Alice Johnson, CTO</span>
+            </div>
+            <div class="testimonial" data-key="testimonial4_text">
+                "Innovative and reliable, always meeting deadlines with excellence."
+                <br>
+                <span data-key="testimonial4_author">- Michael Brown, CEO</span>
+            </div>
+            <div class="testimonial" data-key="testimonial5_text">
+                "A pleasure to work with, bringing creativity and dedication to every task."
+                <br>
+                <span data-key="testimonial5_author">- Emily Davis, Lead Designer</span>
+            </div>
+            <div class="carousel-controls">
+                <button id="prevTestimonial" data-key="carousel_prev">Previous</button>
+                <button id="nextTestimonial" data-key="carousel_next">Next</button>
+            </div>
         </div>
     </section>
 
-    <!-- Contact Section with Downloadable Resume Button -->
-    <section id="contact" class="container py-5">
+    <!-- Contact Section -->
+    <section id="contact" class="container">
         <h2 class="section-heading" data-key="contact_title">Contact</h2>
         <div class="card-custom">
             <form id="contactForm" novalidate>
-                <div class="mb-3">
-                    <label for="contactName" class="form-label" data-key="contact_name_label">Name<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="contactName" required data-key="contact_name_placeholder">
-                    <div class="invalid-feedback" data-key="contact_name_invalid">Please enter your name.</div>
-                </div>
-                <div class="mb-3">
-                    <label for="contactEmail" class="form-label" data-key="contact_email_label">Email<span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" id="contactEmail" required data-key="contact_email_placeholder">
-                    <div class="invalid-feedback" data-key="contact_email_invalid">Please enter a valid email.</div>
-                </div>
-                <div class="mb-3">
-                    <label for="contactMessage" class="form-label" data-key="contact_message_label">Message<span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="contactMessage" rows="5" required data-key="contact_message_placeholder"></textarea>
-                    <div class="invalid-feedback" data-key="contact_message_invalid">Please enter your message.</div>
-                </div>
-                <button type="submit" class="btn btn-primary" data-key="contact_submit">Send</button>
-                <!-- Download Resume Button -->
-                <a href="path/to/your_resume.pdf" download class="btn btn-success ms-2" id="downloadResumeBtn" data-key="download_resume">Download Resume</a>
+                <label for="contactName" data-key="contact_name_label">Name<span style="color: red;">*</span></label>
+                <input type="text" id="contactName" placeholder="Enter your name" required data-key="contact_name_placeholder">
+                <span class="error-message" id="nameError" style="color: red; display: none;" data-key="contact_name_invalid">Please enter your name.</span>
+
+                <label for="contactEmail" data-key="contact_email_label">Email<span style="color: red;">*</span></label>
+                <input type="email" id="contactEmail" placeholder="Enter your email" required data-key="contact_email_placeholder">
+                <span class="error-message" id="emailError" style="color: red; display: none;" data-key="contact_email_invalid">Please enter a valid email.</span>
+
+                <label for="contactMessage" data-key="contact_message_label">Message<span style="color: red;">*</span></label>
+                <textarea id="contactMessage" rows="5" placeholder="Enter your message" required data-key="contact_message_placeholder"></textarea>
+                <span class="error-message" id="messageError" style="color: red; display: none;" data-key="contact_message_invalid">Please enter your message.</span>
+
+                <button type="submit" data-key="contact_submit">Send</button>
+                <a href="path/to/your_resume.pdf" download class="btn-download" data-key="download_resume">Download Resume</a>
             </form>
         </div>
     </section>
 
-    <!-- Bottom Sticky Navigation Bar -->
+    <!-- Fixed Bottom Navigation Bar -->
     <nav class="bottom-nav">
-        <a class="nav-link active" href="#home" data-key="nav_home">
+        <a href="#home" class="nav-link active" data-key="nav_home">
             <i class="bi bi-house"></i>
-            <div>Home</div>
+            <span>Home</span>
         </a>
-        <a class="nav-link" href="#about" data-key="nav_about">
+        <a href="#about" class="nav-link" data-key="nav_about">
             <i class="bi bi-person"></i>
-            <div>About</div>
+            <span>About</span>
         </a>
-        <a class="nav-link" href="#skills-section" data-key="nav_skills">
+        <a href="#skills-section" class="nav-link" data-key="nav_skills">
             <i class="bi bi-star"></i>
-            <div>Skills</div>
+            <span>Skills</span>
         </a>
-        <a class="nav-link" href="#portfolio-section" data-key="nav_portfolio">
+        <a href="#portfolio-section" class="nav-link" data-key="nav_portfolio">
             <i class="bi bi-briefcase"></i>
-            <div>Portfolio</div>
+            <span>Portfolio</span>
         </a>
-        <a class="nav-link" href="#gig-section" data-key="nav_gigs">
+        <a href="#gig-section" class="nav-link" data-key="nav_gigs">
             <i class="bi bi-music-note-beamed"></i>
-            <div>Gigs</div>
+            <span>Gigs</span>
         </a>
-        <a class="nav-link" href="#testimonials-section" data-key="nav_testimonials">
+        <a href="#testimonials-section" class="nav-link" data-key="nav_testimonials">
             <i class="bi bi-chat-left-text"></i>
-            <div>Testimonials</div>
+            <span>Testimonials</span>
         </a>
-        <a class="nav-link" href="#faq-section" data-key="nav_faq">
+        <a href="#faq-section" class="nav-link" data-key="nav_faq">
             <i class="bi bi-question-circle"></i>
-            <div>FAQ</div>
+            <span>FAQ</span>
         </a>
-        <a class="nav-link" href="#contact" data-key="nav_contact">
+        <a href="#contact" class="nav-link" data-key="nav_contact">
             <i class="bi bi-envelope"></i>
-            <div>Contact</div>
+            <span>Contact</span>
         </a>
     </nav>
 
     <!-- Footer -->
-    <footer class="container-fluid py-3 border-top text-center">
+    <footer>
         &copy; <span id="year"></span> UK-based Software Engineer. All rights reserved.
     </footer>
 
@@ -534,13 +797,13 @@
     }
     </script>
 
-    <!-- JavaScript to Handle Dynamic Content and Functionality -->
-    <script 
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
-        crossorigin="anonymous">
-    </script>
+    <!-- External Icons (Bootstrap Icons CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+
+    <!-- JavaScript for Functionality -->
     <script>
         // Language Data
         const langData = JSON.parse(document.getElementById('langData').textContent);
@@ -688,8 +951,8 @@
                 return;
             }
             tabContent.innerHTML = gigsArray.map(g =>
-                `<div class="gig-card mb-3" data-location="${(g.location || '').toLowerCase()}">
-                    <p class="gig-date fw-bold" data-key="gig_date">${g.date}</p>
+                `<div class="gig-card" data-location="${(g.location || '').toLowerCase()}">
+                    <p class="gig-date" data-key="gig_date">${g.date}</p>
                     <p class="gig-description" data-key="gig_description">${g.description}</p>
                 </div>`
             ).join('');
@@ -765,20 +1028,47 @@
         const contactForm = document.getElementById('contactForm');
         contactForm.addEventListener('submit', function(event) {
             event.preventDefault();
-            event.stopPropagation();
+            let isValid = true;
 
-            if (contactForm.checkValidity()) {
+            // Name Validation
+            const nameInput = document.getElementById('contactName');
+            const nameError = document.getElementById('nameError');
+            if (nameInput.value.trim() === '') {
+                nameError.style.display = 'block';
+                isValid = false;
+            } else {
+                nameError.style.display = 'none';
+            }
+
+            // Email Validation
+            const emailInput = document.getElementById('contactEmail');
+            const emailError = document.getElementById('emailError');
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(emailInput.value.trim())) {
+                emailError.style.display = 'block';
+                isValid = false;
+            } else {
+                emailError.style.display = 'none';
+            }
+
+            // Message Validation
+            const messageInput = document.getElementById('contactMessage');
+            const messageError = document.getElementById('messageError');
+            if (messageInput.value.trim() === '') {
+                messageError.style.display = 'block';
+                isValid = false;
+            } else {
+                messageError.style.display = 'none';
+            }
+
+            if (isValid) {
                 // Handle form submission (e.g., send email)
                 alert(langData[currentLang]["contact_submit_success"] || "Thank you for your message!");
                 contactForm.reset();
                 visitorNamePlaceholder.textContent = '';
                 localStorage.removeItem('visitorName');
-                // Reset validation states
-                contactForm.classList.remove('was-validated');
             }
-
-            contactForm.classList.add('was-validated');
-        }, false);
+        });
 
         // Lazy Loading Images
         document.addEventListener("DOMContentLoaded", function() {
@@ -788,7 +1078,7 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const img = entry.target;
-                        img.src = img.src; // Assuming src is already set; otherwise set data-src
+                        img.src = img.getAttribute('src');
                         img.classList.remove('lazy');
                         observer.unobserve(img);
                     }
@@ -800,9 +1090,53 @@
             });
         });
 
-        // Smooth Scrolling
-        document.querySelectorAll('.bottom-nav a').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+        // Testimonials Carousel
+        let currentTestimonial = 0;
+        const testimonials = document.querySelectorAll('.testimonial');
+        const totalTestimonials = testimonials.length;
+
+        const prevTestimonialBtn = document.getElementById('prevTestimonial');
+        const nextTestimonialBtn = document.getElementById('nextTestimonial');
+
+        prevTestimonialBtn.addEventListener('click', () => {
+            testimonials[currentTestimonial].classList.remove('active');
+            currentTestimonial = (currentTestimonial - 1 + totalTestimonials) % totalTestimonials;
+            testimonials[currentTestimonial].classList.add('active');
+        });
+
+        nextTestimonialBtn.addEventListener('click', () => {
+            testimonials[currentTestimonial].classList.remove('active');
+            currentTestimonial = (currentTestimonial + 1) % totalTestimonials;
+            testimonials[currentTestimonial].classList.add('active');
+        });
+
+        // FAQ Collapsible Functionality
+        const faqQuestions = document.querySelectorAll('.faq-question');
+
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isOpen = answer.classList.contains('open');
+
+                // Close all answers
+                document.querySelectorAll('.faq-answer').forEach(ans => {
+                    ans.classList.remove('open');
+                });
+                faqQuestions.forEach(q => q.classList.remove('active'));
+
+                // Toggle current answer
+                if (!isOpen) {
+                    answer.classList.add('open');
+                    question.classList.add('active');
+                }
+            });
+        });
+
+        // Smooth Scrolling for Navigation Links
+        const navLinks = document.querySelectorAll('.bottom-nav a');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
                 e.preventDefault();
                 const targetId = this.getAttribute('href').substring(1);
                 const targetSection = document.getElementById(targetId);
@@ -811,8 +1145,9 @@
                         top: targetSection.offsetTop - 60, // Adjust for nav height
                         behavior: 'smooth'
                     });
+
                     // Update active link
-                    document.querySelectorAll('.bottom-nav a').forEach(link => link.classList.remove('active'));
+                    navLinks.forEach(nav => nav.classList.remove('active'));
                     this.classList.add('active');
                 }
             });
@@ -821,7 +1156,7 @@
         // Highlight Active Nav Link on Scroll
         window.addEventListener('scroll', () => {
             const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
-            document.querySelectorAll('.bottom-nav a').forEach(link => {
+            navLinks.forEach(link => {
                 const section = document.querySelector(link.getAttribute('href'));
                 if (section) {
                     if (scrollPosition >= section.offsetTop - 70 && scrollPosition < section.offsetTop + section.offsetHeight - 70) {
