@@ -256,7 +256,7 @@
             <h2>Manage Your Gigs</h2>
             <!-- Search Bar -->
             <div class="search-bar">
-                <input type="text" id="gigSearch" placeholder="Search by location..." aria-label="Search gigs by location">
+                <input type="text" id="gigSearch" placeholder="Search by location or artist name..." aria-label="Search gigs by location or artist name">
                 <button id="clearSearchBtn">Clear Search</button>
             </div>
             <!-- Tabs -->
@@ -353,7 +353,7 @@
             // Get sorted years
             const years = Object.keys(gigsByYear).map(Number).sort((a, b) => a - b);
 
-            // Generate Tabs
+            // Generate Tabs and Gig Lists
             const gigTabsContainer = document.getElementById('gigTabsContainer');
             const gigListContainer = document.getElementById('gigListContainer');
 
@@ -480,8 +480,10 @@
 
                 gigCards.forEach(card => {
                     const location = card.querySelector('.gig-card__location');
+                    const description = card.querySelector('.gig-card__description');
                     const locationText = location ? location.textContent.toLowerCase() : '';
-                    if (locationText.includes(query)) {
+                    const descriptionText = description ? description.textContent.toLowerCase() : '';
+                    if (locationText.includes(query) || descriptionText.includes(query)) {
                         card.style.display = '';
                     } else {
                         card.style.display = 'none';
