@@ -1,506 +1,310 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gig Tracker</title>
-    
-    <!-- CSS Styles -->
-    <style>
-        /* CSS Variables for Theming */
-        :root {
-            --background-color: #ffffff;
-            --text-color: #000000;
-            --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
-            --card-background: #f8f9fa;
-            --border-color: #dee2e6;
-            --error-color: #dc3545;
-            --focus-color: var(--primary-color);
-            --transition-speed: 0.3s;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gigs Tracker</title>
+  <style>
+    /* Reset some default styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        /* Dark Mode Overrides */
-        .dark-mode {
-            --background-color: #121212;
-            --text-color: #ffffff;
-            --card-background: #1e1e1e;
-            --border-color: #495057;
-        }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+      color: #333;
+    }
 
-        /* General Styles */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            transition: background-color var(--transition-speed), color var(--transition-speed);
-        }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
 
-        header {
-            background-color: var(--primary-color);
-            color: #ffffff;
-            padding: 1.5rem;
-            text-align: center;
-        }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
 
-        main {
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
 
-        h1, h2 {
-            margin-bottom: 1rem;
-        }
+    form input, form select, form button {
+      padding: 10px;
+      font-size: 16px;
+    }
 
-        /* Dark Mode Toggle */
-        .dark-mode-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1001;
-        }
+    form input, form select {
+      flex: 1 1 200px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
 
-        /* Toggle Switch Styles */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
+    form button {
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      flex: 1 1 100px;
+    }
 
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+    form button:hover {
+      background-color: #2980b9;
+    }
 
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: background-color var(--transition-speed);
-            border-radius: 24px;
-        }
+    .gigs-section {
+      margin-bottom: 30px;
+    }
 
-        .slider::before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: transform var(--transition-speed);
-            border-radius: 50%;
-        }
+    .gigs-section h2 {
+      margin-bottom: 10px;
+      color: #34495e;
+    }
 
-        input:checked + .slider {
-            background-color: var(--primary-color);
-        }
+    .gig {
+      background: #ecf0f1;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+    }
 
-        input:checked + .slider::before {
-            transform: translateX(26px);
-        }
+    .gig div {
+      margin-bottom: 5px;
+    }
 
-        /* Gig Tracker Section */
-        #gig-tracker {
-            background-color: var(--card-background);
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: background-color var(--transition-speed), border-color var(--transition-speed);
-        }
+    .rating {
+      color: #f1c40f;
+    }
 
-        /* Search Bar */
-        .search-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 1rem;
-        }
+    .export-btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #2ecc71;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: center;
+    }
 
-        .search-bar input {
-            flex: 1;
-            padding: 0.5rem;
-            font-size: 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
-        }
+    .export-btn:hover {
+      background-color: #27ae60;
+    }
 
-        .search-bar input:focus {
-            border-color: var(--focus-color);
-            outline: none;
-            box-shadow: 0 0 5px var(--focus-color);
-        }
+    @media (min-width: 600px) {
+      form {
+        flex-wrap: nowrap;
+      }
 
-        .search-bar button {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            background-color: var(--secondary-color);
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color var(--transition-speed);
-        }
+      .gig {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-        .search-bar button:hover {
-            background-color: #5a6268; /* Darkened secondary color */
-        }
-
-        /* Tabs */
-        .gig-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .gig-tab {
-            padding: 0.5rem 1rem;
-            background-color: var(--secondary-color);
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color var(--transition-speed), color var(--transition-speed);
-        }
-
-        .gig-tab.active, .gig-tab:hover {
-            background-color: var(--primary-color);
-            color: #ffffff;
-        }
-
-        /* Gig Lists */
-        .gig-list-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .gig-list {
-            display: none; /* Hide all gig lists by default */
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-
-        .gig-list.active {
-            display: grid; /* Show only the active gig list */
-        }
-
-        .gig-card {
-            background-color: var(--background-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 1rem;
-            transition: background-color var(--transition-speed), border-color var(--transition-speed);
-        }
-
-        .gig-card__date {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .gig-card__description {
-            margin-bottom: 0.5rem;
-        }
-
-        .gig-card__location {
-            font-style: italic;
-            color: var(--secondary-color);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .gig-tabs {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .gig-tab {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
+      .gig div {
+        margin-bottom: 0;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Dark Mode Toggle -->
-    <div class="dark-mode-toggle">
-        <label class="switch" aria-label="Toggle Dark Mode">
-            <input type="checkbox" id="darkModeSwitch">
-            <span class="slider"></span>
-        </label>
+  <div class="container">
+    <h1>Gigs & Festivals Tracker</h1>
+    <form id="gig-form">
+      <input type="text" id="gig-name" placeholder="Gig/Festival Name" required>
+      <input type="text" id="gig-location" placeholder="Location" required>
+      <input type="date" id="gig-date" required>
+      <select id="gig-rating" required>
+        <option value="" disabled selected>Rating</option>
+        <option value="⭐">⭐</option>
+        <option value="⭐⭐">⭐⭐</option>
+        <option value="⭐⭐⭐">⭐⭐⭐</option>
+        <option value="⭐⭐⭐⭐">⭐⭐⭐⭐</option>
+        <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
+      </select>
+      <button type="submit">Add Gig</button>
+    </form>
+
+    <div class="gigs-section">
+      <h2>Upcoming Gigs</h2>
+      <div id="upcoming-gigs">
+        <!-- Upcoming gigs will appear here -->
+      </div>
     </div>
 
-    <!-- Header Section -->
-    <header>
-        <h1>Gig Tracker</h1>
-    </header>
+    <div class="gigs-section">
+      <h2>Past Gigs</h2>
+      <div id="past-gigs">
+        <!-- Past gigs will appear here -->
+      </div>
+    </div>
 
-    <!-- Main Content -->
-    <main>
-        <section id="gig-tracker">
-            <h2>Manage Your Gigs</h2>
-            <!-- Search Bar -->
-            <div class="search-bar">
-                <input type="text" id="gigSearch" placeholder="Search by location or artist name..." aria-label="Search gigs by location or artist name">
-                <button id="clearSearchBtn">Clear Search</button>
-            </div>
-            <!-- Tabs -->
-            <div class="gig-tabs" id="gigTabsContainer">
-                <!-- Tabs will be dynamically generated here -->
-            </div>
-            <!-- Gig Lists -->
-            <div class="gig-list-container" id="gigListContainer">
-                <!-- Gig lists will be dynamically generated here -->
-            </div>
-        </section>
-    </main>
+    <button class="export-btn" id="export-btn">Export Gigs</button>
+  </div>
 
-    <!-- Footer -->
-    <footer style="text-align:center; padding:1rem; background-color:var(--card-background); border-top:1px solid var(--border-color);">
-        &copy; <span id="year"></span> Gig Tracker. All rights reserved.
-    </footer>
+  <script>
+    // Select elements
+    const gigForm = document.getElementById('gig-form');
+    const gigNameInput = document.getElementById('gig-name');
+    const gigLocationInput = document.getElementById('gig-location');
+    const gigDateInput = document.getElementById('gig-date');
+    const gigRatingInput = document.getElementById('gig-rating');
+    const upcomingGigsDiv = document.getElementById('upcoming-gigs');
+    const pastGigsDiv = document.getElementById('past-gigs');
+    const exportBtn = document.getElementById('export-btn');
 
-    <!-- JSON Data for Gigs -->
-    <script id="gigData" type="application/json">
-    {
-        "gigs": [
-            {"date":"2024-06-10","location":"Ritz","description":"Mt. Joy","type":"gig"},
-            {"date":"2024-07-10","location":"Co-Op","description":"Kings of Leon","type":"gig"},
-            {"date":"2024-08-08","location":"","description":"Pete Doherty","type":"gig"},
-            {"date":"2024-10-05","location":"Manchester","description":"Neighbourhood Festival: Red Rum Club, Brooke Combe, Antony Szmierek","type":"festival"},
-            {"date":"2024-08-24","location":"Wythenshawe Park","description":"New Order + Johnny Marr","type":"festival"},
-            {"date":"2024-08-25","location":"Wythenshawe Park","description":"Blossoms","type":"festival"},
-            {"date":"2024-09-01","location":"Apollo","description":"girl in red","type":"gig"},
-            {"date":"2024-09-28","location":"Apollo","description":"Sea Girls","type":"gig"},
-            {"date":"2024-10-01","location":"Albert Hall","description":"The Struts","type":"gig"},
-            {"date":"2024-10-02","location":"Apollo","description":"Driver Era","type":"gig"},
-            {"date":"2024-10-04","location":"Apollo","description":"Aurora","type":"gig"},
-            {"date":"2024-10-11","location":"New Century Hall","description":"Saint Motel","type":"gig"},
-            {"date":"2024-10-15","location":"Yes Basement","description":"Leap","type":"gig"},
-            {"date":"2024-11-02","location":"Co-Op","description":"Glass Animals","type":"gig"},
-            {"date":"2024-11-04","location":"Plaza Stockport","description":"Blossoms","type":"gig"},
-            {"date":"2024-11-07","location":"Yes Basement","description":"Jack Jones","type":"gig"},
-            {"date":"2024-11-20","location":"Ritz","description":"Blossoms","type":"gig"},
-            {"date":"2024-12-07","location":"Apollo/YES","description":"Idles + Idles DJ set","type":"gig"},
-            {"date":"2024-12-16","location":"Co-Op","description":"Paul Heaton","type":"gig"},
-            {"date":"2025-02-14","location":"Apollo","description":"Cage the Elephant","type":"gig"},
-            {"date":"2025-03-02","location":"Stockport","description":"You Are Not Alone Festival","type":"festival"},
-            {"date":"2025-04-18","location":"Apollo","description":"Finneas","type":"gig"},
-            {"date":"2025-06-15","location":"Manchester, Tennessee","description":"Bonnaroo","type":"festival"},
-            {"date":"2025-07-05","location":"Finsbury Park","description":"Fontaines D.C.","type":"gig"}
-        ]
+    // Retrieve gigs from localStorage or initialize empty array
+    let gigs = JSON.parse(localStorage.getItem('gigs')) || [];
+
+    // Function to save gigs to localStorage
+    function saveGigs() {
+      localStorage.setItem('gigs', JSON.stringify(gigs));
     }
-    </script>
 
-    <!-- JavaScript for Functionality -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize Footer Year
-            document.getElementById('year').textContent = new Date().getFullYear();
+    // Function to render gigs
+    function renderGigs() {
+      // Clear current lists
+      upcomingGigsDiv.innerHTML = '';
+      pastGigsDiv.innerHTML = '';
 
-            // Dark Mode Toggle
-            const body = document.body;
-            const darkModeSwitch = document.getElementById('darkModeSwitch');
-            const storedDarkMode = localStorage.getItem('darkMode') === 'true';
+      const today = new Date().setHours(0,0,0,0);
 
-            if (storedDarkMode) {
-                body.classList.add('dark-mode');
-                darkModeSwitch.checked = true;
-            }
+      // Sort gigs by date
+      gigs.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-            darkModeSwitch.addEventListener('change', () => {
-                const isDark = darkModeSwitch.checked;
-                body.classList.toggle('dark-mode', isDark);
-                localStorage.setItem('darkMode', isDark);
-            });
+      gigs.forEach(gig => {
+        const gigDate = new Date(gig.date).setHours(0,0,0,0);
+        const gigDiv = document.createElement('div');
+        gigDiv.classList.add('gig');
 
-            // Load Gig Data
-            const gigData = JSON.parse(document.getElementById('gigData').textContent).gigs;
+        const infoDiv = document.createElement('div');
+        infoDiv.innerHTML = `<strong>${gig.name}</strong><br>
+                             Location: ${gig.location}<br>
+                             Date: ${new Date(gig.date).toLocaleDateString()}<br>
+                             Rating: <span class="rating">${gig.rating}</span>`;
 
-            // Function to parse year from date string
-            const getYear = (dateStr) => new Date(dateStr).getFullYear();
+        // Optional: Add delete button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.style.backgroundColor = '#e74c3c';
+        deleteBtn.style.color = '#fff';
+        deleteBtn.style.border = 'none';
+        deleteBtn.style.padding = '5px 10px';
+        deleteBtn.style.borderRadius = '4px';
+        deleteBtn.style.cursor = 'pointer';
+        deleteBtn.addEventListener('click', () => {
+          if(confirm('Are you sure you want to delete this gig?')) {
+            gigs = gigs.filter(item => item.id !== gig.id);
+            saveGigs();
+            renderGigs();
+          }
+        });
 
-            // Group gigs by year and type
-            const gigsByYear = {};
+        gigDiv.appendChild(infoDiv);
+        gigDiv.appendChild(deleteBtn);
 
-            gigData.forEach(gig => {
-                const year = getYear(gig.date);
-                if (!gigsByYear[year]) {
-                    gigsByYear[year] = { gigs: [], festivals: [] };
-                }
-                if (gig.type === 'gig') {
-                    gigsByYear[year].gigs.push(gig);
-                } else if (gig.type === 'festival') {
-                    gigsByYear[year].festivals.push(gig);
-                }
-            });
+        if(gigDate >= today) {
+          upcomingGigsDiv.appendChild(gigDiv);
+        } else {
+          pastGigsDiv.appendChild(gigDiv);
+        }
+      });
+    }
 
-            // Get sorted years
-            const years = Object.keys(gigsByYear).map(Number).sort((a, b) => a - b);
+    // Handle form submission
+    gigForm.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-            // Generate Tabs and Gig Lists
-            const gigTabsContainer = document.getElementById('gigTabsContainer');
-            const gigListContainer = document.getElementById('gigListContainer');
+      const name = gigNameInput.value.trim();
+      const location = gigLocationInput.value.trim();
+      const date = gigDateInput.value;
+      const rating = gigRatingInput.value;
 
-            years.forEach((year, index) => {
-                // Create Tab Button
-                const tabButton = document.createElement('button');
-                tabButton.classList.add('gig-tab');
-                if (index === 0) tabButton.classList.add('active');
-                tabButton.textContent = year;
-                tabButton.setAttribute('data-year', year);
-                gigTabsContainer.appendChild(tabButton);
+      if(!name || !location || !date || !rating) {
+        alert('Please fill in all fields.');
+        return;
+      }
 
-                // Create Gig List Container
-                const gigList = document.createElement('div');
-                gigList.classList.add('gig-list');
-                if (index === 0) gigList.classList.add('active');
-                gigList.id = `year-${year}`;
+      const newGig = {
+        id: Date.now(),
+        name,
+        location,
+        date,
+        rating
+      };
 
-                // Add Gigs Section
-                if (gigsByYear[year].gigs.length > 0) {
-                    const gigsHeader = document.createElement('h3');
-                    gigsHeader.textContent = 'Gigs';
-                    gigList.appendChild(gigsHeader);
+      gigs.push(newGig);
+      saveGigs();
+      renderGigs();
 
-                    gigsByYear[year].gigs.forEach(gig => {
-                        const gigCard = document.createElement('div');
-                        gigCard.classList.add('gig-card');
+      // Clear form
+      gigForm.reset();
+    });
 
-                        const gigDate = document.createElement('p');
-                        gigDate.classList.add('gig-card__date');
-                        gigDate.textContent = formatDate(gig.date);
+    // Handle export
+    exportBtn.addEventListener('click', () => {
+      if(gigs.length === 0) {
+        alert('No gigs to export.');
+        return;
+      }
 
-                        const gigDescription = document.createElement('p');
-                        gigDescription.classList.add('gig-card__description');
-                        gigDescription.textContent = gig.description;
+      const upcoming = [];
+      const past = [];
+      const today = new Date().setHours(0,0,0,0);
 
-                        gigCard.appendChild(gigDate);
-                        gigCard.appendChild(gigDescription);
+      gigs.forEach(gig => {
+        const gigDate = new Date(gig.date).setHours(0,0,0,0);
+        const gigInfo = `🎤 ${gig.name}\n📍 ${gig.location}\n📅 ${new Date(gig.date).toLocaleDateString()}\n⭐ Rating: ${gig.rating}\n`;
+        if(gigDate >= today) {
+          upcoming.push(gigInfo);
+        } else {
+          past.push(gigInfo);
+        }
+      });
 
-                        if (gig.location) {
-                            const gigLocation = document.createElement('p');
-                            gigLocation.classList.add('gig-card__location');
-                            gigLocation.innerHTML = `<strong>Location:</strong> ${gig.location}`;
-                            gigCard.appendChild(gigLocation);
-                        }
+      let exportText = `📅 *My Gigs & Festivals*\n\n`;
 
-                        gigList.appendChild(gigCard);
-                    });
-                }
+      if(upcoming.length > 0) {
+        exportText += `🔜 *Upcoming Gigs:*\n`;
+        exportText += upcoming.join('\n') + '\n\n';
+      }
 
-                // Add Festivals Section
-                if (gigsByYear[year].festivals.length > 0) {
-                    const festivalsHeader = document.createElement('h3');
-                    festivalsHeader.textContent = 'Festivals';
-                    gigList.appendChild(festivalsHeader);
+      if(past.length > 0) {
+        exportText += `🔙 *Past Gigs:*\n`;
+        exportText += past.join('\n') + '\n';
+      }
 
-                    gigsByYear[year].festivals.forEach(festival => {
-                        const festivalCard = document.createElement('div');
-                        festivalCard.classList.add('gig-card');
+      // Create a temporary textarea to copy text
+      const tempTextarea = document.createElement('textarea');
+      tempTextarea.value = exportText;
+      document.body.appendChild(tempTextarea);
+      tempTextarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempTextarea);
 
-                        const festDate = document.createElement('p');
-                        festDate.classList.add('gig-card__date');
-                        festDate.textContent = formatDate(festival.date);
+      alert('Gigs exported to clipboard! You can now paste it on social media.');
+    });
 
-                        const festDescription = document.createElement('p');
-                        festDescription.classList.add('gig-card__description');
-                        festDescription.textContent = festival.description;
-
-                        festivalCard.appendChild(festDate);
-                        festivalCard.appendChild(festDescription);
-
-                        if (festival.location) {
-                            const festLocation = document.createElement('p');
-                            festLocation.classList.add('gig-card__location');
-                            festLocation.innerHTML = `<strong>Location:</strong> ${festival.location}`;
-                            festivalCard.appendChild(festLocation);
-                        }
-
-                        gigList.appendChild(festivalCard);
-                    });
-                }
-
-                gigListContainer.appendChild(gigList);
-            });
-
-            // Format Date Function
-            function formatDate(dateStr) {
-                const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                const date = new Date(dateStr);
-                return date.toLocaleDateString(undefined, options);
-            }
-
-            // Tab Switching Functionality
-            const gigTabs = document.querySelectorAll('.gig-tab');
-            const gigLists = document.querySelectorAll('.gig-list');
-
-            gigTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    // Remove active class from all tabs
-                    gigTabs.forEach(t => t.classList.remove('active'));
-                    // Hide all gig lists
-                    gigLists.forEach(list => list.classList.remove('active'));
-                    // Add active class to clicked tab
-                    tab.classList.add('active');
-                    // Show corresponding gig list
-                    const year = tab.getAttribute('data-year');
-                    document.getElementById(`year-${year}`).classList.add('active');
-                });
-            });
-
-            // Search Functionality
-            const gigSearch = document.getElementById('gigSearch');
-            const clearSearchBtn = document.getElementById('clearSearchBtn');
-
-            gigSearch.addEventListener('input', () => {
-                const query = gigSearch.value.toLowerCase();
-                const activeList = document.querySelector('.gig-list.active');
-
-                // If no active list, do nothing
-                if (!activeList) return;
-
-                // Get all gig cards within the active list
-                const gigCards = activeList.querySelectorAll('.gig-card');
-
-                gigCards.forEach(card => {
-                    const location = card.querySelector('.gig-card__location');
-                    const description = card.querySelector('.gig-card__description');
-                    const locationText = location ? location.textContent.toLowerCase() : '';
-                    const descriptionText = description ? description.textContent.toLowerCase() : '';
-                    if (locationText.includes(query) || descriptionText.includes(query)) {
-                        card.style.display = '';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-
-            clearSearchBtn.addEventListener('click', () => {
-                gigSearch.value = '';
-                const activeList = document.querySelector('.gig-list.active');
-                if (!activeList) return;
-
-                const gigCards = activeList.querySelectorAll('.gig-card');
-                gigCards.forEach(card => {
-                    card.style.display = '';
-                });
-            });
-        </script>
+    // Initial render
+    renderGigs();
+  </script>
 </body>
 </html>
