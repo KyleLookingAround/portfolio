@@ -5,6 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gigs & Festivals Tracker</title>
   <style>
+    /* CSS Variables for Light and Dark Themes */
+    :root {
+      --background-color: #f4f4f4;
+      --text-color: #333;
+      --container-background: #fff;
+      --primary-color: #3498db;
+      --primary-hover: #2980b9;
+      --secondary-color: #2ecc71;
+      --secondary-hover: #27ae60;
+      --danger-color: #e74c3c;
+      --danger-hover: #c0392b;
+      --border-color: #ccc;
+      --header-color: #2c3e50;
+      --subheader-color: #34495e;
+      --modal-background: rgba(0,0,0,0.4);
+      --modal-content-background: #fefefe;
+      --button-text-color: #fff;
+      --rating-color: #f1c40f;
+    }
+
+    /* Dark Theme Variables */
+    body.dark-mode {
+      --background-color: #1e1e1e;
+      --text-color: #f4f4f4;
+      --container-background: #2c2c2c;
+      --primary-color: #2980b9;
+      --primary-hover: #3498db;
+      --secondary-color: #27ae60;
+      --secondary-hover: #2ecc71;
+      --danger-color: #c0392b;
+      --danger-hover: #e74c3c;
+      --border-color: #555;
+      --header-color: #ecf0f1;
+      --subheader-color: #bdc3c7;
+      --modal-background: rgba(0,0,0,0.8);
+      --modal-content-background: #3c3c3c;
+      --button-text-color: #fff;
+      --rating-color: #f1c40f;
+    }
+
     /* Reset some default styles */
     * {
       box-sizing: border-box;
@@ -14,26 +54,90 @@
 
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      background-color: var(--background-color);
       padding: 20px;
-      color: #333;
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
     }
 
     h1 {
       text-align: center;
       margin-bottom: 20px;
-      color: #2c3e50;
+      color: var(--header-color);
     }
 
     .container {
       max-width: 900px;
       margin: 0 auto;
-      background: #fff;
+      background: var(--container-background);
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: background 0.3s;
     }
 
+    /* Dark mode transition for container */
+    body.dark-mode .container {
+      box-shadow: 0 2px 5px rgba(255,255,255,0.1);
+    }
+
+    /* Dark Mode Toggle Switch */
+    .toggle-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--primary-color);
+    }
+
+    input:focus + .slider {
+      box-shadow: 0 0 1px var(--primary-color);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    /* Form Styles */
     form {
       display: flex;
       flex-wrap: wrap;
@@ -48,21 +152,25 @@
 
     form input, form select {
       flex: 1 1 200px;
-      border: 1px solid #ccc;
+      border: 1px solid var(--border-color);
       border-radius: 4px;
+      background-color: var(--container-background);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
     }
 
     form button {
-      background-color: #3498db;
-      color: #fff;
+      background-color: var(--primary-color);
+      color: var(--button-text-color);
       border: none;
       cursor: pointer;
       border-radius: 4px;
       flex: 1 1 100px;
+      transition: background-color 0.3s;
     }
 
     form button:hover {
-      background-color: #2980b9;
+      background-color: var(--primary-hover);
     }
 
     .additional-fields {
@@ -70,8 +178,10 @@
       display: none;
       margin-top: 10px;
       padding: 10px;
-      background-color: #ecf0f1;
+      background-color: var(--container-background);
       border-radius: 4px;
+      border: 1px solid var(--border-color);
+      transition: background-color 0.3s, border-color 0.3s;
     }
 
     .additional-fields.active {
@@ -80,7 +190,7 @@
 
     .additional-fields h3 {
       margin-bottom: 10px;
-      color: #34495e;
+      color: var(--subheader-color);
     }
 
     .support-acts, .festival-artists {
@@ -97,35 +207,40 @@
       flex: 1;
       padding: 5px;
       margin-right: 5px;
-      border: 1px solid #ccc;
+      border: 1px solid var(--border-color);
       border-radius: 4px;
+      background-color: var(--container-background);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
     }
 
     .support-act button, .festival-artist button {
-      background-color: #e74c3c;
-      color: #fff;
+      background-color: var(--danger-color);
+      color: var(--button-text-color);
       border: none;
       padding: 5px 10px;
       border-radius: 4px;
       cursor: pointer;
+      transition: background-color 0.3s;
     }
 
     .support-act button:hover, .festival-artist button:hover {
-      background-color: #c0392b;
+      background-color: var(--danger-hover);
     }
 
     .add-button {
-      background-color: #2ecc71;
-      color: #fff;
+      background-color: var(--secondary-color);
+      color: var(--button-text-color);
       border: none;
       padding: 5px 10px;
       border-radius: 4px;
       cursor: pointer;
       margin-top: 5px;
+      transition: background-color 0.3s;
     }
 
     .add-button:hover {
-      background-color: #27ae60;
+      background-color: var(--secondary-hover);
     }
 
     .gigs-section, .festivals-section {
@@ -134,16 +249,18 @@
 
     .gigs-section h2, .festivals-section h2 {
       margin-bottom: 10px;
-      color: #34495e;
+      color: var(--subheader-color);
     }
 
     .gig, .festival {
-      background: #ecf0f1;
+      background: var(--container-background);
       padding: 15px;
       margin-bottom: 10px;
       border-radius: 4px;
+      border: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
+      transition: background-color 0.3s, border-color 0.3s;
     }
 
     .gig div, .festival div {
@@ -151,24 +268,25 @@
     }
 
     .rating {
-      color: #f1c40f;
+      color: var(--rating-color);
     }
 
     .export-btn {
       display: block;
       width: 100%;
       padding: 10px;
-      background-color: #2ecc71;
-      color: #fff;
+      background-color: var(--secondary-color);
+      color: var(--button-text-color);
       border: none;
       border-radius: 4px;
       font-size: 16px;
       cursor: pointer;
       text-align: center;
+      transition: background-color 0.3s;
     }
 
     .export-btn:hover {
-      background-color: #27ae60;
+      background-color: var(--secondary-hover);
     }
 
     @media (min-width: 600px) {
@@ -198,30 +316,33 @@
       width: 100%; 
       height: 100%; 
       overflow: auto; 
-      background-color: rgba(0,0,0,0.4); 
+      background-color: var(--modal-background);
+      transition: background-color 0.3s;
     }
 
     .modal-content {
-      background-color: #fefefe;
+      background-color: var(--modal-content-background);
       margin: auto;
       padding: 20px;
-      border: 1px solid #888;
+      border: 1px solid var(--border-color);
       width: 90%;
       max-width: 500px;
       border-radius: 8px;
+      transition: background-color 0.3s, border-color 0.3s;
     }
 
     .close {
-      color: #aaa;
+      color: var(--subheader-color);
       float: right;
       font-size: 28px;
       font-weight: bold;
       cursor: pointer;
+      transition: color 0.3s;
     }
 
     .close:hover,
     .close:focus {
-      color: black;
+      color: var(--text-color);
       text-decoration: none;
     }
 
@@ -233,10 +354,31 @@
       flex: 1 1 auto;
       margin-bottom: 10px;
     }
+
+    /* Scrollbar Styling for Modal */
+    .modal::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .modal::-webkit-scrollbar-track {
+      background: var(--container-background);
+    }
+
+    .modal::-webkit-scrollbar-thumb {
+      background-color: var(--primary-color);
+      border-radius: 4px;
+    }
+
   </style>
 </head>
 <body>
   <div class="container">
+    <div class="toggle-container">
+      <label class="toggle-switch">
+        <input type="checkbox" id="dark-mode-toggle">
+        <span class="slider"></span>
+      </label>
+    </div>
     <h1>Gigs & Festivals Tracker</h1>
     <form id="gig-form">
       <select id="entry-type" required>
@@ -345,6 +487,9 @@
     const festivalsList = document.getElementById('festivals-list');
     const exportBtn = document.getElementById('export-btn');
 
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+
     // Modals
     const supportModal = document.getElementById('support-modal');
     const closeSupportModal = document.getElementById('close-support-modal');
@@ -360,14 +505,16 @@
 
     let currentEditingEntryId = null; // To track which gig or festival is being edited
 
-    // Retrieve gigs and festivals from localStorage or initialize empty arrays
+    // Retrieve gigs, festivals, and theme from localStorage or initialize empty arrays
     let gigs = JSON.parse(localStorage.getItem('gigs')) || [];
     let festivals = JSON.parse(localStorage.getItem('festivals')) || [];
+    let isDarkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
 
-    // Function to save gigs and festivals to localStorage
+    // Function to save gigs, festivals, and theme to localStorage
     function saveData() {
       localStorage.setItem('gigs', JSON.stringify(gigs));
       localStorage.setItem('festivals', JSON.stringify(festivals));
+      localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
     }
 
     // Function to render gigs and festivals
@@ -376,9 +523,8 @@
       gigsList.innerHTML = '';
       festivalsList.innerHTML = '';
 
-      // Sort gigs by date
+      // Sort gigs and festivals by date
       gigs.sort((a, b) => new Date(a.date) - new Date(b.date));
-      // Sort festivals by date
       festivals.sort((a, b) => new Date(a.date) - new Date(b.date));
 
       const today = new Date().setHours(0,0,0,0);
@@ -414,13 +560,14 @@
         // Add Support Act Button
         const addSupportBtn = document.createElement('button');
         addSupportBtn.textContent = 'Add Support Act';
-        addSupportBtn.style.backgroundColor = '#2980b9';
-        addSupportBtn.style.color = '#fff';
+        addSupportBtn.style.backgroundColor = 'var(--primary-color)';
+        addSupportBtn.style.color = 'var(--button-text-color)';
         addSupportBtn.style.border = 'none';
         addSupportBtn.style.padding = '5px 10px';
         addSupportBtn.style.borderRadius = '4px';
         addSupportBtn.style.cursor = 'pointer';
         addSupportBtn.style.marginRight = '5px';
+        addSupportBtn.style.transition = 'background-color 0.3s';
         addSupportBtn.addEventListener('click', () => {
           currentEditingEntryId = gig.id;
           openSupportModal();
@@ -429,12 +576,13 @@
         // Delete Button
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
-        deleteBtn.style.backgroundColor = '#e74c3c';
-        deleteBtn.style.color = '#fff';
+        deleteBtn.style.backgroundColor = 'var(--danger-color)';
+        deleteBtn.style.color = 'var(--button-text-color)';
         deleteBtn.style.border = 'none';
         deleteBtn.style.padding = '5px 10px';
         deleteBtn.style.borderRadius = '4px';
         deleteBtn.style.cursor = 'pointer';
+        deleteBtn.style.transition = 'background-color 0.3s';
         deleteBtn.addEventListener('click', () => {
           if(confirm('Are you sure you want to delete this gig?')) {
             gigs = gigs.filter(item => item.id !== gig.id);
@@ -481,13 +629,14 @@
         // Add Artist Button
         const addArtistBtn = document.createElement('button');
         addArtistBtn.textContent = 'Add Artist';
-        addArtistBtn.style.backgroundColor = '#2980b9';
-        addArtistBtn.style.color = '#fff';
+        addArtistBtn.style.backgroundColor = 'var(--primary-color)';
+        addArtistBtn.style.color = 'var(--button-text-color)';
         addArtistBtn.style.border = 'none';
         addArtistBtn.style.padding = '5px 10px';
         addArtistBtn.style.borderRadius = '4px';
         addArtistBtn.style.cursor = 'pointer';
         addArtistBtn.style.marginRight = '5px';
+        addArtistBtn.style.transition = 'background-color 0.3s';
         addArtistBtn.addEventListener('click', () => {
           currentEditingEntryId = festival.id;
           openArtistModal();
@@ -496,12 +645,13 @@
         // Delete Button
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
-        deleteBtn.style.backgroundColor = '#e74c3c';
-        deleteBtn.style.color = '#fff';
+        deleteBtn.style.backgroundColor = 'var(--danger-color)';
+        deleteBtn.style.color = 'var(--button-text-color)';
         deleteBtn.style.border = 'none';
         deleteBtn.style.padding = '5px 10px';
         deleteBtn.style.borderRadius = '4px';
         deleteBtn.style.cursor = 'pointer';
+        deleteBtn.style.transition = 'background-color 0.3s';
         deleteBtn.addEventListener('click', () => {
           if(confirm('Are you sure you want to delete this festival?')) {
             festivals = festivals.filter(item => item.id !== festival.id);
@@ -760,7 +910,30 @@
       alert('Gigs and Festivals exported to clipboard! You can now paste it on social media.');
     });
 
-    // Initial render
+    // Handle Dark Mode Toggle
+    darkModeToggle.addEventListener('change', () => {
+      isDarkMode = darkModeToggle.checked;
+      if(isDarkMode) {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+      saveData();
+    });
+
+    // Apply Dark Mode based on saved preference
+    function applyTheme() {
+      if(isDarkMode) {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.checked = true;
+      } else {
+        document.body.classList.remove('dark-mode');
+        darkModeToggle.checked = false;
+      }
+    }
+
+    // Initial setup
+    applyTheme();
     renderEntries();
   </script>
 </body>
