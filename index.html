@@ -3,13 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UK-based Software Engineer Portfolio</title>
-    
-    <!-- External Icons (Bootstrap Icons CDN) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js" defer></script>
+    <title>Gig Tracker</title>
     
     <!-- CSS Styles -->
     <style>
@@ -20,15 +14,6 @@
             --primary-color: #0d6efd;
             --secondary-color: #6c757d;
             --card-background: #f8f9fa;
-            --nav-background: #ffffff;
-            --nav-text-color: #0d6efd;
-            --footer-background: #f8f9fa;
-            --footer-text-color: #000000;
-            --overlay-background: rgba(13, 110, 253, 0.8);
-            --btn-primary-bg: var(--primary-color);
-            --btn-primary-text: #ffffff;
-            --btn-secondary-bg: var(--secondary-color);
-            --btn-secondary-text: #ffffff;
             --border-color: #dee2e6;
             --error-color: #dc3545;
             --focus-color: var(--primary-color);
@@ -39,12 +24,7 @@
         .dark-mode {
             --background-color: #121212;
             --text-color: #ffffff;
-            --nav-background: #343a40;
-            --nav-text-color: #adb5bd;
-            --footer-background: #343a40;
-            --footer-text-color: #ffffff;
             --card-background: #1e1e1e;
-            --overlay-background: rgba(13, 110, 253, 0.8);
             --border-color: #495057;
         }
 
@@ -54,48 +34,25 @@
             background-color: var(--background-color);
             color: var(--text-color);
             margin: 0;
-            padding-bottom: 70px; /* Prevent content from being hidden behind the nav */
+            padding: 0;
             transition: background-color var(--transition-speed), color var(--transition-speed);
         }
 
-        a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            color: var(--text-color);
-            margin: 0.5em 0;
-        }
-
-        /* Visually Hidden Class for Accessibility */
-        .visually-hidden {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0,0,0,0);
-            border: 0;
-        }
-
-        /* Section Headings */
-        .section-heading {
+        header {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 1.5rem;
             text-align: center;
-            margin-bottom: 2rem;
-            font-size: 2rem;
-            position: relative;
-            display: inline-block;
         }
 
-        .section-heading::after {
-            content: '';
-            width: 50px;
-            height: 3px;
-            background: var(--primary-color);
-            display: block;
-            margin: 0.5rem auto 0;
+        main {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1, h2 {
+            margin-bottom: 1rem;
         }
 
         /* Dark Mode Toggle */
@@ -152,105 +109,8 @@
             transform: translateX(26px);
         }
 
-        /* Fixed Bottom Navigation Bar */
-        nav.bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: var(--nav-background);
-            border-top: 1px solid var(--border-color);
-            z-index: 1000;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            height: 60px;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-        }
-
-        .bottom-nav a {
-            color: var(--nav-text-color);
-            text-decoration: none;
-            font-size: 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: color var(--transition-speed);
-        }
-
-        .bottom-nav a.active, .bottom-nav a:hover {
-            color: var(--primary-color);
-        }
-
-        .bottom-nav a i {
-            font-size: 1.5rem;
-        }
-
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-        }
-
-        /* Greeting Section */
-        header#home {
-            text-align: center;
-            padding: 4rem 1rem;
-        }
-
-        #visitor-name-form {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 1rem;
-        }
-
-        #visitor-name-input {
-            padding: 0.5rem;
-            font-size: 1rem;
-            width: 250px;
-            max-width: 80%;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
-        }
-
-        #visitor-name-input:focus {
-            border-color: var(--focus-color);
-            outline: none;
-            box-shadow: 0 0 5px var(--focus-color);
-        }
-
-        .button {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color var(--transition-speed);
-        }
-
-        .button--primary {
-            background-color: var(--btn-primary-bg);
-            color: var(--btn-primary-text);
-        }
-
-        .button--primary:hover {
-            background-color: #0a58ca; /* Darkened primary color */
-        }
-
-        .button--secondary {
-            background-color: var(--btn-secondary-bg);
-            color: var(--btn-secondary-text);
-        }
-
-        .button--secondary:hover {
-            background-color: #5a6268; /* Darkened secondary color */
-        }
-
-        /* Card Styles */
-        .card-custom {
+        /* Gig Tracker Section */
+        #gig-tracker {
             background-color: var(--card-background);
             padding: 2rem;
             border: 1px solid var(--border-color);
@@ -259,157 +119,45 @@
             transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
-        /* Skills Section */
-        #skills-section .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            height: 40vh;
-        }
-
-        /* FAQ Section */
-        #faq-section .faq-item {
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
             margin-bottom: 1rem;
         }
 
-        .faq-question {
-            cursor: pointer;
-            padding: 1rem;
-            background-color: var(--primary-color);
-            color: #ffffff;
-            border-radius: 4px;
-            position: relative;
-            transition: background-color var(--transition-speed);
-            outline: none;
-        }
-
-        .faq-question::after {
-            content: '\25BC';
-            position: absolute;
-            right: 20px;
-            transition: transform var(--transition-speed);
-        }
-
-        .faq-question.active::after {
-            transform: rotate(180deg);
-        }
-
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height var(--transition-speed) ease, padding var(--transition-speed) ease;
-            background-color: var(--card-background);
-            padding: 0 1rem;
-            border-left: 3px solid var(--primary-color);
-            margin-top: 0.5rem;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .faq-answer.open {
-            max-height: 200px; /* Adjust as needed */
-            padding: 1rem;
-        }
-
-        /* Portfolio Section */
-        #portfolio-section .portfolio-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .portfolio-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-            cursor: pointer;
-            background-color: var(--card-background);
-            transition: transform var(--transition-speed);
-        }
-
-        .portfolio-item:hover {
-            transform: scale(1.02);
-        }
-
-        .portfolio-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform var(--transition-speed);
-        }
-
-        .portfolio-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--overlay-background);
-            color: #ffffff;
-            opacity: 0;
-            transition: opacity var(--transition-speed);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 1rem;
-        }
-
-        .portfolio-item:hover .portfolio-overlay {
-            opacity: 1;
-        }
-
-        .portfolio-overlay h5 {
-            margin-bottom: 0.5rem;
-        }
-
-        .portfolio-overlay a {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: background-color var(--transition-speed);
-        }
-
-        .portfolio-overlay a:hover {
-            background-color: rgba(255, 255, 255, 0.4);
-        }
-
-        /* Gig Tracker Section */
-        #gig-section input#gigSearch {
+        .search-bar input {
+            flex: 1;
             padding: 0.5rem;
             font-size: 1rem;
-            width: 100%;
-            max-width: 300px;
             border: 1px solid var(--border-color);
             border-radius: 4px;
-            margin-bottom: 1rem;
             transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
         }
 
-        #gig-section input#gigSearch:focus {
+        .search-bar input:focus {
             border-color: var(--focus-color);
             outline: none;
             box-shadow: 0 0 5px var(--focus-color);
         }
 
-        #gig-section #clearSearchBtn {
+        .search-bar button {
             padding: 0.5rem 1rem;
             font-size: 1rem;
             background-color: var(--secondary-color);
-            color: var(--btn-secondary-text);
+            color: #ffffff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color var(--transition-speed);
-            margin-bottom: 1rem;
         }
 
-        #gig-section #clearSearchBtn:hover {
+        .search-bar button:hover {
             background-color: #5a6268; /* Darkened secondary color */
         }
 
+        /* Tabs */
         .gig-tabs {
             display: flex;
             justify-content: center;
@@ -421,7 +169,7 @@
         .gig-tab {
             padding: 0.5rem 1rem;
             background-color: var(--secondary-color);
-            color: var(--btn-secondary-text);
+            color: #ffffff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -430,23 +178,21 @@
 
         .gig-tab.active, .gig-tab:hover {
             background-color: var(--primary-color);
-            color: var(--btn-primary-text);
+            color: #ffffff;
         }
 
-        .tab-pane {
-            display: none;
-        }
-
-        .tab-pane.active {
-            display: block;
+        /* Gig List */
+        .gig-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
         }
 
         .gig-card {
-            padding: 1rem;
+            background-color: var(--background-color);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            background-color: var(--card-background);
-            margin-bottom: 1rem;
+            padding: 1rem;
             transition: background-color var(--transition-speed), border-color var(--transition-speed);
         }
 
@@ -455,151 +201,18 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Testimonials Section */
-        #testimonials-section .carousel-container {
-            position: relative;
-            max-width: 800px;
-            margin: 0 auto;
-            overflow: hidden;
-        }
-
-        .testimonial {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-            animation: fadeIn 1s;
-        }
-
-        .testimonial.active {
-            display: block;
-        }
-
-        .carousel-controls {
-            position: absolute;
-            top: 50%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            transform: translateY(-50%);
-        }
-
-        .carousel-controls button {
-            background-color: var(--primary-color);
-            border: none;
-            color: #ffffff;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color var(--transition-speed);
-        }
-
-        .carousel-controls button:hover {
-            background-color: #0a58ca; /* Darkened primary color */
-        }
-
-        /* Contact Section */
-        #contact-form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        #contact-form label {
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        #contact-form input, #contact-form textarea {
-            padding: 0.5rem;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
-        }
-
-        #contact-form input:focus, #contact-form textarea:focus {
-            border-color: var(--focus-color);
-            outline: none;
-            box-shadow: 0 0 5px var(--focus-color);
-        }
-
-        .error-message {
-            color: var(--error-color);
-            font-size: 0.875rem;
-            display: none;
-            margin-bottom: 0.5rem;
-        }
-
-        .btn-download {
-            background-color: var(--secondary-color);
-            color: var(--btn-secondary-text);
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: background-color var(--transition-speed);
-            cursor: pointer;
-            margin-top: 1rem;
-        }
-
-        .btn-download:hover {
-            background-color: #5a6268; /* Darkened secondary color */
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--footer-background);
-            color: var(--footer-text-color);
-            text-align: center;
-            padding: 1rem 0;
-            border-top: 1px solid var(--border-color);
-            transition: background-color var(--transition-speed), color var(--transition-speed);
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Responsive Media Queries */
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .portfolio-gallery {
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            }
-
             .gig-tabs {
                 flex-direction: column;
                 align-items: center;
             }
-
-            .carousel-controls button {
-                padding: 0.5rem;
-                font-size: 0.875rem;
-            }
         }
 
         @media (max-width: 480px) {
-            .section-heading {
-                font-size: 1.5rem;
-            }
-
-            .bottom-nav a {
-                font-size: 0.875rem;
-            }
-
-            #visitor-name-input {
+            .gig-tab {
                 width: 100%;
-            }
-
-            #visitor-name-form .button {
-                width: 100%;
-            }
-
-            .portfolio-overlay a {
-                padding: 0.5rem;
-                font-size: 0.875rem;
+                text-align: center;
             }
         }
     </style>
@@ -614,352 +227,94 @@
     </div>
 
     <!-- Header Section -->
-    <header id="home" class="container">
-        <section class="greeting">
-            <h1 data-key="greeting">Hello!</h1>
-            <p data-key="welcome_message">Welcome to my portfolio.</p>
-            <form id="visitor-name-form">
-                <label for="visitor-name-input" class="visually-hidden">Enter your name</label>
-                <input type="text" id="visitor-name-input" placeholder="Enter your name" data-key="visitor_name_placeholder" aria-label="Enter your name">
-                <button type="submit" class="button button--primary" data-key="submit_button">Submit</button>
-            </form>
-            <p id="visitorNamePlaceholder" data-key="personalized_greeting" aria-live="polite"></p>
-        </section>
+    <header>
+        <h1>Gig Tracker</h1>
     </header>
 
     <!-- Main Content -->
     <main>
-        <!-- About Section -->
-        <section id="about" class="container">
-            <h2 class="section-heading" data-key="about_title">About Me</h2>
-            <article class="card-custom">
-                <p data-key="about_description">
-                    I'm a UK-based Software Engineer with a passion for developing innovative programs that expedite the efficiency and effectiveness of organizational success.
-                    Well-versed in technology and writing code to create reliable and user-friendly systems.
-                </p>
-            </article>
-        </section>
-
-        <!-- Skills Section -->
-        <section id="skills-section" class="container">
-            <h2 class="section-heading" data-key="skills_title">Skills</h2>
-            <div class="card-custom">
-                <div class="chart-container">
-                    <canvas id="skillChart" aria-label="Skills Radar Chart" role="img"></canvas>
-                </div>
+        <section id="gig-tracker">
+            <h2>Manage Your Gigs</h2>
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="gigSearch" placeholder="Search by location..." aria-label="Search gigs by location">
+                <button id="clearSearchBtn">Clear Search</button>
             </div>
-        </section>
-
-        <!-- FAQ Section -->
-        <section id="faq-section" class="container">
-            <h2 class="section-heading" data-key="faq_title">Frequently Asked Questions</h2>
-            <div class="card-custom">
-                <div class="faq-item">
-                    <button class="faq-question" data-key="faq1_question" aria-expanded="false">What technologies do you specialize in?</button>
-                    <div class="faq-answer" data-key="faq1_answer" aria-hidden="true"></div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-question" data-key="faq2_question" aria-expanded="false">How do you handle project deadlines?</button>
-                    <div class="faq-answer" data-key="faq2_answer" aria-hidden="true"></div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-question" data-key="faq3_question" aria-expanded="false">Can you work remotely?</button>
-                    <div class="faq-answer" data-key="faq3_answer" aria-hidden="true"></div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-question" data-key="faq4_question" aria-expanded="false">Do you offer support after project completion?</button>
-                    <div class="faq-answer" data-key="faq4_answer" aria-hidden="true"></div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-question" data-key="faq5_question" aria-expanded="false">What is your approach to learning new technologies?</button>
-                    <div class="faq-answer" data-key="faq5_answer" aria-hidden="true"></div>
-                </div>
+            <!-- Tabs -->
+            <div class="gig-tabs">
+                <button class="gig-tab active" data-tab="past2024">Past Gigs (2024)</button>
+                <button class="gig-tab" data-tab="festivals">Past Festivals</button>
+                <button class="gig-tab" data-tab="upcoming2024">Upcoming (2024)</button>
+                <button class="gig-tab" data-tab="upcoming2025">Upcoming (2025)</button>
             </div>
-        </section>
-
-        <!-- Portfolio Section -->
-        <section id="portfolio-section" class="container">
-            <h2 class="section-heading" data-key="portfolio_title">Portfolio</h2>
-            <div class="portfolio-gallery">
-                <!-- Portfolio Items -->
-                <div class="portfolio-item">
-                    <img src="https://via.placeholder.com/400x300" alt="Screenshot of Project Title 1 showing user interface design" class="lazy" data-key="portfolio1_image_alt">
-                    <div class="portfolio-overlay">
-                        <h5 data-key="portfolio1_title">Project Title 1</h5>
-                        <p data-key="portfolio1_description">Short description of Project 1.</p>
-                        <a href="#" class="button button--secondary" data-key="portfolio1_view">View Project</a>
-                    </div>
-                </div>
-                <div class="portfolio-item">
-                    <img src="https://via.placeholder.com/400x300" alt="Screenshot of Project Title 2 showcasing backend architecture" class="lazy" data-key="portfolio2_image_alt">
-                    <div class="portfolio-overlay">
-                        <h5 data-key="portfolio2_title">Project Title 2</h5>
-                        <p data-key="portfolio2_description">Short description of Project 2.</p>
-                        <a href="#" class="button button--secondary" data-key="portfolio2_view">View Project</a>
-                    </div>
-                </div>
-                <div class="portfolio-item">
-                    <img src="https://via.placeholder.com/400x300" alt="Screenshot of Project Title 3 demonstrating API integration" class="lazy" data-key="portfolio3_image_alt">
-                    <div class="portfolio-overlay">
-                        <h5 data-key="portfolio3_title">Project Title 3</h5>
-                        <p data-key="portfolio3_description">Short description of Project 3.</p>
-                        <a href="#" class="button button--secondary" data-key="portfolio3_view">View Project</a>
-                    </div>
-                </div>
-                <!-- Additional portfolio items can be added here -->
-            </div>
-        </section>
-
-        <!-- Gig Tracker Section -->
-        <section id="gig-section" class="container">
-            <h2 class="section-heading" data-key="gig_title">Gig Tracker</h2>
-            <div class="card-custom">
-                <input type="text" id="gigSearch" placeholder="Search by location..." data-key="gig_search_placeholder" aria-label="Search gigs by location">
-                <button id="clearSearchBtn" class="button button--secondary" data-key="gig_clear_search">Clear Search</button>
-                <div class="gig-tabs">
-                    <button class="gig-tab active" data-tab="past2024" data-key="gig_past_2024">Past Gigs (2024)</button>
-                    <button class="gig-tab" data-tab="festivals" data-key="gig_festivals">Past Festivals</button>
-                    <button class="gig-tab" data-tab="upcoming2024" data-key="gig_upcoming_2024">Upcoming (2024)</button>
-                    <button class="gig-tab" data-tab="upcoming2025" data-key="gig_upcoming_2025">Upcoming (2025)</button>
-                </div>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="past2024"></div>
-                    <div class="tab-pane" id="festivals"></div>
-                    <div class="tab-pane" id="upcoming2024"></div>
-                    <div class="tab-pane" id="upcoming2025"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Testimonials Section -->
-        <section id="testimonials-section" class="container">
-            <h2 class="section-heading" data-key="testimonials_title">Testimonials</h2>
-            <div class="carousel-container" aria-label="Testimonials Carousel">
-                <div class="testimonial active" data-key="testimonial1_text">
-                    "An exceptional developer who consistently delivers high-quality work."
-                    <br>
-                    <span data-key="testimonial1_author">- Jane Doe, Project Manager</span>
-                </div>
-                <div class="testimonial" data-key="testimonial2_text">
-                    "A true team player with a knack for problem-solving."
-                    <br>
-                    <span data-key="testimonial2_author">- John Smith, Team Lead</span>
-                </div>
-                <div class="testimonial" data-key="testimonial3_text">
-                    "His expertise in backend development has been invaluable to our projects."
-                    <br>
-                    <span data-key="testimonial3_author">- Alice Johnson, CTO</span>
-                </div>
-                <div class="testimonial" data-key="testimonial4_text">
-                    "Innovative and reliable, always meeting deadlines with excellence."
-                    <br>
-                    <span data-key="testimonial4_author">- Michael Brown, CEO</span>
-                </div>
-                <div class="testimonial" data-key="testimonial5_text">
-                    "A pleasure to work with, bringing creativity and dedication to every task."
-                    <br>
-                    <span data-key="testimonial5_author">- Emily Davis, Lead Designer</span>
-                </div>
-                <div class="carousel-controls">
-                    <button id="prevTestimonial" class="button button--secondary" data-key="carousel_prev">Previous</button>
-                    <button id="nextTestimonial" class="button button--secondary" data-key="carousel_next">Next</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="container">
-            <h2 class="section-heading" data-key="contact_title">Contact</h2>
-            <div class="card-custom">
-                <form id="contactForm" novalidate>
-                    <label for="contactName" data-key="contact_name_label">Name<span class="visually-hidden">*</span></label>
-                    <input type="text" id="contactName" placeholder="Enter your name" required data-key="contact_name_placeholder" aria-describedby="nameError">
-                    <span class="error-message" id="nameError" data-key="contact_name_invalid">Please enter your name.</span>
-
-                    <label for="contactEmail" data-key="contact_email_label">Email<span class="visually-hidden">*</span></label>
-                    <input type="email" id="contactEmail" placeholder="Enter your email" required data-key="contact_email_placeholder" aria-describedby="emailError">
-                    <span class="error-message" id="emailError" data-key="contact_email_invalid">Please enter a valid email.</span>
-
-                    <label for="contactMessage" data-key="contact_message_label">Message<span class="visually-hidden">*</span></label>
-                    <textarea id="contactMessage" rows="5" placeholder="Enter your message" required data-key="contact_message_placeholder" aria-describedby="messageError"></textarea>
-                    <span class="error-message" id="messageError" data-key="contact_message_invalid">Please enter your message.</span>
-
-                    <button type="submit" class="button button--primary" data-key="contact_submit">Send</button>
-                    <a href="path/to/your_resume.pdf" download class="btn-download button button--secondary" data-key="download_resume">Download Resume</a>
-                </form>
+            <!-- Gig Lists -->
+            <div class="gig-list-container">
+                <div class="gig-list active" id="past2024"></div>
+                <div class="gig-list" id="festivals"></div>
+                <div class="gig-list" id="upcoming2024"></div>
+                <div class="gig-list" id="upcoming2025"></div>
             </div>
         </section>
     </main>
 
     <!-- Footer -->
-    <footer>
-        &copy; <span id="year"></span> UK-based Software Engineer. All rights reserved.
+    <footer style="text-align:center; padding:1rem; background-color:var(--card-background); border-top:1px solid var(--border-color);">
+        &copy; <span id="year"></span> Gig Tracker. All rights reserved.
     </footer>
 
-    <!-- Fixed Bottom Navigation Bar -->
-    <nav class="bottom-nav" role="navigation" aria-label="Main Navigation">
-        <a href="#home" class="nav-link active" data-key="nav_home" aria-current="page">
-            <i class="bi bi-house" aria-hidden="true"></i>
-            <span>Home</span>
-        </a>
-        <a href="#about" class="nav-link" data-key="nav_about">
-            <i class="bi bi-person" aria-hidden="true"></i>
-            <span>About</span>
-        </a>
-        <a href="#skills-section" class="nav-link" data-key="nav_skills">
-            <i class="bi bi-star" aria-hidden="true"></i>
-            <span>Skills</span>
-        </a>
-        <a href="#portfolio-section" class="nav-link" data-key="nav_portfolio">
-            <i class="bi bi-briefcase" aria-hidden="true"></i>
-            <span>Portfolio</span>
-        </a>
-        <a href="#gig-section" class="nav-link" data-key="nav_gigs">
-            <i class="bi bi-music-note-beamed" aria-hidden="true"></i>
-            <span>Gigs</span>
-        </a>
-        <a href="#testimonials-section" class="nav-link" data-key="nav_testimonials">
-            <i class="bi bi-chat-left-text" aria-hidden="true"></i>
-            <span>Testimonials</span>
-        </a>
-        <a href="#faq-section" class="nav-link" data-key="nav_faq">
-            <i class="bi bi-question-circle" aria-hidden="true"></i>
-            <span>FAQ</span>
-        </a>
-        <a href="#contact" class="nav-link" data-key="nav_contact">
-            <i class="bi bi-envelope" aria-hidden="true"></i>
-            <span>Contact</span>
-        </a>
-    </nav>
-
-    <!-- JSON Data for Multi-language Support -->
-    <script id="langData" type="application/json">
+    <!-- JSON Data for Gigs -->
+    <script id="gigData" type="application/json">
     {
-        "en": {
-            "dark_mode_label": "Dark Mode",
-            "greeting": "Hello!",
-            "welcome_message": "Welcome to my portfolio.",
-            "submit_button": "Submit",
-            "personalized_greeting": "",
-            "about_title": "About Me",
-            "about_description": "I'm a UK-based Software Engineer with a passion for developing innovative programs that expedite the efficiency and effectiveness of organizational success. Well-versed in technology and writing code to create reliable and user-friendly systems.",
-            "skills_title": "Skills",
-            "faq_title": "Frequently Asked Questions",
-            "faq1_question": "What technologies do you specialize in?",
-            "faq1_answer": "I specialize in backend development using C#, SQL, and modern web technologies like JavaScript and Node.js.",
-            "faq2_question": "How do you handle project deadlines?",
-            "faq2_answer": "I prioritize tasks effectively, communicate transparently with stakeholders, and utilize project management tools to ensure deadlines are met.",
-            "faq3_question": "Can you work remotely?",
-            "faq3_answer": "Yes, I have extensive experience working remotely and can collaborate effectively with teams across different time zones.",
-            "faq4_question": "Do you offer support after project completion?",
-            "faq4_answer": "Absolutely, I provide ongoing support and maintenance to ensure that your projects continue to run smoothly.",
-            "faq5_question": "What is your approach to learning new technologies?",
-            "faq5_answer": "I stay updated with industry trends, engage in continuous learning through courses and projects, and actively participate in developer communities.",
-            "portfolio_title": "Portfolio",
-            "portfolio1_image_alt": "Screenshot of Project Title 1 showing user interface design",
-            "portfolio1_title": "Project Title 1",
-            "portfolio1_description": "Short description of Project 1.",
-            "portfolio1_view": "View Project",
-            "portfolio2_image_alt": "Screenshot of Project Title 2 showcasing backend architecture",
-            "portfolio2_title": "Project Title 2",
-            "portfolio2_description": "Short description of Project 2.",
-            "portfolio2_view": "View Project",
-            "portfolio3_image_alt": "Screenshot of Project Title 3 demonstrating API integration",
-            "portfolio3_title": "Project Title 3",
-            "portfolio3_description": "Short description of Project 3.",
-            "portfolio3_view": "View Project",
-            "gig_title": "Gig Tracker",
-            "gig_search_placeholder": "Search by location...",
-            "gig_clear_search": "Clear Search",
-            "gig_past_2024": "Past Gigs (2024)",
-            "gig_festivals": "Past Festivals",
-            "gig_upcoming_2024": "Upcoming (2024)",
-            "gig_upcoming_2025": "Upcoming (2025)",
-            "testimonials_title": "Testimonials",
-            "testimonial1_text": "\"An exceptional developer who consistently delivers high-quality work.\"",
-            "testimonial1_author": "- Jane Doe, Project Manager",
-            "testimonial2_text": "\"A true team player with a knack for problem-solving.\"",
-            "testimonial2_author": "- John Smith, Team Lead",
-            "testimonial3_text": "\"His expertise in backend development has been invaluable to our projects.\"",
-            "testimonial3_author": "- Alice Johnson, CTO",
-            "testimonial4_text": "\"Innovative and reliable, always meeting deadlines with excellence.\"",
-            "testimonial4_author": "- Michael Brown, CEO",
-            "testimonial5_text": "\"A pleasure to work with, bringing creativity and dedication to every task.\"",
-            "testimonial5_author": "- Emily Davis, Lead Designer",
-            "carousel_prev": "Previous",
-            "carousel_next": "Next",
-            "contact_title": "Contact",
-            "contact_name_label": "Name",
-            "contact_name_placeholder": "Enter your name",
-            "contact_name_invalid": "Please enter your name.",
-            "contact_email_label": "Email",
-            "contact_email_placeholder": "Enter your email",
-            "contact_email_invalid": "Please enter a valid email.",
-            "contact_message_label": "Message",
-            "contact_message_placeholder": "Enter your message",
-            "contact_message_invalid": "Please enter your message.",
-            "contact_submit": "Send",
-            "contact_submit_success": "Thank you for your message!",
-            "download_resume": "Download Resume",
-            "nav_home": "Home",
-            "nav_about": "About",
-            "nav_skills": "Skills",
-            "nav_portfolio": "Portfolio",
-            "nav_gigs": "Gigs",
-            "nav_testimonials": "Testimonials",
-            "nav_faq": "FAQ",
-            "nav_contact": "Contact",
-            "gig_no_gigs": "No gigs available."
-        }
-        // Additional languages can be added here
+        "past2024": [
+            {"date":"June 10 (Ritz)","location":"Ritz","description":"Mt. Joy"},
+            {"date":"July 10 (Co-Op)","location":"Co-Op","description":"Kings of Leon"},
+            {"date":"August 8","location":"","description":"Pete Doherty"},
+            {"date":"August 24 (Wythenshawe Park)","location":"Wythenshawe Park","description":"New Order + Johnny Marr"},
+            {"date":"August 25 (Wythenshawe Park)","location":"Wythenshawe Park","description":"Blossoms"},
+            {"date":"September 1 (Apollo)","location":"Apollo","description":"girl in red"},
+            {"date":"September 28 (Apollo)","location":"Apollo","description":"Sea Girls"},
+            {"date":"October 1 (Albert Hall)","location":"Albert Hall","description":"The Struts"},
+            {"date":"October 2 (Apollo)","location":"Apollo","description":"Driver Era"},
+            {"date":"October 4 (Apollo)","location":"Apollo","description":"Aurora"},
+            {"date":"October 5 (Manchester)","location":"Manchester","description":"Neighbourhood Festival: Red Rum Club, Brooke Combe, Antony Szmierek"},
+            {"date":"October 11 (New Century Hall)","location":"New Century Hall","description":"Saint Motel"},
+            {"date":"October 15 (Yes Basement)","location":"Yes Basement","description":"Leap"},
+            {"date":"November 2 (Co-Op)","location":"Co-Op","description":"Glass Animals"},
+            {"date":"November 4 (Plaza Stockport)","location":"Plaza Stockport","description":"Blossoms"},
+            {"date":"November 7 (Yes Basement)","location":"Yes Basement","description":"Jack Jones"},
+            {"date":"November 20 (Ritz)","location":"Ritz","description":"Blossoms"}
+        ],
+        "festivals": [
+            {
+                "date":"Bonnaroo 2024 (Manchester, Tennessee)",
+                "location":"Manchester, Tennessee",
+                "description":"Acts: Pretty Lights, FISHER, GWAR, Post Malone, Interpol, T-Pain, The Japanese House, Red Hot Chili Peppers, Cage the Elephant, Cigarettes After Sex, Fred again.., Megan Thee Stallion, Carly Rae Jepsen, Taking Back Sunday."
+            },
+            {
+                "date":"Lollapalooza 2023 (Chicago)",
+                "location":"Chicago",
+                "description":"Acts: Billie Eilish, Portugal. The Man, The 1975, Foals, Odesza, Red Hot Chili Peppers, Mt. Joy."
+            }
+        ],
+        "upcoming2024": [
+            {"date":"December 7 (Apollo/YES)","location":"Apollo/YES","description":"Idles + Idles DJ set"},
+            {"date":"December 16 (Co-Op)","location":"Co-Op","description":"Paul Heaton"}
+        ],
+        "upcoming2025": [
+            {"date":"February 14 (Apollo)","location":"Apollo","description":"Cage the Elephant"},
+            {"date":"March 2 (Stockport)","location":"Stockport","description":"You Are Not Alone Festival"},
+            {"date":"April 18 (Apollo)","location":"Apollo","description":"Finneas"},
+            {"date":"June (Manchester, Tennessee)","location":"Manchester, Tennessee","description":"Bonnaroo"},
+            {"date":"July 5 (Finsbury Park)","location":"Finsbury Park","description":"Fontaines D.C."}
+        ]
     }
     </script>
 
     <!-- JavaScript for Functionality -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Language Data
-            const langData = JSON.parse(document.getElementById('langData').textContent);
-            const currentLang = 'en'; // This can be dynamically set based on user preference
-
-            // Populate Text Content Based on JSON Data
-            const populateTextContent = (lang) => {
-                document.querySelectorAll('[data-key]').forEach(el => {
-                    const key = el.getAttribute('data-key');
-                    const text = langData[lang][key];
-                    if (!text) return;
-
-                    switch (el.tagName.toLowerCase()) {
-                        case 'input':
-                        case 'textarea':
-                            el.placeholder = text;
-                            break;
-                        case 'label':
-                            el.childNodes.forEach(node => {
-                                if (node.nodeType === Node.TEXT_NODE) node.textContent = text;
-                            });
-                            break;
-                        case 'button':
-                        case 'a':
-                            el.textContent = text;
-                            break;
-                        case 'span':
-                        case 'p':
-                        case 'h1':
-                        case 'h2':
-                        case 'h3':
-                        case 'h4':
-                        case 'h5':
-                        case 'h6':
-                            el.textContent = text;
-                            break;
-                        default:
-                            el.textContent = text;
-                    }
-                });
-            };
-
-            populateTextContent(currentLang);
+            // Initialize Footer Year
+            document.getElementById('year').textContent = new Date().getFullYear();
 
             // Dark Mode Toggle
             const body = document.body;
@@ -977,342 +332,59 @@
                 localStorage.setItem('darkMode', isDark);
             });
 
-            // Greeting Based on Time
-            const greetingEl = document.querySelector('[data-key="greeting"]');
-            const currentHour = new Date().getHours();
-            const greetings = {
-                morning: "Good morning",
-                afternoon: "Good afternoon",
-                evening: "Good evening"
-            };
-            const greetingText = currentHour < 12 ? greetings.morning :
-                                 currentHour < 18 ? greetings.afternoon :
-                                 greetings.evening;
-            greetingEl.textContent = `${greetingText}!`;
+            // Load Gig Data
+            const gigData = JSON.parse(document.getElementById('gigData').textContent);
 
-            // Visitor Name Handling
-            const visitorNameForm = document.getElementById('visitor-name-form');
-            const visitorNameInput = document.getElementById('visitor-name-input');
-            const visitorNamePlaceholder = document.getElementById('visitorNamePlaceholder');
-            const storedName = localStorage.getItem('visitorName');
-
-            const setVisitorName = (name) => {
-                const lowerName = name.toLowerCase();
-                const displayName = (lowerName.includes("daniel") || lowerName.includes("denise")) ? "silly goose" : name;
-                visitorNamePlaceholder.textContent = `, ${displayName}`;
-            };
-
-            if (storedName) setVisitorName(storedName);
-
-            visitorNameForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const name = visitorNameInput.value.trim();
-                if (name) {
-                    localStorage.setItem('visitorName', name);
-                    setVisitorName(name);
-                    visitorNameInput.value = '';
-                }
-            });
-
-            // Update Footer Year
-            document.getElementById('year').textContent = new Date().getFullYear();
-
-            // Gig Tracker Data
-            const gigsData = {
-                past2024: [
-                    {"date":"June 10 (Ritz)","location":"Ritz","description":"Mt. Joy"},
-                    {"date":"July 10 (Co-Op)","location":"Co-Op","description":"Kings of Leon"},
-                    {"date":"August 8","location":"","description":"Pete Doherty"},
-                    {"date":"August 24 (Wythenshawe Park)","location":"Wythenshawe Park","description":"New Order + Johnny Marr"},
-                    {"date":"August 25 (Wythenshawe Park)","location":"Wythenshawe Park","description":"Blossoms"},
-                    {"date":"September 1 (Apollo)","location":"Apollo","description":"girl in red"},
-                    {"date":"September 28 (Apollo)","location":"Apollo","description":"Sea Girls"},
-                    {"date":"October 1 (Albert Hall)","location":"Albert Hall","description":"The Struts"},
-                    {"date":"October 2 (Apollo)","location":"Apollo","description":"Driver Era"},
-                    {"date":"October 4 (Apollo)","location":"Apollo","description":"Aurora"},
-                    {"date":"October 5 (Manchester)","location":"Manchester","description":"Neighbourhood Festival: Red Rum Club, Brooke Combe, Antony Szmierek"},
-                    {"date":"October 11 (New Century Hall)","location":"New Century Hall","description":"Saint Motel"},
-                    {"date":"October 15 (Yes Basement)","location":"Yes Basement","description":"Leap"},
-                    {"date":"November 2 (Co-Op)","location":"Co-Op","description":"Glass Animals"},
-                    {"date":"November 4 (Plaza Stockport)","location":"Plaza Stockport","description":"Blossoms"},
-                    {"date":"November 7 (Yes Basement)","location":"Yes Basement","description":"Jack Jones"},
-                    {"date":"November 20 (Ritz)","location":"Ritz","description":"Blossoms"}
-                ],
-                festivals: [
-                    {
-                        "date":"Bonnaroo 2024 (Manchester, Tennessee)",
-                        "location":"Manchester, Tennessee",
-                        "description":"Acts: Pretty Lights, FISHER, GWAR, Post Malone, Interpol, T-Pain, The Japanese House, Red Hot Chili Peppers, Cage the Elephant, Cigarettes After Sex, Fred again.., Megan Thee Stallion, Carly Rae Jepsen, Taking Back Sunday."
-                    },
-                    {
-                        "date":"Lollapalooza 2023 (Chicago)",
-                        "location":"Chicago",
-                        "description":"Acts: Billie Eilish, Portugal. The Man, The 1975, Foals, Odesza, Red Hot Chili Peppers, Mt. Joy."
-                    }
-                ],
-                upcoming2024: [
-                    {"date":"December 7 (Apollo/YES)","location":"Apollo/YES","description":"Idles + Idles DJ set"},
-                    {"date":"December 16 (Co-Op)","location":"Co-Op","description":"Paul Heaton"}
-                ],
-                upcoming2025: [
-                    {"date":"February 14 (Apollo)","location":"Apollo","description":"Cage the Elephant"},
-                    {"date":"March 2 (Stockport)","location":"Stockport","description":"You Are Not Alone Festival"},
-                    {"date":"April 18 (Apollo)","location":"Apollo","description":"Finneas"},
-                    {"date":"June (Manchester, Tennessee)","location":"Manchester, Tennessee","description":"Bonnaroo"},
-                    {"date":"July 5 (Finsbury Park)","location":"Finsbury Park","description":"Fontaines D.C."}
-                ]
-            };
-
-            // Render Gigs
+            // Render Gigs Function
             const renderGigs = (tabId, gigs) => {
-                const tabContent = document.getElementById(tabId);
-                if (!tabContent) return;
-
-                if (gigs.length === 0) {
-                    tabContent.innerHTML = `<p data-key="gig_no_gigs">No gigs available.</p>`;
-                    populateTextContent(currentLang);
-                    return;
-                }
-
-                tabContent.innerHTML = gigs.map(gig => `
-                    <div class="gig-card" data-location="${gig.location.toLowerCase()}">
+                const gigList = document.getElementById(tabId);
+                gigList.innerHTML = gigs.length ? gigs.map(gig => `
+                    <div class="gig-card">
                         <p class="gig-card__date">${gig.date}</p>
                         <p class="gig-card__description">${gig.description}</p>
+                        ${gig.location ? `<p class="gig-card__location"><strong>Location:</strong> ${gig.location}</p>` : ''}
                     </div>
-                `).join('');
+                `).join('') : `<p>No gigs available.</p>`;
             };
 
             // Initial Render
-            Object.keys(gigsData).forEach(tabId => renderGigs(tabId, gigsData[tabId]));
+            Object.keys(gigData).forEach(tab => renderGigs(tab, gigData[tab]));
 
-            // Gig Search Functionality
+            // Tab Functionality
+            const gigTabs = document.querySelectorAll('.gig-tab');
+            const gigLists = document.querySelectorAll('.gig-list');
+
+            gigTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    gigTabs.forEach(t => t.classList.remove('active'));
+                    // Hide all gig lists
+                    gigLists.forEach(list => list.classList.remove('active'));
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    // Show corresponding gig list
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+            // Search Functionality
             const gigSearch = document.getElementById('gigSearch');
             const clearSearchBtn = document.getElementById('clearSearchBtn');
 
             gigSearch.addEventListener('input', () => {
                 const query = gigSearch.value.toLowerCase();
-                document.querySelectorAll('.gig-card').forEach(card => {
-                    const loc = card.dataset.location || '';
-                    card.style.display = loc.includes(query) ? '' : 'none';
+                gigLists.forEach(list => {
+                    const gigs = gigData[list.id];
+                    const filteredGigs = gigs.filter(gig => gig.location.toLowerCase().includes(query));
+                    renderGigs(list.id, filteredGigs);
                 });
             });
 
             clearSearchBtn.addEventListener('click', () => {
                 gigSearch.value = '';
-                document.querySelectorAll('.gig-card').forEach(card => {
-                    card.style.display = '';
-                });
+                gigLists.forEach(tab => renderGigs(tab.id, gigData[tab.id]));
             });
-
-            // Skills Radar Chart
-            const skillChartCtx = document.getElementById('skillChart');
-            if (skillChartCtx) {
-                new Chart(skillChartCtx, {
-                    type: 'radar',
-                    data: {
-                        labels: ['C#', 'SQL', 'Git', 'Documentation', 'Process Improvement', 'Web Tech'],
-                        datasets: [{
-                            label: 'Proficiency',
-                            data: [9, 8, 8, 9, 8, 7],
-                            borderWidth: 2,
-                            backgroundColor: 'rgba(13, 110, 253, 0.2)',
-                            borderColor: 'rgba(13, 110, 253, 1)',
-                            pointBackgroundColor: 'rgba(13, 110, 253, 1)'
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            r: {
-                                suggestedMin: 0,
-                                suggestedMax: 10,
-                                ticks: {
-                                    stepSize: 2
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top'
-                            }
-                        },
-                        responsive: true,
-                        maintainAspectRatio: false
-                    }
-                });
-            }
-
-            // Contact Form Validation
-            const contactForm = document.getElementById('contactForm');
-
-            const validateField = (input, errorEl, pattern = null) => {
-                const value = input.value.trim();
-                let valid = true;
-
-                if (pattern) {
-                    valid = pattern.test(value);
-                } else {
-                    valid = value !== '';
-                }
-
-                errorEl.style.display = valid ? 'none' : 'block';
-                return valid;
-            };
-
-            contactForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                let isValid = true;
-
-                // Validate Name
-                const nameInput = document.getElementById('contactName');
-                const nameError = document.getElementById('nameError');
-                isValid &= validateField(nameInput, nameError);
-
-                // Validate Email
-                const emailInput = document.getElementById('contactEmail');
-                const emailError = document.getElementById('emailError');
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                isValid &= validateField(emailInput, emailError, emailPattern);
-
-                // Validate Message
-                const messageInput = document.getElementById('contactMessage');
-                const messageError = document.getElementById('messageError');
-                isValid &= validateField(messageInput, messageError);
-
-                if (isValid) {
-                    alert(langData[currentLang]["contact_submit_success"] || "Thank you for your message!");
-                    contactForm.reset();
-                    visitorNamePlaceholder.textContent = '';
-                    localStorage.removeItem('visitorName');
-                }
-            });
-
-            // Lazy Loading Images
-            const lazyLoadImages = () => {
-                const images = document.querySelectorAll('img.lazy');
-                const observer = new IntersectionObserver((entries, obs) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const img = entry.target;
-                            img.src = img.dataset.src || img.src;
-                            img.classList.remove('lazy');
-                            obs.unobserve(img);
-                        }
-                    });
-                }, {
-                    rootMargin: '0px 0px 50px 0px',
-                    threshold: 0.01
-                });
-
-                images.forEach(img => observer.observe(img));
-            };
-
-            lazyLoadImages();
-
-            // Testimonials Carousel
-            const setupCarousel = () => {
-                const testimonials = document.querySelectorAll('.testimonial');
-                const prevBtn = document.getElementById('prevTestimonial');
-                const nextBtn = document.getElementById('nextTestimonial');
-                let current = 0;
-
-                const showTestimonial = (index) => {
-                    testimonials.forEach((testimonial, i) => {
-                        testimonial.classList.toggle('active', i === index);
-                    });
-                };
-
-                prevBtn.addEventListener('click', () => {
-                    current = (current - 1 + testimonials.length) % testimonials.length;
-                    showTestimonial(current);
-                });
-
-                nextBtn.addEventListener('click', () => {
-                    current = (current + 1) % testimonials.length;
-                    showTestimonial(current);
-                });
-            };
-
-            setupCarousel();
-
-            // FAQ Collapsible Functionality
-            const setupFAQ = () => {
-                const faqQuestions = document.querySelectorAll('.faq-question');
-
-                faqQuestions.forEach(question => {
-                    const answer = question.nextElementSibling;
-
-                    const toggleFAQ = () => {
-                        const isOpen = answer.classList.contains('open');
-                        document.querySelectorAll('.faq-answer').forEach(ans => {
-                            ans.classList.remove('open');
-                            ans.previousElementSibling.setAttribute('aria-expanded', 'false');
-                        });
-                        if (!isOpen) {
-                            answer.classList.add('open');
-                            question.classList.add('active');
-                            question.setAttribute('aria-expanded', 'true');
-                        }
-                    };
-
-                    question.addEventListener('click', toggleFAQ);
-                    question.addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            toggleFAQ();
-                        }
-                    });
-                });
-            };
-
-            setupFAQ();
-
-            // Smooth Scrolling and Active Link Highlighting
-            const setupNavigation = () => {
-                const navLinks = document.querySelectorAll('.bottom-nav a');
-
-                navLinks.forEach(link => {
-                    link.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const targetId = link.getAttribute('href').slice(1);
-                        const target = document.getElementById(targetId);
-                        if (target) {
-                            window.scrollTo({
-                                top: target.offsetTop - 60, // Adjust for nav height
-                                behavior: 'smooth'
-                            });
-
-                            // Update active link
-                            navLinks.forEach(nav => nav.classList.remove('active'));
-                            link.classList.add('active');
-                            link.setAttribute('aria-current', 'page');
-                        }
-                    });
-                });
-
-                // Highlight Active Nav Link on Scroll
-                window.addEventListener('scroll', () => {
-                    const scrollPosition = window.scrollY || document.documentElement.scrollTop;
-                    navLinks.forEach(link => {
-                        const targetId = link.getAttribute('href').slice(1);
-                        const target = document.getElementById(targetId);
-                        if (target) {
-                            const offsetTop = target.offsetTop - 70;
-                            const offsetBottom = offsetTop + target.offsetHeight;
-                            if (scrollPosition >= offsetTop && scrollPosition < offsetBottom) {
-                                navLinks.forEach(nav => nav.classList.remove('active'));
-                                link.classList.add('active');
-                                link.setAttribute('aria-current', 'page');
-                            } else {
-                                link.classList.remove('active');
-                                link.removeAttribute('aria-current');
-                            }
-                        }
-                    });
-                });
-            };
-
-            setupNavigation();
         });
     </script>
 </body>
