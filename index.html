@@ -260,18 +260,12 @@
                 <button id="clearSearchBtn">Clear Search</button>
             </div>
             <!-- Tabs -->
-            <div class="gig-tabs">
-                <button class="gig-tab active" data-tab="past2024">Past Gigs (2024)</button>
-                <button class="gig-tab" data-tab="festivals">Past Festivals</button>
-                <button class="gig-tab" data-tab="upcoming2024">Upcoming (2024)</button>
-                <button class="gig-tab" data-tab="upcoming2025">Upcoming (2025)</button>
+            <div class="gig-tabs" id="gigTabsContainer">
+                <!-- Tabs will be dynamically generated here -->
             </div>
             <!-- Gig Lists -->
-            <div class="gig-list-container">
-                <div class="gig-list active" id="past2024"></div>
-                <div class="gig-list" id="festivals"></div>
-                <div class="gig-list" id="upcoming2024"></div>
-                <div class="gig-list" id="upcoming2025"></div>
+            <div class="gig-list-container" id="gigListContainer">
+                <!-- Gig lists will be dynamically generated here -->
             </div>
         </section>
     </main>
@@ -284,47 +278,31 @@
     <!-- JSON Data for Gigs -->
     <script id="gigData" type="application/json">
     {
-        "past2024": [
-            {"date":"June 10 (Ritz)","location":"Ritz","description":"Mt. Joy"},
-            {"date":"July 10 (Co-Op)","location":"Co-Op","description":"Kings of Leon"},
-            {"date":"August 8","location":"","description":"Pete Doherty"},
-            {"date":"August 24 (Wythenshawe Park)","location":"Wythenshawe Park","description":"New Order + Johnny Marr"},
-            {"date":"August 25 (Wythenshawe Park)","location":"Wythenshawe Park","description":"Blossoms"},
-            {"date":"September 1 (Apollo)","location":"Apollo","description":"girl in red"},
-            {"date":"September 28 (Apollo)","location":"Apollo","description":"Sea Girls"},
-            {"date":"October 1 (Albert Hall)","location":"Albert Hall","description":"The Struts"},
-            {"date":"October 2 (Apollo)","location":"Apollo","description":"Driver Era"},
-            {"date":"October 4 (Apollo)","location":"Apollo","description":"Aurora"},
-            {"date":"October 5 (Manchester)","location":"Manchester","description":"Neighbourhood Festival: Red Rum Club, Brooke Combe, Antony Szmierek"},
-            {"date":"October 11 (New Century Hall)","location":"New Century Hall","description":"Saint Motel"},
-            {"date":"October 15 (Yes Basement)","location":"Yes Basement","description":"Leap"},
-            {"date":"November 2 (Co-Op)","location":"Co-Op","description":"Glass Animals"},
-            {"date":"November 4 (Plaza Stockport)","location":"Plaza Stockport","description":"Blossoms"},
-            {"date":"November 7 (Yes Basement)","location":"Yes Basement","description":"Jack Jones"},
-            {"date":"November 20 (Ritz)","location":"Ritz","description":"Blossoms"}
-        ],
-        "festivals": [
-            {
-                "date":"Bonnaroo 2024 (Manchester, Tennessee)",
-                "location":"Manchester, Tennessee",
-                "description":"Acts: Pretty Lights, FISHER, GWAR, Post Malone, Interpol, T-Pain, The Japanese House, Red Hot Chili Peppers, Cage the Elephant, Cigarettes After Sex, Fred again.., Megan Thee Stallion, Carly Rae Jepsen, Taking Back Sunday."
-            },
-            {
-                "date":"Lollapalooza 2023 (Chicago)",
-                "location":"Chicago",
-                "description":"Acts: Billie Eilish, Portugal. The Man, The 1975, Foals, Odesza, Red Hot Chili Peppers, Mt. Joy."
-            }
-        ],
-        "upcoming2024": [
-            {"date":"December 7 (Apollo/YES)","location":"Apollo/YES","description":"Idles + Idles DJ set"},
-            {"date":"December 16 (Co-Op)","location":"Co-Op","description":"Paul Heaton"}
-        ],
-        "upcoming2025": [
-            {"date":"February 14 (Apollo)","location":"Apollo","description":"Cage the Elephant"},
-            {"date":"March 2 (Stockport)","location":"Stockport","description":"You Are Not Alone Festival"},
-            {"date":"April 18 (Apollo)","location":"Apollo","description":"Finneas"},
-            {"date":"June (Manchester, Tennessee)","location":"Manchester, Tennessee","description":"Bonnaroo"},
-            {"date":"July 5 (Finsbury Park)","location":"Finsbury Park","description":"Fontaines D.C."}
+        "gigs": [
+            {"date":"2024-06-10","location":"Ritz","description":"Mt. Joy","type":"gig"},
+            {"date":"2024-07-10","location":"Co-Op","description":"Kings of Leon","type":"gig"},
+            {"date":"2024-08-08","location":"","description":"Pete Doherty","type":"gig"},
+            {"date":"2024-10-05","location":"Manchester","description":"Neighbourhood Festival: Red Rum Club, Brooke Combe, Antony Szmierek","type":"festival"},
+            {"date":"2024-08-24","location":"Wythenshawe Park","description":"New Order + Johnny Marr","type":"festival"},
+            {"date":"2024-08-25","location":"Wythenshawe Park","description":"Blossoms","type":"festival"},
+            {"date":"2024-09-01","location":"Apollo","description":"girl in red","type":"gig"},
+            {"date":"2024-09-28","location":"Apollo","description":"Sea Girls","type":"gig"},
+            {"date":"2024-10-01","location":"Albert Hall","description":"The Struts","type":"gig"},
+            {"date":"2024-10-02","location":"Apollo","description":"Driver Era","type":"gig"},
+            {"date":"2024-10-04","location":"Apollo","description":"Aurora","type":"gig"},
+            {"date":"2024-10-11","location":"New Century Hall","description":"Saint Motel","type":"gig"},
+            {"date":"2024-10-15","location":"Yes Basement","description":"Leap","type":"gig"},
+            {"date":"2024-11-02","location":"Co-Op","description":"Glass Animals","type":"gig"},
+            {"date":"2024-11-04","location":"Plaza Stockport","description":"Blossoms","type":"gig"},
+            {"date":"2024-11-07","location":"Yes Basement","description":"Jack Jones","type":"gig"},
+            {"date":"2024-11-20","location":"Ritz","description":"Blossoms","type":"gig"},
+            {"date":"2024-12-07","location":"Apollo/YES","description":"Idles + Idles DJ set","type":"gig"},
+            {"date":"2024-12-16","location":"Co-Op","description":"Paul Heaton","type":"gig"},
+            {"date":"2025-02-14","location":"Apollo","description":"Cage the Elephant","type":"gig"},
+            {"date":"2025-03-02","location":"Stockport","description":"You Are Not Alone Festival","type":"festival"},
+            {"date":"2025-04-18","location":"Apollo","description":"Finneas","type":"gig"},
+            {"date":"2025-06-15","location":"Manchester, Tennessee","description":"Bonnaroo","type":"festival"},
+            {"date":"2025-07-05","location":"Finsbury Park","description":"Fontaines D.C.","type":"gig"}
         ]
     }
     </script>
@@ -352,24 +330,123 @@
             });
 
             // Load Gig Data
-            const gigData = JSON.parse(document.getElementById('gigData').textContent);
+            const gigData = JSON.parse(document.getElementById('gigData').textContent).gigs;
 
-            // Render Gigs Function
-            const renderGigs = (tabId, gigs) => {
-                const gigList = document.getElementById(tabId);
-                gigList.innerHTML = gigs.length ? gigs.map(gig => `
-                    <div class="gig-card">
-                        <p class="gig-card__date">${gig.date}</p>
-                        <p class="gig-card__description">${gig.description}</p>
-                        ${gig.location ? `<p class="gig-card__location"><strong>Location:</strong> ${gig.location}</p>` : ''}
-                    </div>
-                `).join('') : `<p>No gigs available.</p>`;
-            };
+            // Function to parse year from date string
+            const getYear = (dateStr) => new Date(dateStr).getFullYear();
 
-            // Initial Render
-            Object.keys(gigData).forEach(tab => renderGigs(tab, gigData[tab]));
+            // Group gigs by year and type
+            const gigsByYear = {};
 
-            // Tab Functionality
+            gigData.forEach(gig => {
+                const year = getYear(gig.date);
+                if (!gigsByYear[year]) {
+                    gigsByYear[year] = { gigs: [], festivals: [] };
+                }
+                if (gig.type === 'gig') {
+                    gigsByYear[year].gigs.push(gig);
+                } else if (gig.type === 'festival') {
+                    gigsByYear[year].festivals.push(gig);
+                }
+            });
+
+            // Get sorted years
+            const years = Object.keys(gigsByYear).map(Number).sort((a, b) => a - b);
+
+            // Generate Tabs
+            const gigTabsContainer = document.getElementById('gigTabsContainer');
+            const gigListContainer = document.getElementById('gigListContainer');
+
+            years.forEach((year, index) => {
+                // Create Tab Button
+                const tabButton = document.createElement('button');
+                tabButton.classList.add('gig-tab');
+                if (index === 0) tabButton.classList.add('active');
+                tabButton.textContent = year;
+                tabButton.setAttribute('data-year', year);
+                gigTabsContainer.appendChild(tabButton);
+
+                // Create Gig List Container
+                const gigList = document.createElement('div');
+                gigList.classList.add('gig-list');
+                if (index === 0) gigList.classList.add('active');
+                gigList.id = `year-${year}`;
+
+                // Add Gigs Section
+                if (gigsByYear[year].gigs.length > 0) {
+                    const gigsHeader = document.createElement('h3');
+                    gigsHeader.textContent = 'Gigs';
+                    gigList.appendChild(gigsHeader);
+
+                    gigsByYear[year].gigs.forEach(gig => {
+                        const gigCard = document.createElement('div');
+                        gigCard.classList.add('gig-card');
+
+                        const gigDate = document.createElement('p');
+                        gigDate.classList.add('gig-card__date');
+                        gigDate.textContent = formatDate(gig.date);
+
+                        const gigDescription = document.createElement('p');
+                        gigDescription.classList.add('gig-card__description');
+                        gigDescription.textContent = gig.description;
+
+                        gigCard.appendChild(gigDate);
+                        gigCard.appendChild(gigDescription);
+
+                        if (gig.location) {
+                            const gigLocation = document.createElement('p');
+                            gigLocation.classList.add('gig-card__location');
+                            gigLocation.innerHTML = `<strong>Location:</strong> ${gig.location}`;
+                            gigCard.appendChild(gigLocation);
+                        }
+
+                        gigList.appendChild(gigCard);
+                    });
+                }
+
+                // Add Festivals Section
+                if (gigsByYear[year].festivals.length > 0) {
+                    const festivalsHeader = document.createElement('h3');
+                    festivalsHeader.textContent = 'Festivals';
+                    gigList.appendChild(festivalsHeader);
+
+                    gigsByYear[year].festivals.forEach(festival => {
+                        const festivalCard = document.createElement('div');
+                        festivalCard.classList.add('gig-card');
+
+                        const festDate = document.createElement('p');
+                        festDate.classList.add('gig-card__date');
+                        festDate.textContent = formatDate(festival.date);
+
+                        const festDescription = document.createElement('p');
+                        festDescription.classList.add('gig-card__description');
+                        festDescription.textContent = festival.description;
+
+                        festivalCard.appendChild(festDate);
+                        festivalCard.appendChild(festDescription);
+
+                        if (festival.location) {
+                            const festLocation = document.createElement('p');
+                            festLocation.classList.add('gig-card__location');
+                            festLocation.innerHTML = `<strong>Location:</strong> ${festival.location}`;
+                            festivalCard.appendChild(festLocation);
+                        }
+
+                        gigList.appendChild(festivalCard);
+                    });
+                }
+
+                gigListContainer.appendChild(gigList);
+            });
+
+            // Format Date Function
+            function formatDate(dateStr) {
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                const date = new Date(dateStr);
+                return date.toLocaleDateString(undefined, options);
+            }
+
+            // Tab Switching Functionality
             const gigTabs = document.querySelectorAll('.gig-tab');
             const gigLists = document.querySelectorAll('.gig-list');
 
@@ -377,13 +454,13 @@
                 tab.addEventListener('click', () => {
                     // Remove active class from all tabs
                     gigTabs.forEach(t => t.classList.remove('active'));
-                    // Remove active class from all gig lists
+                    // Hide all gig lists
                     gigLists.forEach(list => list.classList.remove('active'));
                     // Add active class to clicked tab
                     tab.classList.add('active');
                     // Show corresponding gig list
-                    const tabId = tab.getAttribute('data-tab');
-                    document.getElementById(tabId).classList.add('active');
+                    const year = tab.getAttribute('data-year');
+                    document.getElementById(`year-${year}`).classList.add('active');
                 });
             });
 
@@ -393,18 +470,35 @@
 
             gigSearch.addEventListener('input', () => {
                 const query = gigSearch.value.toLowerCase();
-                gigLists.forEach(list => {
-                    const gigs = gigData[list.id];
-                    const filteredGigs = gigs.filter(gig => gig.location.toLowerCase().includes(query));
-                    renderGigs(list.id, filteredGigs);
+                const activeList = document.querySelector('.gig-list.active');
+
+                // If no active list, do nothing
+                if (!activeList) return;
+
+                // Get all gig cards within the active list
+                const gigCards = activeList.querySelectorAll('.gig-card');
+
+                gigCards.forEach(card => {
+                    const location = card.querySelector('.gig-card__location');
+                    const locationText = location ? location.textContent.toLowerCase() : '';
+                    if (locationText.includes(query)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
                 });
             });
 
             clearSearchBtn.addEventListener('click', () => {
                 gigSearch.value = '';
-                gigLists.forEach(tab => renderGigs(tab.id, gigData[tab.id]));
+                const activeList = document.querySelector('.gig-list.active');
+                if (!activeList) return;
+
+                const gigCards = activeList.querySelectorAll('.gig-card');
+                gigCards.forEach(card => {
+                    card.style.display = '';
+                });
             });
-        });
-    </script>
+        </script>
 </body>
 </html>
