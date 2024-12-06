@@ -1,374 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Gigs & Festivals Tracker</title>
   <style>
-    /* CSS Variables for Light and Dark Themes */
-    :root {
-      --background-color: #f4f4f4;
-      --text-color: #333;
-      --container-background: #fff;
-      --primary-color: #3498db;
-      --primary-hover: #2980b9;
-      --secondary-color: #2ecc71;
-      --secondary-hover: #27ae60;
-      --danger-color: #e74c3c;
-      --danger-hover: #c0392b;
-      --border-color: #ccc;
-      --header-color: #2c3e50;
-      --subheader-color: #34495e;
-      --modal-background: rgba(0,0,0,0.4);
-      --modal-content-background: #fefefe;
-      --button-text-color: #fff;
-      --rating-color: #f1c40f;
-    }
-
-    /* Dark Theme Variables */
-    body.dark-mode {
-      --background-color: #1e1e1e;
-      --text-color: #f4f4f4;
-      --container-background: #2c2c2c;
-      --primary-color: #2980b9;
-      --primary-hover: #3498db;
-      --secondary-color: #27ae60;
-      --secondary-hover: #2ecc71;
-      --danger-color: #c0392b;
-      --danger-hover: #e74c3c;
-      --border-color: #555;
-      --header-color: #ecf0f1;
-      --subheader-color: #bdc3c7;
-      --modal-background: rgba(0,0,0,0.8);
-      --modal-content-background: #3c3c3c;
-      --button-text-color: #fff;
-      --rating-color: #f1c40f;
-    }
-
-    /* Reset some default styles */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background-color: var(--background-color);
-      padding: 20px;
-      color: var(--text-color);
-      transition: background-color 0.3s, color 0.3s;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: var(--header-color);
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: var(--container-background);
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: background 0.3s;
-    }
-
-    /* Dark mode transition for container */
-    body.dark-mode .container {
-      box-shadow: 0 2px 5px rgba(255,255,255,0.1);
-    }
-
-    /* Dark Mode Toggle Switch */
-    .toggle-container {
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 10px;
-    }
-
-    .toggle-switch {
-      position: relative;
-      display: inline-block;
-      width: 60px;
-      height: 34px;
-    }
-
-    .toggle-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      transition: 0.4s;
-      border-radius: 34px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 26px;
-      width: 26px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      transition: 0.4s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider {
-      background-color: var(--primary-color);
-    }
-
-    input:focus + .slider {
-      box-shadow: 0 0 1px var(--primary-color);
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(26px);
-    }
-
-    /* Form Styles */
-    form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    form input, form select, form button {
-      padding: 10px;
-      font-size: 16px;
-    }
-
-    form input, form select {
-      flex: 1 1 200px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      background-color: var(--container-background);
-      color: var(--text-color);
-      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-    }
-
-    form button {
-      background-color: var(--primary-color);
-      color: var(--button-text-color);
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-      flex: 1 1 100px;
-      transition: background-color 0.3s;
-    }
-
-    form button:hover {
-      background-color: var(--primary-hover);
-    }
-
-    .additional-fields {
-      flex-basis: 100%;
-      display: none;
-      margin-top: 10px;
-      padding: 10px;
-      background-color: var(--container-background);
-      border-radius: 4px;
-      border: 1px solid var(--border-color);
-      transition: background-color 0.3s, border-color 0.3s;
-    }
-
-    .additional-fields.active {
-      display: block;
-    }
-
-    .additional-fields h3 {
-      margin-bottom: 10px;
-      color: var(--subheader-color);
-    }
-
-    .support-acts, .festival-artists {
-      margin-bottom: 10px;
-    }
-
-    .support-act, .festival-artist {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-
-    .support-act input, .festival-artist input, .support-act select, .festival-artist select {
-      flex: 1;
-      padding: 5px;
-      margin-right: 5px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      background-color: var(--container-background);
-      color: var(--text-color);
-      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-    }
-
-    .support-act button, .festival-artist button {
-      background-color: var(--danger-color);
-      color: var(--button-text-color);
-      border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .support-act button:hover, .festival-artist button:hover {
-      background-color: var(--danger-hover);
-    }
-
-    .add-button {
-      background-color: var(--secondary-color);
-      color: var(--button-text-color);
-      border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 5px;
-      transition: background-color 0.3s;
-    }
-
-    .add-button:hover {
-      background-color: var(--secondary-hover);
-    }
-
-    .gigs-section, .festivals-section {
-      margin-bottom: 30px;
-    }
-
-    .gigs-section h2, .festivals-section h2 {
-      margin-bottom: 10px;
-      color: var(--subheader-color);
-    }
-
-    .gig, .festival {
-      background: var(--container-background);
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 4px;
-      border: 1px solid var(--border-color);
-      display: flex;
-      flex-direction: column;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
-
-    .gig div, .festival div {
-      margin-bottom: 5px;
-    }
-
-    .rating {
-      color: var(--rating-color);
-    }
-
-    .export-btn {
-      display: block;
-      width: 100%;
-      padding: 10px;
-      background-color: var(--secondary-color);
-      color: var(--button-text-color);
-      border: none;
-      border-radius: 4px;
-      font-size: 16px;
-      cursor: pointer;
-      text-align: center;
-      transition: background-color 0.3s;
-    }
-
-    .export-btn:hover {
-      background-color: var(--secondary-hover);
-    }
-
-    @media (min-width: 600px) {
-      form {
-        flex-wrap: nowrap;
-      }
-
-      .gig, .festival {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .gig div, .festival div {
-        margin-bottom: 0;
-      }
-    }
-
-    /* Modal Styles */
-    .modal {
-      display: none; 
-      position: fixed; 
-      z-index: 100; 
-      padding-top: 100px; 
-      left: 0;
-      top: 0;
-      width: 100%; 
-      height: 100%; 
-      overflow: auto; 
-      background-color: var(--modal-background);
-      transition: background-color 0.3s;
-    }
-
-    .modal-content {
-      background-color: var(--modal-content-background);
-      margin: auto;
-      padding: 20px;
-      border: 1px solid var(--border-color);
-      width: 90%;
-      max-width: 500px;
-      border-radius: 8px;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
-
-    .close {
-      color: var(--subheader-color);
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-
-    .close:hover,
-    .close:focus {
-      color: var(--text-color);
-      text-decoration: none;
-    }
-
-    .modal form {
-      flex-direction: column;
-    }
-
-    .modal form input, .modal form select, .modal form button {
-      flex: 1 1 auto;
-      margin-bottom: 10px;
-    }
-
-    /* Scrollbar Styling for Modal */
-    .modal::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .modal::-webkit-scrollbar-track {
-      background: var(--container-background);
-    }
-
-    .modal::-webkit-scrollbar-thumb {
-      background-color: var(--primary-color);
-      border-radius: 4px;
-    }
-
+    /* Keep your existing styling and dark mode CSS variables here */
+    /* ... */
   </style>
 </head>
 <body>
@@ -380,26 +18,19 @@
       </label>
     </div>
     <h1>Gigs & Festivals Tracker</h1>
-    <form id="gig-form">
+
+    <form id="entry-form">
       <select id="entry-type" required>
         <option value="" disabled selected>Select Type</option>
         <option value="gig">Gig</option>
         <option value="festival">Festival</option>
       </select>
-      <input type="text" id="entry-name" placeholder="Name" required>
-      <input type="text" id="entry-location" placeholder="Location" required>
-      <input type="date" id="entry-date" required>
-      <div id="festival-rating-container" style="display: none; flex:1 1 100%;">
-        <select id="festival-rating">
-          <option value="" disabled selected>Festival Rating</option>
-          <option value="⭐">⭐</option>
-          <option value="⭐⭐">⭐⭐</option>
-          <option value="⭐⭐⭐">⭐⭐⭐</option>
-          <option value="⭐⭐⭐⭐">⭐⭐⭐⭐</option>
-          <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
-        </select>
-      </div>
-      <select id="gig-rating" required>
+      <input type="text" id="entry-name" placeholder="Name" required />
+      <input type="text" id="entry-location" placeholder="Location" required />
+      <input type="date" id="entry-date" required />
+
+      <!-- Gig rating field -->
+      <select id="gig-rating">
         <option value="" disabled selected>Gig Rating</option>
         <option value="⭐">⭐</option>
         <option value="⭐⭐">⭐⭐</option>
@@ -407,38 +38,40 @@
         <option value="⭐⭐⭐⭐">⭐⭐⭐⭐</option>
         <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
       </select>
+
+      <!-- Festival rating field -->
+      <select id="festival-rating" style="display: none;">
+        <option value="" disabled selected>Festival Rating</option>
+        <option value="⭐">⭐</option>
+        <option value="⭐⭐">⭐⭐</option>
+        <option value="⭐⭐⭐">⭐⭐⭐</option>
+        <option value="⭐⭐⭐⭐">⭐⭐⭐⭐</option>
+        <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
+      </select>
+
       <button type="submit">Add Entry</button>
     </form>
 
-    <!-- Additional Fields for Support Acts or Festival Artists -->
-    <div class="additional-fields" id="additional-fields">
-      <!-- Content dynamically added via JavaScript -->
-    </div>
-
     <div class="gigs-section">
       <h2>Gigs</h2>
-      <div id="gigs-list">
-        <!-- Gigs will appear here -->
-      </div>
+      <div id="gigs-list"></div>
     </div>
 
     <div class="festivals-section">
       <h2>Festivals</h2>
-      <div id="festivals-list">
-        <!-- Festivals will appear here -->
-      </div>
+      <div id="festivals-list"></div>
     </div>
 
     <button class="export-btn" id="export-btn">Export Gigs & Festivals</button>
   </div>
 
-  <!-- Modal for Adding Support Acts -->
+  <!-- Modals for support acts and festival artists -->
   <div id="support-modal" class="modal">
     <div class="modal-content">
       <span class="close" id="close-support-modal">&times;</span>
       <h3>Add Support Act</h3>
       <form id="support-act-form">
-        <input type="text" id="support-act-name" placeholder="Support Act Name" required>
+        <input type="text" id="support-act-name" placeholder="Support Act Name" required />
         <select id="support-act-rating" required>
           <option value="" disabled selected>Rating</option>
           <option value="⭐">⭐</option>
@@ -452,13 +85,12 @@
     </div>
   </div>
 
-  <!-- Modal for Adding Festival Artists -->
   <div id="artist-modal" class="modal">
     <div class="modal-content">
       <span class="close" id="close-artist-modal">&times;</span>
       <h3>Add Artist</h3>
       <form id="artist-form">
-        <input type="text" id="artist-name" placeholder="Artist Name" required>
+        <input type="text" id="artist-name" placeholder="Artist Name" required />
         <select id="artist-rating" required>
           <option value="" disabled selected>Rating</option>
           <option value="⭐">⭐</option>
@@ -473,24 +105,24 @@
   </div>
 
   <script>
-    // Select elements
-    const gigForm = document.getElementById('gig-form');
+    // ==== State & DOM references ====
+    let gigs = JSON.parse(localStorage.getItem('gigs')) || [];
+    let festivals = JSON.parse(localStorage.getItem('festivals')) || [];
+    let isDarkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
+    let currentEditingEntryId = null; // For adding support acts/artists
+
+    const entryForm = document.getElementById('entry-form');
     const entryType = document.getElementById('entry-type');
     const entryName = document.getElementById('entry-name');
     const entryLocation = document.getElementById('entry-location');
     const entryDate = document.getElementById('entry-date');
     const gigRating = document.getElementById('gig-rating');
-    const festivalRatingContainer = document.getElementById('festival-rating-container');
     const festivalRating = document.getElementById('festival-rating');
-    const additionalFields = document.getElementById('additional-fields');
     const gigsList = document.getElementById('gigs-list');
     const festivalsList = document.getElementById('festivals-list');
     const exportBtn = document.getElementById('export-btn');
-
-    // Dark Mode Toggle
     const darkModeToggle = document.getElementById('dark-mode-toggle');
 
-    // Modals
     const supportModal = document.getElementById('support-modal');
     const closeSupportModal = document.getElementById('close-support-modal');
     const supportActForm = document.getElementById('support-act-form');
@@ -501,248 +133,231 @@
     const closeArtistModal = document.getElementById('close-artist-modal');
     const artistForm = document.getElementById('artist-form');
     const artistName = document.getElementById('artist-name');
-    const artistRating = document.getElementById('artist-rating');
+    const artistRatingElement = document.getElementById('artist-rating');
 
-    let currentEditingEntryId = null; // To track which gig or festival is being edited
-
-    // Retrieve gigs, festivals, and theme from localStorage or initialize empty arrays
-    let gigs = JSON.parse(localStorage.getItem('gigs')) || [];
-    let festivals = JSON.parse(localStorage.getItem('festivals')) || [];
-    let isDarkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
-
-    // Function to save gigs, festivals, and theme to localStorage
+    // ==== Utility / Helper Functions ====
     function saveData() {
       localStorage.setItem('gigs', JSON.stringify(gigs));
       localStorage.setItem('festivals', JSON.stringify(festivals));
       localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
     }
 
-    // Function to render gigs and festivals
+    function applyTheme() {
+      if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.checked = true;
+      } else {
+        document.body.classList.remove('dark-mode');
+        darkModeToggle.checked = false;
+      }
+    }
+
+    function createButton(text, onClick, bgColor) {
+      const btn = document.createElement('button');
+      btn.textContent = text;
+      btn.style.backgroundColor = bgColor || 'var(--primary-color)';
+      btn.style.color = 'var(--button-text-color)';
+      btn.style.border = 'none';
+      btn.style.padding = '5px 10px';
+      btn.style.borderRadius = '4px';
+      btn.style.cursor = 'pointer';
+      btn.style.marginRight = '5px';
+      btn.style.transition = 'background-color 0.3s';
+      btn.addEventListener('click', onClick);
+      return btn;
+    }
+
+    // ==== Rendering Functions ====
     function renderEntries() {
-      // Clear current lists
+      renderGigs();
+      renderFestivals();
+    }
+
+    function renderGigs() {
       gigsList.innerHTML = '';
-      festivalsList.innerHTML = '';
-
-      // Sort gigs and festivals by date
       gigs.sort((a, b) => new Date(a.date) - new Date(b.date));
-      festivals.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-      const today = new Date().setHours(0,0,0,0);
-
-      // Render Gigs
       gigs.forEach(gig => {
-        const gigDate = new Date(gig.date).setHours(0,0,0,0);
-        const gigDiv = document.createElement('div');
-        gigDiv.classList.add('gig');
-
-        const infoDiv = document.createElement('div');
-        infoDiv.innerHTML = `<strong>${gig.name}</strong><br>
-                             Location: ${gig.location}<br>
-                             Date: ${new Date(gig.date).toLocaleDateString()}<br>
-                             Rating: <span class="rating">${gig.rating}</span>`;
-
-        // Support Acts
-        if(gig.supportActs && gig.supportActs.length > 0) {
-          const supportActsDiv = document.createElement('div');
-          supportActsDiv.innerHTML = `<em>Support Acts:</em>`;
-          const ul = document.createElement('ul');
-          gig.supportActs.forEach(act => {
-            const li = document.createElement('li');
-            li.textContent = `${act.name} - ${act.rating}`;
-            ul.appendChild(li);
-          });
-          supportActsDiv.appendChild(ul);
-          infoDiv.appendChild(supportActsDiv);
-        }
-
-        // Buttons
-        const buttonsDiv = document.createElement('div');
-        // Add Support Act Button
-        const addSupportBtn = document.createElement('button');
-        addSupportBtn.textContent = 'Add Support Act';
-        addSupportBtn.style.backgroundColor = 'var(--primary-color)';
-        addSupportBtn.style.color = 'var(--button-text-color)';
-        addSupportBtn.style.border = 'none';
-        addSupportBtn.style.padding = '5px 10px';
-        addSupportBtn.style.borderRadius = '4px';
-        addSupportBtn.style.cursor = 'pointer';
-        addSupportBtn.style.marginRight = '5px';
-        addSupportBtn.style.transition = 'background-color 0.3s';
-        addSupportBtn.addEventListener('click', () => {
-          currentEditingEntryId = gig.id;
-          openSupportModal();
-        });
-
-        // Delete Button
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.style.backgroundColor = 'var(--danger-color)';
-        deleteBtn.style.color = 'var(--button-text-color)';
-        deleteBtn.style.border = 'none';
-        deleteBtn.style.padding = '5px 10px';
-        deleteBtn.style.borderRadius = '4px';
-        deleteBtn.style.cursor = 'pointer';
-        deleteBtn.style.transition = 'background-color 0.3s';
-        deleteBtn.addEventListener('click', () => {
-          if(confirm('Are you sure you want to delete this gig?')) {
-            gigs = gigs.filter(item => item.id !== gig.id);
-            saveData();
-            renderEntries();
-          }
-        });
-
-        buttonsDiv.appendChild(addSupportBtn);
-        buttonsDiv.appendChild(deleteBtn);
-        infoDiv.appendChild(buttonsDiv);
-
-        gigDiv.appendChild(infoDiv);
-        gigsList.appendChild(gigDiv);
-      });
-
-      // Render Festivals
-      festivals.forEach(festival => {
-        const festivalDiv = document.createElement('div');
-        festivalDiv.classList.add('festival');
-
-        const infoDiv = document.createElement('div');
-        infoDiv.innerHTML = `<strong>${festival.name}</strong><br>
-                             Location: ${festival.location}<br>
-                             Date: ${new Date(festival.date).toLocaleDateString()}<br>
-                             Overall Rating: <span class="rating">${festival.rating}</span>`;
-
-        // Artists
-        if(festival.artists && festival.artists.length > 0) {
-          const artistsDiv = document.createElement('div');
-          artistsDiv.innerHTML = `<em>Artists Seen:</em>`;
-          const ul = document.createElement('ul');
-          festival.artists.forEach(artist => {
-            const li = document.createElement('li');
-            li.textContent = `${artist.name} - ${artist.rating}`;
-            ul.appendChild(li);
-          });
-          artistsDiv.appendChild(ul);
-          infoDiv.appendChild(artistsDiv);
-        }
-
-        // Buttons
-        const buttonsDiv = document.createElement('div');
-        // Add Artist Button
-        const addArtistBtn = document.createElement('button');
-        addArtistBtn.textContent = 'Add Artist';
-        addArtistBtn.style.backgroundColor = 'var(--primary-color)';
-        addArtistBtn.style.color = 'var(--button-text-color)';
-        addArtistBtn.style.border = 'none';
-        addArtistBtn.style.padding = '5px 10px';
-        addArtistBtn.style.borderRadius = '4px';
-        addArtistBtn.style.cursor = 'pointer';
-        addArtistBtn.style.marginRight = '5px';
-        addArtistBtn.style.transition = 'background-color 0.3s';
-        addArtistBtn.addEventListener('click', () => {
-          currentEditingEntryId = festival.id;
-          openArtistModal();
-        });
-
-        // Delete Button
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.style.backgroundColor = 'var(--danger-color)';
-        deleteBtn.style.color = 'var(--button-text-color)';
-        deleteBtn.style.border = 'none';
-        deleteBtn.style.padding = '5px 10px';
-        deleteBtn.style.borderRadius = '4px';
-        deleteBtn.style.cursor = 'pointer';
-        deleteBtn.style.transition = 'background-color 0.3s';
-        deleteBtn.addEventListener('click', () => {
-          if(confirm('Are you sure you want to delete this festival?')) {
-            festivals = festivals.filter(item => item.id !== festival.id);
-            saveData();
-            renderEntries();
-          }
-        });
-
-        buttonsDiv.appendChild(addArtistBtn);
-        buttonsDiv.appendChild(deleteBtn);
-        infoDiv.appendChild(buttonsDiv);
-
-        festivalDiv.appendChild(infoDiv);
-        festivalsList.appendChild(festivalDiv);
+        gigsList.appendChild(createGigElement(gig));
       });
     }
 
-    // Handle Entry Type Change
+    function renderFestivals() {
+      festivalsList.innerHTML = '';
+      festivals.sort((a, b) => new Date(a.date) - new Date(b.date));
+      festivals.forEach(festival => {
+        festivalsList.appendChild(createFestivalElement(festival));
+      });
+    }
+
+    function createGigElement(gig) {
+      const gigDiv = document.createElement('div');
+      gigDiv.classList.add('gig');
+
+      const infoDiv = document.createElement('div');
+      infoDiv.innerHTML = `
+        <strong>${gig.name}</strong><br>
+        Location: ${gig.location}<br>
+        Date: ${new Date(gig.date).toLocaleDateString()}<br>
+        Rating: <span class="rating">${gig.rating}</span>
+      `;
+
+      if (gig.supportActs && gig.supportActs.length > 0) {
+        const supportActsDiv = document.createElement('div');
+        supportActsDiv.innerHTML = `<em>Support Acts:</em>`;
+        const ul = document.createElement('ul');
+        gig.supportActs.forEach(act => {
+          const li = document.createElement('li');
+          li.textContent = `${act.name} - ${act.rating}`;
+          ul.appendChild(li);
+        });
+        supportActsDiv.appendChild(ul);
+        infoDiv.appendChild(supportActsDiv);
+      }
+
+      const buttonsDiv = document.createElement('div');
+      const addSupportBtn = createButton('Add Support Act', () => {
+        currentEditingEntryId = gig.id;
+        openSupportModal();
+      });
+      const deleteBtn = createButton('Delete', () => {
+        if (confirm('Are you sure you want to delete this gig?')) {
+          gigs = gigs.filter(item => item.id !== gig.id);
+          saveData();
+          renderEntries();
+        }
+      }, 'var(--danger-color)');
+
+      buttonsDiv.appendChild(addSupportBtn);
+      buttonsDiv.appendChild(deleteBtn);
+      infoDiv.appendChild(buttonsDiv);
+
+      gigDiv.appendChild(infoDiv);
+      return gigDiv;
+    }
+
+    function createFestivalElement(festival) {
+      const festivalDiv = document.createElement('div');
+      festivalDiv.classList.add('festival');
+
+      const infoDiv = document.createElement('div');
+      infoDiv.innerHTML = `
+        <strong>${festival.name}</strong><br>
+        Location: ${festival.location}<br>
+        Date: ${new Date(festival.date).toLocaleDateString()}<br>
+        Overall Rating: <span class="rating">${festival.rating}</span>
+      `;
+
+      if (festival.artists && festival.artists.length > 0) {
+        const artistsDiv = document.createElement('div');
+        artistsDiv.innerHTML = `<em>Artists Seen:</em>`;
+        const ul = document.createElement('ul');
+        festival.artists.forEach(ar => {
+          const li = document.createElement('li');
+          li.textContent = `${ar.name} - ${ar.rating}`;
+          ul.appendChild(li);
+        });
+        artistsDiv.appendChild(ul);
+        infoDiv.appendChild(artistsDiv);
+      }
+
+      const buttonsDiv = document.createElement('div');
+      const addArtistBtn = createButton('Add Artist', () => {
+        currentEditingEntryId = festival.id;
+        openArtistModal();
+      });
+      const deleteBtn = createButton('Delete', () => {
+        if (confirm('Are you sure you want to delete this festival?')) {
+          festivals = festivals.filter(item => item.id !== festival.id);
+          saveData();
+          renderEntries();
+        }
+      }, 'var(--danger-color)');
+
+      buttonsDiv.appendChild(addArtistBtn);
+      buttonsDiv.appendChild(deleteBtn);
+      infoDiv.appendChild(buttonsDiv);
+
+      festivalDiv.appendChild(infoDiv);
+      return festivalDiv;
+    }
+
+    // ==== Add Entry Logic ====
+    function addGig(name, location, date, rating) {
+      const newGig = {
+        id: Date.now(),
+        name,
+        location,
+        date,
+        rating,
+        supportActs: []
+      };
+      gigs.push(newGig);
+      saveData();
+      renderEntries();
+    }
+
+    function addFestival(name, location, date, rating) {
+      const newFestival = {
+        id: Date.now(),
+        name,
+        location,
+        date,
+        rating,
+        artists: []
+      };
+      festivals.push(newFestival);
+      saveData();
+      renderEntries();
+    }
+
     entryType.addEventListener('change', () => {
-      const type = entryType.value;
-      additionalFields.innerHTML = ''; // Clear previous fields
-      if(type === 'gig') {
-        festivalRatingContainer.style.display = 'none';
+      if (entryType.value === 'gig') {
         gigRating.style.display = 'block';
-      } else if(type === 'festival') {
-        festivalRatingContainer.style.display = 'block';
+        festivalRating.style.display = 'none';
+        gigRating.setAttribute('required', 'required');
+        festivalRating.removeAttribute('required');
+      } else {
+        festivalRating.style.display = 'block';
         gigRating.style.display = 'none';
+        festivalRating.setAttribute('required', 'required');
+        gigRating.removeAttribute('required');
       }
     });
 
-    // Handle Form Submission
-    gigForm.addEventListener('submit', (e) => {
+    entryForm.addEventListener('submit', (e) => {
       e.preventDefault();
-
       const type = entryType.value;
       const name = entryName.value.trim();
       const location = entryLocation.value.trim();
       const date = entryDate.value;
-      let rating = '';
 
-      if(type === 'gig') {
+      let rating = '';
+      if (type === 'gig') {
         rating = gigRating.value;
-        if(!rating) {
-          alert('Please select a rating for the gig.');
-          return;
-        }
-      } else if(type === 'festival') {
+      } else if (type === 'festival') {
         rating = festivalRating.value;
-        if(!rating) {
-          alert('Please select a rating for the festival.');
-          return;
-        }
       }
 
-      if(!type || !name || !location || !date || !rating) {
-        alert('Please fill in all required fields.');
+      if (!type || !name || !location || !date || !rating) {
+        alert('Please fill in all required fields and rating appropriately.');
         return;
       }
 
-      if(type === 'gig') {
-        const newGig = {
-          id: Date.now(),
-          name,
-          location,
-          date,
-          rating,
-          supportActs: []
-        };
-        gigs.push(newGig);
-      } else if(type === 'festival') {
-        const newFestival = {
-          id: Date.now(),
-          name,
-          location,
-          date,
-          rating,
-          artists: []
-        };
-        festivals.push(newFestival);
+      if (type === 'gig') {
+        addGig(name, location, date, rating);
+      } else {
+        addFestival(name, location, date, rating);
       }
 
-      saveData();
-      renderEntries();
-
-      // Clear form
-      gigForm.reset();
-      festivalRatingContainer.style.display = 'none';
+      entryForm.reset();
+      // Reset UI for rating fields
+      festivalRating.style.display = 'none';
       gigRating.style.display = 'block';
+      gigRating.setAttribute('required', 'required');
+      festivalRating.removeAttribute('required');
     });
 
-    // Functions to open and close modals
+    // ==== Support Acts and Artists Modals ====
     function openSupportModal() {
       supportModal.style.display = 'block';
     }
@@ -761,11 +376,9 @@
       artistForm.reset();
     }
 
-    // Close modals when clicking on <span> (x)
     closeSupportModal.onclick = closeSupportModalFunc;
     closeArtistModal.onclick = closeArtistModalFunc;
 
-    // Close modals when clicking outside the modal content
     window.onclick = function(event) {
       if (event.target == supportModal) {
         closeSupportModalFunc();
@@ -773,46 +386,42 @@
       if (event.target == artistModal) {
         closeArtistModalFunc();
       }
-    }
+    };
 
-    // Handle Support Act Form Submission
     supportActForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const actName = supportActName.value.trim();
-      const actRating = supportActRating.value;
-
-      if(!actName || !actRating) {
+      const actNameVal = supportActName.value.trim();
+      const actRatingVal = supportActRating.value;
+      if (!actNameVal || !actRatingVal) {
         alert('Please fill in all fields for the support act.');
         return;
       }
 
-      const gigIndex = gigs.findIndex(gig => gig.id === currentEditingEntryId);
-      if(gigIndex !== -1) {
+      const gigIndex = gigs.findIndex(g => g.id === currentEditingEntryId);
+      if (gigIndex !== -1) {
         gigs[gigIndex].supportActs.push({
-          name: actName,
-          rating: actRating
+          name: actNameVal,
+          rating: actRatingVal
         });
         saveData();
         renderEntries();
       }
 
-      supportActForm.reset();
       closeSupportModalFunc();
     });
 
-    // Handle Artist Form Submission
     artistForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const artistNameVal = artistName.value.trim();
-      const artistRatingVal = artistRating.value;
+      const artistRatingVal = artistRatingElement.value;
 
-      if(!artistNameVal || !artistRatingVal) {
+      if (!artistNameVal || !artistRatingVal) {
         alert('Please fill in all fields for the artist.');
         return;
       }
 
-      const festivalIndex = festivals.findIndex(festival => festival.id === currentEditingEntryId);
-      if(festivalIndex !== -1) {
+      const festivalIndex = festivals.findIndex(f => f.id === currentEditingEntryId);
+      if (festivalIndex !== -1) {
         festivals[festivalIndex].artists.push({
           name: artistNameVal,
           rating: artistRatingVal
@@ -821,29 +430,29 @@
         renderEntries();
       }
 
-      artistForm.reset();
       closeArtistModalFunc();
     });
 
-    // Handle Export
+    // ==== Export Logic ====
     exportBtn.addEventListener('click', () => {
-      if(gigs.length === 0 && festivals.length === 0) {
+      if (gigs.length === 0 && festivals.length === 0) {
         alert('No gigs or festivals to export.');
         return;
       }
 
+      const today = new Date().setHours(0,0,0,0);
+      const upcomingGigs = gigs.filter(g => new Date(g.date).setHours(0,0,0,0) >= today);
+      const pastGigs = gigs.filter(g => new Date(g.date).setHours(0,0,0,0) < today);
+      const upcomingFestivals = festivals.filter(f => new Date(f.date).setHours(0,0,0,0) >= today);
+      const pastFestivals = festivals.filter(f => new Date(f.date).setHours(0,0,0,0) < today);
+
       let exportText = `🎵 *My Gigs & Festivals*\n\n`;
 
-      // Upcoming and Past Gigs
-      const today = new Date().setHours(0,0,0,0);
-      const upcomingGigs = gigs.filter(gig => new Date(gig.date).setHours(0,0,0,0) >= today);
-      const pastGigs = gigs.filter(gig => new Date(gig.date).setHours(0,0,0,0) < today);
-
-      if(upcomingGigs.length > 0) {
+      if (upcomingGigs.length > 0) {
         exportText += `🔜 *Upcoming Gigs:*\n`;
         upcomingGigs.forEach(gig => {
           exportText += `🎤 ${gig.name}\n📍 ${gig.location}\n📅 ${new Date(gig.date).toLocaleDateString()}\n⭐ Rating: ${gig.rating}\n`;
-          if(gig.supportActs.length > 0) {
+          if (gig.supportActs.length > 0) {
             exportText += `   🎶 Support Acts:\n`;
             gig.supportActs.forEach(act => {
               exportText += `      - ${act.name} (${act.rating})\n`;
@@ -853,11 +462,11 @@
         });
       }
 
-      if(pastGigs.length > 0) {
+      if (pastGigs.length > 0) {
         exportText += `🔙 *Past Gigs:*\n`;
         pastGigs.forEach(gig => {
           exportText += `🎤 ${gig.name}\n📍 ${gig.location}\n📅 ${new Date(gig.date).toLocaleDateString()}\n⭐ Rating: ${gig.rating}\n`;
-          if(gig.supportActs.length > 0) {
+          if (gig.supportActs.length > 0) {
             exportText += `   🎶 Support Acts:\n`;
             gig.supportActs.forEach(act => {
               exportText += `      - ${act.name} (${act.rating})\n`;
@@ -867,39 +476,34 @@
         });
       }
 
-      // Upcoming and Past Festivals
-      const upcomingFestivals = festivals.filter(festival => new Date(festival.date).setHours(0,0,0,0) >= today);
-      const pastFestivals = festivals.filter(festival => new Date(festival.date).setHours(0,0,0,0) < today);
-
-      if(upcomingFestivals.length > 0) {
+      if (upcomingFestivals.length > 0) {
         exportText += `🔜 *Upcoming Festivals:*\n`;
-        upcomingFestivals.forEach(festival => {
-          exportText += `🎪 ${festival.name}\n📍 ${festival.location}\n📅 ${new Date(festival.date).toLocaleDateString()}\n⭐ Overall Rating: ${festival.rating}\n`;
-          if(festival.artists.length > 0) {
+        upcomingFestivals.forEach(fest => {
+          exportText += `🎪 ${fest.name}\n📍 ${fest.location}\n📅 ${new Date(fest.date).toLocaleDateString()}\n⭐ Overall Rating: ${fest.rating}\n`;
+          if (fest.artists.length > 0) {
             exportText += `   🎶 Artists Seen:\n`;
-            festival.artists.forEach(artist => {
-              exportText += `      - ${artist.name} (${artist.rating})\n`;
+            fest.artists.forEach(ar => {
+              exportText += `      - ${ar.name} (${ar.rating})\n`;
             });
           }
           exportText += `\n`;
         });
       }
 
-      if(pastFestivals.length > 0) {
+      if (pastFestivals.length > 0) {
         exportText += `🔙 *Past Festivals:*\n`;
-        pastFestivals.forEach(festival => {
-          exportText += `🎪 ${festival.name}\n📍 ${festival.location}\n📅 ${new Date(festival.date).toLocaleDateString()}\n⭐ Overall Rating: ${festival.rating}\n`;
-          if(festival.artists.length > 0) {
+        pastFestivals.forEach(fest => {
+          exportText += `🎪 ${fest.name}\n📍 ${fest.location}\n📅 ${new Date(fest.date).toLocaleDateString()}\n⭐ Overall Rating: ${fest.rating}\n`;
+          if (fest.artists.length > 0) {
             exportText += `   🎶 Artists Seen:\n`;
-            festival.artists.forEach(artist => {
-              exportText += `      - ${artist.name} (${artist.rating})\n`;
+            fest.artists.forEach(ar => {
+              exportText += `      - ${ar.name} (${ar.rating})\n`;
             });
           }
           exportText += `\n`;
         });
       }
 
-      // Copy to Clipboard
       const tempTextarea = document.createElement('textarea');
       tempTextarea.value = exportText;
       document.body.appendChild(tempTextarea);
@@ -907,30 +511,15 @@
       document.execCommand('copy');
       document.body.removeChild(tempTextarea);
 
-      alert('Gigs and Festivals exported to clipboard! You can now paste it on social media.');
+      alert('Gigs and Festivals exported to clipboard!');
     });
 
-    // Handle Dark Mode Toggle
+    // ==== Dark Mode ====
     darkModeToggle.addEventListener('change', () => {
       isDarkMode = darkModeToggle.checked;
-      if(isDarkMode) {
-        document.body.classList.add('dark-mode');
-      } else {
-        document.body.classList.remove('dark-mode');
-      }
+      applyTheme();
       saveData();
     });
-
-    // Apply Dark Mode based on saved preference
-    function applyTheme() {
-      if(isDarkMode) {
-        document.body.classList.add('dark-mode');
-        darkModeToggle.checked = true;
-      } else {
-        document.body.classList.remove('dark-mode');
-        darkModeToggle.checked = false;
-      }
-    }
 
     // Initial setup
     applyTheme();
