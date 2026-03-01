@@ -3,7 +3,13 @@ import { fetchAirQuality } from '../lib/api';
 import type { AirQualityData } from '../types';
 import WidgetCard from './WidgetCard';
 
-function getAqiLabel(aqi: number): { label: string; color: string; bg: string } {
+interface AqiLabel {
+  label: string;
+  color: string;
+  bg: string;
+}
+
+function getAqiLabel(aqi: number): AqiLabel {
   if (aqi <= 20)  return { label: 'Good',        color: 'text-green-700',  bg: 'bg-green-100' };
   if (aqi <= 40)  return { label: 'Fair',         color: 'text-lime-700',   bg: 'bg-lime-100'  };
   if (aqi <= 60)  return { label: 'Moderate',     color: 'text-yellow-700', bg: 'bg-yellow-100' };
