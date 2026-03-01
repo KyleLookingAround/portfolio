@@ -4,8 +4,6 @@ import { getWeatherInfo } from '../lib/weatherCodes';
 import type { WeatherData, AirQualityData, CrimeRecord, FloodData } from '../types';
 import WidgetCard from './WidgetCard';
 
-const API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY as string | undefined;
-
 function aqiLabel(aqi: number): string {
   if (aqi <= 20) return 'Good';
   if (aqi <= 40) return 'Fair';
@@ -90,32 +88,6 @@ function buildPrompt(
   );
 }
 
-async function callClaude(prompt: string): Promise<string> {
-  if (!API_KEY) {
-    throw new Error('VITE_ANTHROPIC_API_KEY is not configured. Add it to your .env file to enable AI generation.');
-  }
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': API_KEY,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 600,
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  });
-  if (!res.ok) {
-    const body = await res.text().catch(() => '');
-    throw new Error(`API error ${res.status}${body ? ': ' + body : ''}`);
-  }
-  const data = await res.json() as { content?: Array<{ text?: string }> };
-  return data.content?.[0]?.text ?? '';
-}
-
 export default function StockportAIWidget({ className = '' }: { className?: string }) {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [airQuality, setAirQuality] = useState<AirQualityData | null>(null);
@@ -123,9 +95,8 @@ export default function StockportAIWidget({ className = '' }: { className?: stri
   const [flood, setFlood] = useState<FloodData | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
 
-  const [itinerary, setItinerary] = useState<string | null>(null);
-  const [generating, setGenerating] = useState(false);
-  const [genError, setGenError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState(false);
 
   useEffect(() => {
     Promise.allSettled([
@@ -141,18 +112,16 @@ export default function StockportAIWidget({ className = '' }: { className?: stri
     }).finally(() => setDataLoading(false));
   }, []);
 
-  const generate = async () => {
-    setGenerating(true);
-    setGenError(null);
-    setItinerary(null);
+  const copyPrompt = async () => {
+    setCopyError(false);
+    const prompt = buildPrompt(weather, airQuality, crime, flood);
     try {
-      const prompt = buildPrompt(weather, airQuality, crime, flood);
-      const result = await callClaude(prompt);
-      setItinerary(result);
-    } catch (err) {
-      setGenError(err instanceof Error ? err.message : 'Failed to generate itinerary.');
-    } finally {
-      setGenerating(false);
+      await navigator.clipboard.writeText(prompt);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    } catch {
+      setCopyError(true);
+      setTimeout(() => setCopyError(false), 3000);
     }
   };
 
@@ -160,101 +129,62 @@ export default function StockportAIWidget({ className = '' }: { className?: stri
 
   return (
     <WidgetCard
-      title="AI Day Out Planner"
-      icon="✨"
+      title="Plan Your Day Out"
+      icon="📋"
       meta={dataLoading ? 'Loading data…' : `${dataCount}/4 sources ready`}
       className={className}
     >
-      {/* Pre-generate state */}
-      {!itinerary && !generating && !genError && (
-        <div className="flex flex-col items-center text-center py-4 gap-4">
-          <p className="text-sm text-gray-500 max-w-md">
-            Pulls live weather, air quality, river levels &amp; crime data from the dashboard
-            to suggest a tailored day out in Stockport — right now, today.
-          </p>
+      <div className="flex flex-col items-center text-center py-4 gap-4">
+        <p className="text-sm text-gray-500 max-w-md">
+          Copies a ready-made AI prompt loaded with today's live Stockport data — weather,
+          air quality, river levels &amp; crime stats. Paste it into your favourite AI to
+          get a personalised day out itinerary.
+        </p>
 
-          {/* Data source chips */}
-          <div className="flex flex-wrap justify-center gap-2 text-xs">
-            {[
-              { label: 'Weather', ready: !!weather },
-              { label: 'Air Quality', ready: !!airQuality },
-              { label: 'Crime', ready: !!crime },
-              { label: 'River Levels', ready: !!flood },
-            ].map(({ label, ready }) => (
-              <span
-                key={label}
-                className={`px-2 py-1 rounded-full border text-xs font-medium ${
-                  dataLoading
-                    ? 'border-gray-200 text-gray-400 bg-gray-50'
-                    : ready
-                    ? 'border-green-200 text-green-700 bg-green-50'
-                    : 'border-amber-200 text-amber-700 bg-amber-50'
-                }`}
-              >
-                {dataLoading ? '⏳' : ready ? '✓' : '–'} {label}
-              </span>
-            ))}
-          </div>
-
-          <button
-            onClick={generate}
-            disabled={dataLoading || generating}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#003A70] text-white rounded-lg font-semibold text-sm hover:bg-[#005A9E] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-          >
-            <span aria-hidden="true">✨</span>
-            Generate My Day Out
-          </button>
-
-          {!API_KEY && (
-            <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded px-3 py-2 max-w-sm">
-              Add <code className="font-mono">VITE_ANTHROPIC_API_KEY</code> to your{' '}
-              <code className="font-mono">.env</code> file to enable AI generation.
-            </p>
-          )}
-        </div>
-      )}
-
-      {/* Generating spinner */}
-      {generating && (
-        <div className="flex flex-col items-center gap-3 py-10">
-          <div className="w-8 h-8 border-[3px] border-[#009FE3] border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-gray-500">Crafting your Stockport itinerary…</p>
-        </div>
-      )}
-
-      {/* Error state */}
-      {genError && !generating && (
-        <div className="flex flex-col items-center gap-3 py-6 text-center">
-          <span className="text-3xl" aria-hidden="true">⚠️</span>
-          <p className="text-sm text-gray-600">{genError}</p>
-          <button
-            onClick={generate}
-            className="px-4 py-1.5 bg-[#009FE3] text-white text-sm rounded hover:bg-[#007AB8] transition-colors"
-          >
-            Try again
-          </button>
-        </div>
-      )}
-
-      {/* Itinerary result */}
-      {itinerary && !generating && (
-        <div>
-          <div className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
-            {itinerary}
-          </div>
-          <div className="mt-5 pt-4 border-t border-blue-100 flex justify-between items-center">
-            <span className="text-xs text-gray-400">
-              Generated from {dataCount} live Stockport data source{dataCount !== 1 ? 's' : ''}
-            </span>
-            <button
-              onClick={generate}
-              className="text-xs text-[#009FE3] hover:text-[#007AB8] transition-colors flex items-center gap-1"
+        {/* Data source chips */}
+        <div className="flex flex-wrap justify-center gap-2 text-xs">
+          {[
+            { label: 'Weather', ready: !!weather },
+            { label: 'Air Quality', ready: !!airQuality },
+            { label: 'Crime', ready: !!crime },
+            { label: 'River Levels', ready: !!flood },
+          ].map(({ label, ready }) => (
+            <span
+              key={label}
+              className={`px-2 py-1 rounded-full border text-xs font-medium ${
+                dataLoading
+                  ? 'border-gray-200 text-gray-400 bg-gray-50'
+                  : ready
+                  ? 'border-green-200 text-green-700 bg-green-50'
+                  : 'border-amber-200 text-amber-700 bg-amber-50'
+              }`}
             >
-              ✨ Regenerate
-            </button>
-          </div>
+              {dataLoading ? '⏳' : ready ? '✓' : '–'} {label}
+            </span>
+          ))}
         </div>
-      )}
+
+        <button
+          onClick={copyPrompt}
+          disabled={dataLoading}
+          className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed ${
+            copied
+              ? 'bg-green-600 text-white hover:bg-green-700'
+              : copyError
+              ? 'bg-red-600 text-white hover:bg-red-700'
+              : 'bg-[#003A70] text-white hover:bg-[#005A9E]'
+          }`}
+        >
+          <span aria-hidden="true">{copied ? '✓' : copyError ? '✗' : '📋'}</span>
+          {copied ? 'Copied to clipboard!' : copyError ? 'Copy failed — try again' : 'Copy AI Prompt'}
+        </button>
+
+        {!copyError && !copied && (
+          <p className="text-xs text-gray-400 max-w-sm">
+            Paste into ChatGPT, Claude, Gemini, or any AI assistant to plan your Stockport day out.
+          </p>
+        )}
+      </div>
     </WidgetCard>
   );
 }
