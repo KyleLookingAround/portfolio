@@ -52,7 +52,12 @@ export default function PlanningWidget({ className = '' }: { className?: string 
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    fetchPlanning()
+      .then((data) => setAreas(data.entities ?? []))
+      .catch(() => setError(null)) // silently fall back to static data
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <WidgetCard

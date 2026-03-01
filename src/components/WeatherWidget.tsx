@@ -20,7 +20,12 @@ export default function WeatherWidget() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    fetchWeather()
+      .then(setData)
+      .catch(() => setError('Unable to load weather data.'))
+      .finally(() => setLoading(false));
+  }, []);
 
   const current = data?.current;
   const daily = data?.daily;

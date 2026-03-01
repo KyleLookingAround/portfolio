@@ -1,73 +1,55 @@
-# React + TypeScript + Vite
+# Stockport Today - Local Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A live local dashboard for Stockport, UK featuring real-time information about weather, air quality, crime statistics, planning applications, and transport.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Weather Widget**: Current conditions and 3-day forecast from Open-Meteo
+- **Air Quality Widget**: European AQI and pollutant readings
+- **Crime Statistics**: Recent crime data from UK Police API
+- **Planning & Development**: Conservation areas and notable planning applications
+- **Transport**: Rail services and quick links to journey planners
+- **Stockport Facts**: Interesting statistics and rotating trivia about Stockport
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19 with TypeScript
+- Vite for development and building
+- Tailwind CSS for styling
+- ESLint for code quality
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Install dependencies
+npm install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# Run development server
+npm run dev
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Build for production
+npm run build
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Preview production build
+npm run preview
+
+# Lint code
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Data Sources
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Weather: [Open-Meteo API](https://open-meteo.com/)
+- Air Quality: [Open-Meteo Air Quality API](https://open-meteo.com/en/docs/air-quality-api)
+- Crime: [UK Police API](https://data.police.uk/)
+- Planning: [Planning Data Gov UK](https://www.planning.data.gov.uk/)
+- Transport: Static data and links to National Rail & TfGM
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Development
+
+This project uses:
+- **React 19** with hooks and strict mode
+- **TypeScript** for type safety
+- **Tailwind CSS** for utility-first styling
+- **Vite** for fast development and optimized builds
+- **ESLint** with React hooks rules for code quality
