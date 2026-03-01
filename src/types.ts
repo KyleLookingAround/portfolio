@@ -54,3 +54,38 @@ export interface PlanningResponse {
   count: number;
   entities: PlanningRecord[];
 }
+
+export interface FloodStation {
+  '@id': string;
+  label: string;
+  stationReference: string;
+  riverName?: string;
+}
+
+export interface FloodMeasure {
+  '@id': string;
+  label: string;
+  latestReading?: {
+    '@id': string;
+    dateTime: string;
+    value: number;
+  };
+  parameter: string;
+  parameterName: string;
+  qualifier?: string;
+  station: string;
+  stageScale?: {
+    '@id': string;
+    highestRecent?: {
+      '@id': string;
+      dateTime: string;
+      value: number;
+    };
+  };
+  unit: string;
+  unitName: string;
+}
+
+export interface FloodData {
+  items: FloodMeasure[];
+}
