@@ -18,7 +18,11 @@ function getAqiLabel(aqi: number): AqiLabel {
   return           { label: 'Extremely Poor', color: 'text-purple-700', bg: 'bg-purple-100' };
 }
 
-export default function AirQualityWidget() {
+interface Props {
+  onStatusChange?: (status: 'loading' | 'ready' | 'error') => void;
+}
+
+export default function AirQualityWidget({ onStatusChange }: Props) {
   const [data, setData] = useState<AirQualityData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,17 +30,22 @@ export default function AirQualityWidget() {
   const load = () => {
     setLoading(true);
     setError(null);
+    onStatusChange?.('loading');
     fetchAirQuality()
-      .then(setData)
-      .catch(() => setError('Unable to load air quality data.'))
+      .then((d) => {
+        setData(d);
+        onStatusChange?.('ready');
+      })
+      .catch(() => {
+        setError('Unable to load air quality data.');
+        onStatusChange?.('error');
+      })
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    fetchAirQuality()
-      .then(setData)
-      .catch(() => setError('Unable to load air quality data.'))
-      .finally(() => setLoading(false));
+    load();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const current = data?.current;

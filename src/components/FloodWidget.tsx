@@ -3,7 +3,11 @@ import { fetchFloodData } from '../lib/api';
 import type { FloodMeasure } from '../types';
 import WidgetCard from './WidgetCard';
 
-export default function FloodWidget() {
+interface Props {
+  onStatusChange?: (status: 'loading' | 'ready' | 'error') => void;
+}
+
+export default function FloodWidget({ onStatusChange }: Props) {
   const [measures, setMeasures] = useState<FloodMeasure[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -11,19 +15,26 @@ export default function FloodWidget() {
   const load = () => {
     setLoading(true);
     setError(null);
+    onStatusChange?.('loading');
     fetchFloodData()
       .then((data) => {
-        // Filter for River Mersey stations near Stockport with valid readings
-        // Using case-insensitive matching for 'mersey' in label or river name
         const merseyMeasures = data.items.filter((m) => {
           if (!m.latestReading) return false;
           const label = m.label.toLowerCase();
-          // Look for Mersey in the label, but exclude unrelated stations
           return label.includes('mersey') && !label.includes('mersea');
         });
-        setMeasures(merseyMeasures.slice(0, 3)); // Show top 3 stations
+        const top3 = merseyMeasures.slice(0, 3);
+        setMeasures(top3);
+        if (top3.length > 0) {
+          onStatusChange?.('ready');
+        } else {
+          onStatusChange?.('error');
+        }
       })
-      .catch(() => setError('Unable to load flood monitoring data.'))
+      .catch(() => {
+        setError('Unable to load flood monitoring data.');
+        onStatusChange?.('error');
+      })
       .finally(() => setLoading(false));
   };
 
@@ -31,11 +42,11 @@ export default function FloodWidget() {
 
   function getStatusColor(measure: FloodMeasure): string {
     if (!measure.latestReading || !measure.stageScale?.highestRecent) return 'bg-gray-100';
-    
+
     const current = measure.latestReading.value;
     const highest = measure.stageScale.highestRecent.value;
     const percentage = (current / highest) * 100;
-    
+
     if (percentage > 80) return 'bg-red-100 border-red-300';
     if (percentage > 60) return 'bg-yellow-100 border-yellow-300';
     return 'bg-green-100 border-green-300';
@@ -43,11 +54,11 @@ export default function FloodWidget() {
 
   function getStatusLabel(measure: FloodMeasure): string {
     if (!measure.latestReading || !measure.stageScale?.highestRecent) return 'Normal';
-    
+
     const current = measure.latestReading.value;
     const highest = measure.stageScale.highestRecent.value;
     const percentage = (current / highest) * 100;
-    
+
     if (percentage > 80) return 'High';
     if (percentage > 60) return 'Elevated';
     return 'Normal';
@@ -71,7 +82,7 @@ export default function FloodWidget() {
       error={error}
       onRetry={load}
     >
-      {measures.length > 0 ? (
+      {measures.length > 0 && (
         <div className="space-y-3">
           {measures.map((measure) => {
             const reading = measure.latestReading;
@@ -130,18 +141,6 @@ export default function FloodWidget() {
           <p className="text-xs text-gray-400">
             River Mersey flows through Stockport town centre under the historic viaduct.
           </p>
-        </div>
-      ) : (
-        <div className="text-center py-4">
-          <p className="text-gray-500 text-sm">No river monitoring stations found nearby.</p>
-          <a
-            href="https://check-for-flooding.service.gov.uk/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-[#009FE3] hover:text-[#007AB8] mt-2 inline-block"
-          >
-            Check flood warnings →
-          </a>
         </div>
       )}
     </WidgetCard>
