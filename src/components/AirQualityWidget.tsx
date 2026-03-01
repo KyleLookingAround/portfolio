@@ -26,7 +26,12 @@ export default function AirQualityWidget() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    fetchAirQuality()
+      .then(setData)
+      .catch(() => setError('Unable to load air quality data.'))
+      .finally(() => setLoading(false));
+  }, []);
 
   const current = data?.current;
   const aqiMeta = current ? getAqiLabel(current.european_aqi) : null;

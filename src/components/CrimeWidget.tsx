@@ -38,7 +38,15 @@ export default function CrimeWidget() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    fetchCrime()
+      .then((data) => {
+        setCrimes(data);
+        if (data.length > 0) setMonth(data[0].month);
+      })
+      .catch(() => setError('Crime data unavailable. The Police API may be temporarily down.'))
+      .finally(() => setLoading(false));
+  }, []);
 
   // Tally by category
   const tally: Record<string, number> = {};
