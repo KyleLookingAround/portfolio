@@ -6,7 +6,11 @@ import WidgetCard from './WidgetCard';
 
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export default function WeatherWidget() {
+interface Props {
+  onStatusChange?: (status: 'loading' | 'ready' | 'error') => void;
+}
+
+export default function WeatherWidget({ onStatusChange }: Props) {
   const [data, setData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -14,17 +18,22 @@ export default function WeatherWidget() {
   const load = () => {
     setLoading(true);
     setError(null);
+    onStatusChange?.('loading');
     fetchWeather()
-      .then(setData)
-      .catch(() => setError('Unable to load weather data.'))
+      .then((d) => {
+        setData(d);
+        onStatusChange?.('ready');
+      })
+      .catch(() => {
+        setError('Unable to load weather data.');
+        onStatusChange?.('error');
+      })
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    fetchWeather()
-      .then(setData)
-      .catch(() => setError('Unable to load weather data.'))
-      .finally(() => setLoading(false));
+    load();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const current = data?.current;
