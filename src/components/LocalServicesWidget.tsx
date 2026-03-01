@@ -84,7 +84,7 @@ export default function LocalServicesWidget({ className = '' }: { className?: st
         </p>
         <div className="space-y-2 mb-4">
           {LOCAL_SERVICES.map((service) => (
-            <div key={service.phone} className="flex items-start gap-2 py-2 border-b border-blue-50 last:border-0">
+            <div key={service.label} className="flex items-start gap-2 py-2 border-b border-blue-50 last:border-0">
               <span className="text-xl shrink-0">{service.icon}</span>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium text-gray-700">{service.label}</div>

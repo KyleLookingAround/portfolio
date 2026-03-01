@@ -14,6 +14,7 @@ describe('App', () => {
     vi.mocked(api.fetchAirQuality).mockImplementation(() => new Promise(() => {}));
     vi.mocked(api.fetchCrime).mockImplementation(() => new Promise(() => {}));
     vi.mocked(api.fetchPlanning).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(api.fetchFloodData).mockImplementation(() => new Promise(() => {}));
   });
 
   it('renders the header', () => {
@@ -44,17 +45,17 @@ describe('App', () => {
   it('continues to render other widgets even if one fails', async () => {
     // Make weather widget fail
     vi.mocked(api.fetchWeather).mockRejectedValueOnce(new Error('Failed'));
-    
+
     // Make other widgets succeed
     vi.mocked(api.fetchAirQuality).mockResolvedValueOnce({
       current: { european_aqi: 25, pm10: 15, pm2_5: 10, nitrogen_dioxide: 20 }
     });
     vi.mocked(api.fetchCrime).mockResolvedValueOnce([]);
     vi.mocked(api.fetchPlanning).mockResolvedValueOnce({ count: 0, entities: [] });
-    
+
     render(<App />);
-    
-    // All widgets should still be present even if weather fails
+
+    // All widgets should still be present even if weather fails (checked before async settling)
     expect(screen.getByText('Weather')).toBeInTheDocument();
     expect(screen.getByText('Air Quality')).toBeInTheDocument();
     expect(screen.getByText('Crime Statistics')).toBeInTheDocument();
