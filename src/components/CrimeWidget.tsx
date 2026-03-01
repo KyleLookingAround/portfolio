@@ -20,7 +20,11 @@ const CRIME_LABELS: Record<string, string> = {
   'other-crime':             'Other Crime',
 };
 
-export default function CrimeWidget() {
+interface Props {
+  onStatusChange?: (status: 'loading' | 'ready' | 'error') => void;
+}
+
+export default function CrimeWidget({ onStatusChange }: Props) {
   const [crimes, setCrimes] = useState<CrimeRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,23 +33,27 @@ export default function CrimeWidget() {
   const load = () => {
     setLoading(true);
     setError(null);
+    onStatusChange?.('loading');
     fetchCrime()
       .then((data) => {
         setCrimes(data);
-        if (data.length > 0) setMonth(data[0].month);
+        if (data.length > 0) {
+          setMonth(data[0].month);
+          onStatusChange?.('ready');
+        } else {
+          onStatusChange?.('error');
+        }
       })
-      .catch(() => setError('Crime data unavailable. The Police API may be temporarily down.'))
+      .catch(() => {
+        setError('Crime data unavailable. The Police API may be temporarily down.');
+        onStatusChange?.('error');
+      })
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    fetchCrime()
-      .then((data) => {
-        setCrimes(data);
-        if (data.length > 0) setMonth(data[0].month);
-      })
-      .catch(() => setError('Crime data unavailable. The Police API may be temporarily down.'))
-      .finally(() => setLoading(false));
+    load();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Tally by category
