@@ -1,4 +1,4 @@
-interface WeatherInfo {
+export interface WeatherInfo {
   label: string;
   icon: string;
 }

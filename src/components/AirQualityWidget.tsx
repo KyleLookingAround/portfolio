@@ -3,7 +3,13 @@ import { fetchAirQuality } from '../lib/api';
 import type { AirQualityData } from '../types';
 import WidgetCard from './WidgetCard';
 
-function getAqiLabel(aqi: number): { label: string; color: string; bg: string } {
+interface AqiLabel {
+  label: string;
+  color: string;
+  bg: string;
+}
+
+function getAqiLabel(aqi: number): AqiLabel {
   if (aqi <= 20)  return { label: 'Good',        color: 'text-green-700',  bg: 'bg-green-100' };
   if (aqi <= 40)  return { label: 'Fair',         color: 'text-lime-700',   bg: 'bg-lime-100'  };
   if (aqi <= 60)  return { label: 'Moderate',     color: 'text-yellow-700', bg: 'bg-yellow-100' };
@@ -26,7 +32,12 @@ export default function AirQualityWidget() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    fetchAirQuality()
+      .then(setData)
+      .catch(() => setError('Unable to load air quality data.'))
+      .finally(() => setLoading(false));
+  }, []);
 
   const current = data?.current;
   const aqiMeta = current ? getAqiLabel(current.european_aqi) : null;
