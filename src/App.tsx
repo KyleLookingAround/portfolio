@@ -8,6 +8,7 @@ import FactsWidget from './components/FactsWidget';
 import ErrorBoundary from './components/ErrorBoundary';
 import FloodWidget from './components/FloodWidget';
 import LocalServicesWidget from './components/LocalServicesWidget';
+import StockportAIWidget from './components/StockportAIWidget';
 
 export default function App() {
   return (
@@ -29,6 +30,9 @@ export default function App() {
         </ErrorBoundary>
         <ErrorBoundary>
           <TransportWidget />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <StockportAIWidget className="lg:col-span-3 md:col-span-2" />
         </ErrorBoundary>
         <ErrorBoundary>
           <FactsWidget className="lg:col-span-3" />
