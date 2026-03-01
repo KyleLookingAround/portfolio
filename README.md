@@ -2,6 +2,8 @@
 
 A modern, real-time information dashboard for Stockport, Greater Manchester. Built with React, TypeScript, Vite, and Tailwind CSS.
 
+> **Note:** This dashboard is part of a portfolio project showcasing real-world API integration and modern web development practices.
+
 ## Features
 
 ### Live Data Widgets

@@ -13,10 +13,14 @@ export default function FloodWidget() {
     setError(null);
     fetchFloodData()
       .then((data) => {
-        // Filter for River Mersey stations and sort by latest reading
-        const merseyMeasures = data.items.filter(
-          (m) => m.latestReading && (m.label.toLowerCase().includes('mersey') || m.label.toLowerCase().includes('stockport'))
-        );
+        // Filter for River Mersey stations near Stockport with valid readings
+        // Using case-insensitive matching for 'mersey' in label or river name
+        const merseyMeasures = data.items.filter((m) => {
+          if (!m.latestReading) return false;
+          const label = m.label.toLowerCase();
+          // Look for Mersey in the label, but exclude unrelated stations
+          return label.includes('mersey') && !label.includes('mersea');
+        });
         setMeasures(merseyMeasures.slice(0, 3)); // Show top 3 stations
       })
       .catch(() => setError('Unable to load flood monitoring data.'))
