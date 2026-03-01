@@ -35,7 +35,7 @@ export default function WidgetCard({
   return (
     <article className={`bg-white rounded-xl shadow-md overflow-hidden flex flex-col ${className}`}>
       <header className="bg-[#003A70] text-white px-5 py-3 flex items-center gap-2">
-        <span className="text-xl">{icon}</span>
+        <span className="text-xl" role="img" aria-label={title}>{icon}</span>
         <h2 className="text-base font-semibold flex-1">{title}</h2>
         {meta && <span className="text-xs text-[#009FE3] whitespace-nowrap">{meta}</span>}
       </header>
