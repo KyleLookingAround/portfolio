@@ -1,4 +1,4 @@
-import type { WeatherData, AirQualityData, CrimeRecord, PlanningResponse } from '../types';
+import type { WeatherData, AirQualityData, CrimeRecord, PlanningResponse, FloodData } from '../types';
 
 const LAT = 53.4083;
 const LNG = -2.1494;
@@ -59,4 +59,13 @@ export async function fetchPlanning(): Promise<PlanningResponse> {
     `https://www.planning.data.gov.uk/api/search.json` +
     `?dataset=conservation-area&geometry_reference=E08000007&limit=8`;
   return fetchJson<PlanningResponse>(url);
+}
+
+export async function fetchFloodData(): Promise<FloodData> {
+  // Get River Mersey flood monitoring stations near Stockport
+  // Using a broader search around Stockport coordinates
+  const url =
+    `https://environment.data.gov.uk/flood-monitoring/id/measures` +
+    `?lat=${LAT}&long=${LNG}&dist=15&parameter=level`;
+  return fetchJson<FloodData>(url);
 }

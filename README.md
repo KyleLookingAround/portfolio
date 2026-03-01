@@ -1,73 +1,142 @@
-# React + TypeScript + Vite
+# Stockport Information Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, real-time information dashboard for Stockport, Greater Manchester. Built with React, TypeScript, Vite, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Live Data Widgets
 
-## React Compiler
+- **🌤️ Weather** - Current conditions and 3-day forecast for Stockport (Open-Meteo API)
+- **💨 Air Quality** - European AQI and pollutant levels (Open-Meteo API)
+- **🚔 Crime Statistics** - Monthly crime data by category (UK Police API)
+- **🌊 River Monitoring** - River Mersey water levels and flood warnings (Environment Agency API)
+- **📞 Local Services** - Emergency contacts, council services, and useful links
+- **🏗️ Planning & Development** - Conservation areas and notable planning applications
+- **🚆 Transport** - Rail services and public transport links
+- **📊 Stockport by Numbers** - Local facts, statistics, and rotating trivia
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Technical Features
 
-## Expanding the ESLint configuration
+- Real-time data from multiple public APIs
+- Responsive design that works on mobile, tablet, and desktop
+- Graceful error handling with retry functionality
+- Loading states for better UX
+- No backend required - all API calls from the browser
+- TypeScript for type safety
+- Tailwind CSS for styling
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting Started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Prerequisites
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Node.js (v18 or higher recommended)
+- npm or yarn
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/KyleLookingAround/portfolio.git
+cd portfolio
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. Install dependencies:
+```bash
+npm install
 ```
+
+3. (Optional) Set up API keys for enhanced features:
+```bash
+cp .env.example .env
+# Edit .env and add your API keys (see API_KEYS.md for details)
+```
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
+5. Open your browser to `http://localhost:5173`
+
+## Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+
+## API Keys
+
+Most features work without any API keys. For enhanced features (live transport data, extended health services), see [API_KEYS.md](./API_KEYS.md) for instructions on obtaining free API keys.
+
+### APIs Used (No Key Required)
+- Open-Meteo Weather & Air Quality
+- UK Police Data
+- Environment Agency Flood Monitoring
+- Planning Data (planning.data.gov.uk)
+
+### Optional APIs (Free Registration)
+- Transport for Greater Manchester (TfGM) - Live transport data
+- NHS API - Extended health services
+- Eventbrite - Local events
+
+## Project Structure
+
+```
+src/
+├── components/         # React components
+│   ├── Header.tsx
+│   ├── WeatherWidget.tsx
+│   ├── AirQualityWidget.tsx
+│   ├── CrimeWidget.tsx
+│   ├── FloodWidget.tsx
+│   ├── LocalServicesWidget.tsx
+│   ├── PlanningWidget.tsx
+│   ├── TransportWidget.tsx
+│   ├── FactsWidget.tsx
+│   └── WidgetCard.tsx
+├── lib/               # API functions and utilities
+│   ├── api.ts
+│   └── weatherCodes.ts
+├── types.ts           # TypeScript type definitions
+├── App.tsx            # Main app component
+└── main.tsx           # Entry point
+```
+
+## Customization
+
+### Changing Location
+
+To use this dashboard for a different location, update the coordinates in `src/lib/api.ts`:
+
+```typescript
+const LAT = 53.4083;  // Your latitude
+const LNG = -2.1494;  // Your longitude
+```
+
+### Adding New Widgets
+
+1. Create a new component in `src/components/`
+2. Add any new types to `src/types.ts`
+3. Add API functions to `src/lib/api.ts`
+4. Import and add the widget to `src/App.tsx`
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is open source and available under the MIT License.
+
+## Acknowledgments
+
+- Weather data from [Open-Meteo](https://open-meteo.com/)
+- Crime statistics from [UK Police Data API](https://data.police.uk/)
+- Planning data from [Planning Data](https://www.planning.data.gov.uk/)
+- Flood monitoring from [Environment Agency](https://environment.data.gov.uk/)
+- Local information from [Stockport Council](https://www.stockport.gov.uk/)
+
+---
+
+Built with ❤️ for the people of Stockport

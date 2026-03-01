@@ -5,6 +5,8 @@ import CrimeWidget from './components/CrimeWidget';
 import PlanningWidget from './components/PlanningWidget';
 import TransportWidget from './components/TransportWidget';
 import FactsWidget from './components/FactsWidget';
+import FloodWidget from './components/FloodWidget';
+import LocalServicesWidget from './components/LocalServicesWidget';
 
 export default function App() {
   return (
@@ -15,13 +17,15 @@ export default function App() {
         <WeatherWidget />
         <AirQualityWidget />
         <CrimeWidget />
+        <FloodWidget />
+        <LocalServicesWidget />
         <PlanningWidget className="md:col-span-2" />
         <TransportWidget />
         <FactsWidget className="lg:col-span-3" />
       </main>
 
       <footer className="max-w-7xl mx-auto px-4 sm:px-6 py-4 text-center text-xs text-gray-400">
-        Data from Open-Meteo · UK Police API · planning.data.gov.uk · National Rail
+        Data from Open-Meteo · UK Police API · planning.data.gov.uk · Environment Agency · National Rail
         &nbsp;·&nbsp;
         Refreshes on page load
       </footer>
