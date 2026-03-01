@@ -18,7 +18,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
         {/* Branding */}
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-[#009FE3] rounded-full flex items-center justify-center text-xl font-bold shrink-0">
+          <div className="w-12 h-12 bg-[#009FE3] rounded-full flex items-center justify-center text-xl font-bold shrink-0" aria-hidden="true">
             S
           </div>
           <div>
@@ -32,7 +32,9 @@ export default function Header() {
         {/* Clock */}
         <div className="text-right">
           <div className="text-[#009FE3] text-xs uppercase tracking-wide">{dateStr}</div>
-          <div className="text-2xl font-bold tabular-nums tracking-widest">{timeStr}</div>
+          <time className="text-2xl font-bold tabular-nums tracking-widest" dateTime={now.toISOString()}>
+            {timeStr}
+          </time>
         </div>
       </div>
     </header>
