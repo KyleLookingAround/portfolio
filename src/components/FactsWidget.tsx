@@ -1,0 +1,70 @@
+import { useState, useEffect } from 'react';
+import WidgetCard from './WidgetCard';
+
+const STATS = [
+  { value: '295,000', label: 'Population', note: 'Mid-2022 estimate' },
+  { value: '126,000', label: 'Households', note: '2021 Census' },
+  { value: '357 km²', label: 'Borough Area', note: 'Metropolitan Borough' },
+  { value: '1882',    label: 'County FC Founded', note: 'The Hatters ⚽' },
+  { value: '1838',    label: 'Robinsons Brewery', note: 'Est. in Stockport' },
+  { value: '1840',    label: 'Viaduct Built',     note: '27 arches, Grade II*' },
+  { value: '1894',    label: 'First M&S Bazaar',  note: 'Stockport Market' },
+  { value: '14',      label: 'Local Wards',        note: 'Since May 2024' },
+];
+
+const TRIVIA = [
+  'Stockport Viaduct (1840) spans the River Mersey on 27 brick arches — one of the largest brick structures in the UK.',
+  'The UK\'s first Marks & Spencer Penny Bazaar opened at Stockport Market in 1894.',
+  'Stockport\'s Hat Works Museum on Wellington Road South is the UK\'s only museum dedicated to the hat-making industry.',
+  'Robinsons Brewery has been brewing in Stockport since 1838, making it one of the oldest family-owned breweries in England.',
+  'Stockport County FC — nicknamed "The Hatters" — was founded in 1882 and plays at Edgeley Park.',
+  'The River Mersey flows through Stockport\'s town centre, giving the town its name (from "Stocport" — a market place).',
+  'Merseyway Shopping Centre was built over the River Mersey in the 1960s — the river still flows beneath the shopping precinct.',
+  'Stockport was a major centre of the cotton hat-making industry during the Victorian era, at its peak producing millions of hats a year.',
+];
+
+export default function FactsWidget({ className = '' }: { className?: string }) {
+  const [triviaIndex, setTriviaIndex] = useState(() => new Date().getHours() % TRIVIA.length);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTriviaIndex((i) => (i + 1) % TRIVIA.length);
+    }, 8000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <WidgetCard title="Stockport by Numbers" icon="📊" meta="Census & Local Data" className={className}>
+      {/* Stats grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+        {STATS.map((s) => (
+          <div key={s.label} className="bg-blue-50 border border-blue-100 rounded-lg p-3 text-center">
+            <span className="block text-xl font-bold text-[#003A70]">{s.value}</span>
+            <span className="block text-sm text-gray-600 mt-0.5">{s.label}</span>
+            <span className="block text-xs text-gray-400 mt-0.5">{s.note}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Rotating trivia */}
+      <div className="border-l-4 border-[#009FE3] pl-4 py-1 bg-blue-50 rounded-r-lg">
+        <p className="text-sm text-gray-700">
+          <strong className="text-[#003A70]">Did you know? </strong>
+          {TRIVIA[triviaIndex]}
+        </p>
+        <div className="flex gap-1 mt-2">
+          {TRIVIA.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setTriviaIndex(i)}
+              className={`h-1.5 rounded-full transition-all ${i === triviaIndex ? 'w-4 bg-[#009FE3]' : 'w-1.5 bg-blue-200'}`}
+              aria-label={`Fact ${i + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      <p className="text-xs text-gray-400 mt-3">Sources: ONS Census 2021, Stockport Council, Historic England</p>
+    </WidgetCard>
+  );
+}
