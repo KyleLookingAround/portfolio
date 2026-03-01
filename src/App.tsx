@@ -9,6 +9,7 @@ import FactsWidget from './components/FactsWidget';
 import ErrorBoundary from './components/ErrorBoundary';
 import FloodWidget from './components/FloodWidget';
 import LocalServicesWidget from './components/LocalServicesWidget';
+import StockportAIWidget from './components/StockportAIWidget';
 
 type WidgetStatus = 'loading' | 'ready' | 'error';
 
@@ -70,6 +71,7 @@ export default function App() {
           <TransportWidget />
         </ErrorBoundary>
         <ErrorBoundary>
+          <StockportAIWidget className="lg:col-span-3 md:col-span-2" />
           <LocalServicesWidget />
         </ErrorBoundary>
         <ErrorBoundary>
