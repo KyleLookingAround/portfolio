@@ -9,9 +9,8 @@ const RAIL_SERVICES = [
 
 const LINKS = [
   { label: '🚂 Live train departures',    href: 'https://www.nationalrail.co.uk/live-trains/departures/stockport/' },
-  { label: '🚌 TfGM journey planner',     href: 'https://www.tfgm.com/journey-planner' },
-  { label: '🐝 Bee Network buses & trams', href: 'https://tfgm.com/bee-network' },
-  { label: '🚍 Stagecoach bus times',     href: 'https://www.stagecoachbus.com/timetables' },
+  { label: '🚌 TfGM journey planner',     href: 'https://tfgm.com/plan-a-journey' },
+  { label: '🐝 Bee Network buses & trams', href: 'https://tfgm.com/' },
   { label: '🅿️ Stockport car parks',     href: 'https://www.stockport.gov.uk/topic/parking' },
 ];
 
