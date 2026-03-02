@@ -14,6 +14,13 @@ const LINKS = [
   { label: '🅿️ Stockport car parks',     href: 'https://www.stockport.gov.uk/topic/parking' },
 ];
 
+// TODO: Add an onStatusChange prop and register this widget in App.tsx's status map
+//       (WIDGET_NAMES + initial statuses) so its status is tracked by the Header indicator.
+//       Since the widget is static (no API calls), it can call onStatusChange?.('ready')
+//       once in a useEffect on mount.
+// TODO: Add a dedicated test file src/test/TransportWidget.test.tsx covering:
+//   1. Widget renders all three rail service rows
+//   2. Widget renders all quick-link anchors with correct hrefs
 export default function TransportWidget() {
   return (
     <WidgetCard title="Transport" icon="🚆" meta="Stockport Station">

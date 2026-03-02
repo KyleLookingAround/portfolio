@@ -1,8 +1,20 @@
 import { useState, useEffect } from 'react';
+// TODO: Replace these three independent fetch calls with props passed down from App.tsx
+//       (or a shared React context). WeatherWidget, AirQualityWidget, and FloodWidget
+//       already fetch this data — re-fetching it here triples the network requests on
+//       every page load. Proposed API:
+//         interface Props { weather: WeatherData | null; airQuality: AirQualityData | null;
+//                           flood: FloodData | null; dataLoading: boolean; className?: string; }
+//       App.tsx would lift the fetch calls and pass results as props to both the display
+//       widgets and this one.
 import { fetchWeather, fetchAirQuality, fetchFloodData } from '../lib/api';
 import { getWeatherInfo } from '../lib/weatherCodes';
 import type { WeatherData, AirQualityData, FloodData } from '../types';
 import WidgetCard from './WidgetCard';
+
+// TODO: Add an onStatusChange prop so App.tsx can track this widget in the global
+//       status map. Report 'ready' once dataLoading is false, 'error' if all three
+//       sources fail to load.
 
 function aqiLabel(aqi: number): string {
   if (aqi <= 20) return 'Good';
@@ -96,6 +108,12 @@ export default function StockportAIWidget({ className = '' }: { className?: stri
       if (fl.status === 'fulfilled') setFlood(fl.value);
     }).finally(() => setDataLoading(false));
   }, []);
+
+  // TODO: Add a dedicated test file src/test/StockportAIWidget.test.tsx covering:
+  //   1. Widget renders a loading state while data sources are fetching
+  //   2. Widget renders the copy button enabled once data has loaded
+  //   3. Widget renders the correct source-chip states (ready vs unavailable)
+  //   4. Clicking 'Copy AI Prompt' calls navigator.clipboard.writeText with the built prompt
 
   const copyPrompt = async () => {
     setCopyError(false);

@@ -12,6 +12,13 @@ export default function FloodWidget({ onStatusChange }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // TODO: Wrap load in useCallback with [onStatusChange] as the dependency array so it
+  //       can be included as a dep in the useEffect below (removing the eslint-disable
+  //       comment) and passed stably to WidgetCard onRetry.
+  //       useEffect(() => { load(); }, [load]);
+  // TODO: Distinguish AbortError (8 s timeout) from other network errors and surface
+  //       a more specific message, e.g. 'Flood data request timed out.'
+  // TODO: Implement exponential backoff on the retry button (2 s → 4 s → 8 s).
   const load = () => {
     setLoading(true);
     setError(null);
@@ -38,7 +45,13 @@ export default function FloodWidget({ onStatusChange }: Props) {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, []); // eslint-disable-line react-hooks/exhaustive-deps,react-hooks/set-state-in-effect
+
+  // TODO: Add a dedicated test file src/test/FloodWidget.test.tsx covering:
+  //   1. Widget renders a loading skeleton on mount
+  //   2. Widget renders Mersey river readings with mocked Environment Agency data
+  //   3. Widget shows an error state with a retry button when the API rejects
+  //   4. Widget calls onStatusChange('error') when no Mersey readings are found
 
   function getStatusColor(measure: FloodMeasure): string {
     if (!measure.latestReading || !measure.stageScale?.highestRecent) return 'bg-gray-100';

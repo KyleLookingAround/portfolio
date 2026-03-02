@@ -48,6 +48,14 @@ const USEFUL_LINKS = [
   { label: '🎪 What\'s On Stockport', href: 'https://www.whatsoninstockport.com/' },
 ];
 
+// TODO: Add an onStatusChange prop and register this widget in App.tsx's status map
+//       (WIDGET_NAMES + initial statuses) so its status is tracked by the Header indicator.
+//       Since the widget is static (no API calls), it can call onStatusChange?.('ready')
+//       once in a useEffect on mount.
+// TODO: Add a dedicated test file src/test/LocalServicesWidget.test.tsx covering:
+//   1. Widget renders emergency service numbers (999, 111)
+//   2. Widget renders council service phone links with correct tel: hrefs
+//   3. Widget renders all quick-link anchors
 export default function LocalServicesWidget({ className = '' }: { className?: string }) {
   return (
     <WidgetCard

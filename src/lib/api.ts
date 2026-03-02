@@ -3,6 +3,14 @@ import type { WeatherData, AirQualityData, CrimeRecord, PlanningResponse, FloodD
 const LAT = 53.4083;
 const LNG = -2.1494;
 
+// TODO: Expose timeout vs. non-timeout errors from fetchJson so callers can show
+//       specific messages. The AbortController fires with an AbortError (err.name === 'AbortError');
+//       currently all errors reach widget catch blocks as the same opaque value. Consider
+//       re-throwing a typed error, e.g.:
+//         if (err instanceof DOMException && err.name === 'AbortError')
+//           throw new Error('TIMEOUT')
+//       so widgets can check error.message === 'TIMEOUT' and render 'Request timed out'
+//       instead of a generic failure message.
 async function fetchJson<T>(url: string): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 8000);

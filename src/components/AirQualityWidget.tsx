@@ -27,6 +27,12 @@ export default function AirQualityWidget({ onStatusChange }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // TODO: Wrap load in useCallback with [onStatusChange] as the dependency array.
+  //       This removes the need for the eslint-disable comment below and keeps load
+  //       stable so it can be safely included in effect deps or passed as a prop.
+  // TODO: Distinguish AbortError (8 s timeout) from other network errors and surface
+  //       a more specific message to the user.
+  // TODO: Implement exponential backoff on the retry button (2 s → 4 s → 8 s).
   const load = () => {
     setLoading(true);
     setError(null);
@@ -47,6 +53,11 @@ export default function AirQualityWidget({ onStatusChange }: Props) {
     load();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // TODO: Add a dedicated test file src/test/AirQualityWidget.test.tsx covering:
+  //   1. Widget renders a loading skeleton on mount
+  //   2. Widget renders the AQI badge and pollutant bars with mocked API data
+  //   3. Widget shows an error state with a retry button when the API rejects
 
   const current = data?.current;
   const aqiMeta = current ? getAqiLabel(current.european_aqi) : null;

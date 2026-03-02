@@ -5,6 +5,17 @@ import * as api from '../lib/api';
 
 vi.mock('../lib/api');
 
+// TODO: Add dedicated test files for every widget that currently has no coverage:
+//   - src/test/AirQualityWidget.test.tsx
+//   - src/test/CrimeWidget.test.tsx
+//   - src/test/FloodWidget.test.tsx
+//   - src/test/PlanningWidget.test.tsx
+//   - src/test/TransportWidget.test.tsx
+//   - src/test/FactsWidget.test.tsx
+//   - src/test/LocalServicesWidget.test.tsx
+//   - src/test/StockportAIWidget.test.tsx
+// Each file should cover: loading state, successful data render, and error state.
+
 describe('App', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -64,10 +75,18 @@ describe('App', () => {
 
   it('wraps widgets in error boundaries', () => {
     const { container } = render(<App />);
-    
+
     // Check that main element exists with grid layout
     const main = container.querySelector('main');
     expect(main).toBeInTheDocument();
     expect(main?.classList.contains('grid')).toBe(true);
   });
+
+  // TODO: Add a test that verifies a widget is removed from the grid after its
+  //       onStatusChange('error') fires — i.e. that show(id) === false hides it.
+  //       Requires waitFor(() => expect(screen.queryByText('Weather')).not.toBeInTheDocument())
+  //       after mockRejectedValue resolves.
+
+  // TODO: Add a test that verifies the Header error indicator appears (and lists the
+  //       correct widget name) when one or more widgets report an error status.
 });

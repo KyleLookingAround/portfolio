@@ -15,6 +15,14 @@ export default function WeatherWidget({ onStatusChange }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // TODO: Wrap load in useCallback with [onStatusChange] as the dependency array.
+  //       This removes the need for the eslint-disable comment below and keeps load
+  //       stable so it can be safely included in effect deps or passed as a prop.
+  // TODO: Distinguish AbortError (8 s timeout triggered by fetchJson) from other network
+  //       errors and show a specific message, e.g. 'Weather request timed out — check your
+  //       connection.' vs a generic API-down message.
+  // TODO: Implement exponential backoff on the retry button (2 s → 4 s → 8 s) so that
+  //       a temporarily-down API is not hammered with immediate re-requests.
   const load = () => {
     setLoading(true);
     setError(null);
@@ -35,6 +43,11 @@ export default function WeatherWidget({ onStatusChange }: Props) {
     load();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // TODO: Add a dedicated test file src/test/WeatherWidget.test.tsx covering:
+  //   1. Widget renders a loading skeleton on mount
+  //   2. Widget renders current conditions and 3-day forecast with mocked API data
+  //   3. Widget shows an error state with a retry button when the API rejects
 
   const current = data?.current;
   const daily = data?.daily;
