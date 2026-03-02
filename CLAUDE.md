@@ -292,6 +292,35 @@ Search for `#003A70` and `#009FE3` in the codebase. These are applied as Tailwin
 
 ---
 
+## Working on TODOs
+
+The codebase contains `// TODO:` comments that document known improvements. When working on a task, check for nearby TODOs in any file you touch — if a TODO is directly related to what you are already changing, pick it up in the same commit rather than leaving it open.
+
+### How to find TODOs
+
+```bash
+grep -rn "TODO" src/ index.html   # list all outstanding TODOs
+```
+
+### Guidelines
+
+- **Opportunistic, not obligatory.** Only address a TODO if it is in a file you are already editing and is clearly related to your current task. Do not go out of scope to chase unrelated TODOs.
+- **One coherent change per commit.** If a TODO is small and adjacent to your work, fold it in. If it is large or cross-cutting, leave it and note it in your commit message.
+- **Remove the comment when done.** Once a TODO is resolved, delete the `// TODO:` line. A resolved TODO left in the file is misleading.
+- **Grouped TODOs.** Some TODOs are part of a set (e.g., all five widgets that need `onStatusChange`). If you implement one, implement all in the same group so the codebase stays consistent.
+
+### Common TODO clusters in this codebase
+
+| Cluster | Files | Summary |
+|---------|-------|---------|
+| Widget status tracking | `App.tsx`, `PlanningWidget.tsx`, `TransportWidget.tsx`, `LocalServicesWidget.tsx`, `StockportAIWidget.tsx` | Add `onStatusChange` prop + register in `WIDGET_NAMES` / statuses |
+| `useCallback` on `load` | `WeatherWidget.tsx`, `AirQualityWidget.tsx`, `CrimeWidget.tsx`, `FloodWidget.tsx`, `PlanningWidget.tsx` | Wrap `load` in `useCallback([onStatusChange])`, remove eslint-disable |
+| Timeout error distinction | `src/lib/api.ts` + all widget files | Surface `AbortError` separately so widgets can show "timed out" messages |
+| Missing test files | `src/test/App.test.tsx` (see list at top of file) | One test file per widget covering loading / success / error states |
+| Accessibility | `Header.tsx`, `WidgetCard.tsx` | Keyboard focus for error tooltip; aria-label on icon span |
+
+---
+
 ## Code Quality Checklist
 
 Before committing:
@@ -301,3 +330,4 @@ Before committing:
 - [ ] New widgets wrapped in `<ErrorBoundary>` and registered in status map
 - [ ] API fetch functions follow the `fetchJson<T>` + timeout pattern
 - [ ] No real network calls in tests
+- [ ] Any resolved TODOs have had their comment removed
