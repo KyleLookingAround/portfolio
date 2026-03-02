@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import Header from './components/Header';
 import WeatherWidget from './components/WeatherWidget';
 import AirQualityWidget from './components/AirQualityWidget';
@@ -14,28 +14,47 @@ import StockportAIWidget from './components/StockportAIWidget';
 type WidgetStatus = 'loading' | 'ready' | 'error';
 
 // Human-readable names shown in the error indicator tooltip
-// TODO: Add missing widgets to WIDGET_NAMES so the Header error indicator tracks all 9 widgets:
-//       planning, transport, facts, localServices, stockportAI
 const WIDGET_NAMES: Record<string, string> = {
-  weather:    'Weather',
-  airQuality: 'Air Quality',
-  crime:      'Crime Statistics',
-  flood:      'River Monitoring',
+  weather:       'Weather',
+  airQuality:    'Air Quality',
+  crime:         'Crime Statistics',
+  flood:         'River Monitoring',
+  planning:      'Planning & Development',
+  transport:     'Transport',
+  facts:         'Stockport by Numbers',
+  localServices: 'Local Services',
+  stockportAI:   'Plan Your Day Out',
 };
 
 export default function App() {
-  // TODO: Add the 5 missing widgets to the initial statuses map to match WIDGET_NAMES above:
-  //       planning, transport, facts, localServices, stockportAI
   const [statuses, setStatuses] = useState<Record<string, WidgetStatus>>({
-    weather:    'loading',
-    airQuality: 'loading',
-    crime:      'loading',
-    flood:      'loading',
+    weather:       'loading',
+    airQuality:    'loading',
+    crime:         'loading',
+    flood:         'loading',
+    planning:      'loading',
+    transport:     'loading',
+    facts:         'ready',
+    localServices: 'loading',
+    stockportAI:   'loading',
   });
 
   const setStatus = useCallback((id: string, status: WidgetStatus) => {
     setStatuses((prev) => ({ ...prev, [id]: status }));
   }, []);
+
+  // Stable per-widget handlers — memoised so widgets with useCallback([onStatusChange])
+  // deps don't re-fetch every time App re-renders (e.g. when another widget updates).
+  const onStatus = useMemo(() => ({
+    weather:       (s: WidgetStatus) => setStatus('weather', s),
+    airQuality:    (s: WidgetStatus) => setStatus('airQuality', s),
+    crime:         (s: WidgetStatus) => setStatus('crime', s),
+    flood:         (s: WidgetStatus) => setStatus('flood', s),
+    planning:      (s: WidgetStatus) => setStatus('planning', s),
+    transport:     (s: WidgetStatus) => setStatus('transport', s),
+    localServices: (s: WidgetStatus) => setStatus('localServices', s),
+    stockportAI:   (s: WidgetStatus) => setStatus('stockportAI', s),
+  }), [setStatus]);
 
   const failingWidgets = Object.entries(statuses)
     .filter(([, s]) => s === 'error')
@@ -45,58 +64,60 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#f0f4f8]">
-      {/* TODO: Add a global "Refresh all" button to the Header so users can re-fetch
-               all widgets without a full page reload */}
-      {/* TODO: Consider showing a brief full-dashboard loading skeleton on first mount
-               while all widgets initialise, rather than each one independently */}
       <Header failingWidgets={failingWidgets} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {show('weather') && (
           <ErrorBoundary>
-            <WeatherWidget onStatusChange={(s) => setStatus('weather', s)} />
+            <WeatherWidget onStatusChange={onStatus.weather} />
           </ErrorBoundary>
         )}
         {show('airQuality') && (
           <ErrorBoundary>
-            <AirQualityWidget onStatusChange={(s) => setStatus('airQuality', s)} />
+            <AirQualityWidget onStatusChange={onStatus.airQuality} />
           </ErrorBoundary>
         )}
         {show('crime') && (
           <ErrorBoundary>
-            <CrimeWidget onStatusChange={(s) => setStatus('crime', s)} />
+            <CrimeWidget onStatusChange={onStatus.crime} />
           </ErrorBoundary>
         )}
-        {/* TODO: Add onStatusChange to PlanningWidget and wrap with show('planning') once
-                 PlanningWidget implements the onStatusChange prop pattern */}
-        <ErrorBoundary>
-          <PlanningWidget className="md:col-span-2" />
-        </ErrorBoundary>
+        {show('planning') && (
+          <ErrorBoundary>
+            <PlanningWidget
+              className="md:col-span-2"
+              onStatusChange={onStatus.planning}
+            />
+          </ErrorBoundary>
+        )}
         {show('flood') && (
           <ErrorBoundary>
-            <FloodWidget onStatusChange={(s) => setStatus('flood', s)} />
+            <FloodWidget onStatusChange={onStatus.flood} />
           </ErrorBoundary>
         )}
-        {/* TODO: Add onStatusChange to TransportWidget and wrap with show('transport')
-                 once TransportWidget implements the onStatusChange prop pattern */}
-        <ErrorBoundary>
-          <TransportWidget />
-        </ErrorBoundary>
-        {/* TODO: Add onStatusChange to StockportAIWidget and wrap with show('stockportAI')
-                 once StockportAIWidget implements the onStatusChange prop pattern */}
-        <ErrorBoundary>
-          <StockportAIWidget className="lg:col-span-3 md:col-span-2" />
-        </ErrorBoundary>
-        {/* TODO: Add onStatusChange to LocalServicesWidget and wrap with show('localServices')
-                 once LocalServicesWidget implements the onStatusChange prop pattern */}
-        <ErrorBoundary>
-          <LocalServicesWidget />
-        </ErrorBoundary>
-        {/* TODO: Add onStatusChange to FactsWidget and wrap with show('facts')
-                 once FactsWidget implements the onStatusChange prop pattern */}
-        <ErrorBoundary>
-          <FactsWidget className="lg:col-span-3" />
-        </ErrorBoundary>
+        {show('transport') && (
+          <ErrorBoundary>
+            <TransportWidget onStatusChange={onStatus.transport} />
+          </ErrorBoundary>
+        )}
+        {show('stockportAI') && (
+          <ErrorBoundary>
+            <StockportAIWidget
+              className="lg:col-span-3 md:col-span-2"
+              onStatusChange={onStatus.stockportAI}
+            />
+          </ErrorBoundary>
+        )}
+        {show('localServices') && (
+          <ErrorBoundary>
+            <LocalServicesWidget onStatusChange={onStatus.localServices} />
+          </ErrorBoundary>
+        )}
+        {show('facts') && (
+          <ErrorBoundary>
+            <FactsWidget className="lg:col-span-3" />
+          </ErrorBoundary>
+        )}
       </main>
 
       <footer className="max-w-7xl mx-auto px-4 sm:px-6 py-4 text-center text-xs text-gray-400">

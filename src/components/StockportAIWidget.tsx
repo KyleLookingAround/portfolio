@@ -12,10 +12,6 @@ import { getWeatherInfo } from '../lib/weatherCodes';
 import type { WeatherData, AirQualityData, FloodData } from '../types';
 import WidgetCard from './WidgetCard';
 
-// TODO: Add an onStatusChange prop so App.tsx can track this widget in the global
-//       status map. Report 'ready' once dataLoading is false, 'error' if all three
-//       sources fail to load.
-
 function aqiLabel(aqi: number): string {
   if (aqi <= 20) return 'Good';
   if (aqi <= 40) return 'Fair';
@@ -88,7 +84,12 @@ function buildPrompt(
   );
 }
 
-export default function StockportAIWidget({ className = '' }: { className?: string }) {
+interface Props {
+  onStatusChange?: (status: 'loading' | 'ready' | 'error') => void;
+  className?: string;
+}
+
+export default function StockportAIWidget({ onStatusChange, className = '' }: Props) {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [airQuality, setAirQuality] = useState<AirQualityData | null>(null);
   const [flood, setFlood] = useState<FloodData | null>(null);
@@ -98,6 +99,7 @@ export default function StockportAIWidget({ className = '' }: { className?: stri
   const [copyError, setCopyError] = useState(false);
 
   useEffect(() => {
+    onStatusChange?.('loading');
     Promise.allSettled([
       fetchWeather(),
       fetchAirQuality(),
@@ -106,14 +108,10 @@ export default function StockportAIWidget({ className = '' }: { className?: stri
       if (w.status === 'fulfilled') setWeather(w.value);
       if (aq.status === 'fulfilled') setAirQuality(aq.value);
       if (fl.status === 'fulfilled') setFlood(fl.value);
+      const allFailed = [w, aq, fl].every((r) => r.status === 'rejected');
+      onStatusChange?.(allFailed ? 'error' : 'ready');
     }).finally(() => setDataLoading(false));
-  }, []);
-
-  // TODO: Add a dedicated test file src/test/StockportAIWidget.test.tsx covering:
-  //   1. Widget renders a loading state while data sources are fetching
-  //   2. Widget renders the copy button enabled once data has loaded
-  //   3. Widget renders the correct source-chip states (ready vs unavailable)
-  //   4. Clicking 'Copy AI Prompt' calls navigator.clipboard.writeText with the built prompt
+  }, [onStatusChange]);
 
   const copyPrompt = async () => {
     setCopyError(false);

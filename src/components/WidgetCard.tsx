@@ -35,11 +35,7 @@ export default function WidgetCard({
   return (
     <article className={`bg-white rounded-xl shadow-md overflow-hidden flex flex-col ${className}`}>
       <header className="bg-[#003A70] text-white px-5 py-3 flex items-center gap-2">
-        {/* TODO: Provide a more descriptive aria-label for the icon — the current value
-                   mirrors the widget title which is already in the adjacent <h2>. Consider
-                   using aria-hidden="true" on the span instead, since the title already
-                   labels the widget for screen readers. */}
-        <span className="text-xl" role="img" aria-label={title}>{icon}</span>
+        <span className="text-xl" aria-hidden="true">{icon}</span>
         <h2 className="text-base font-semibold flex-1">{title}</h2>
         {meta && <span className="text-xs text-[#009FE3] whitespace-nowrap">{meta}</span>}
       </header>

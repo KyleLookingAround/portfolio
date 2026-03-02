@@ -40,12 +40,11 @@ export default function Header({ failingWidgets = [] }: Props) {
         {/* API error indicator */}
         {failingWidgets.length > 0 && (
           <div className="relative">
-            {/* TODO: Add onFocus={() => setErrorOpen(true)} and onBlur={() => setErrorOpen(false)}
-                     so keyboard users can access the failed-widgets tooltip — currently it
-                     only opens on mouse hover, which is inaccessible to keyboard/touch users. */}
             <button
               onMouseEnter={() => setErrorOpen(true)}
               onMouseLeave={() => setErrorOpen(false)}
+              onFocus={() => setErrorOpen(true)}
+              onBlur={() => setErrorOpen(false)}
               onClick={() => setErrorOpen((v) => !v)}
               aria-expanded={errorOpen}
               aria-label={`${failingWidgets.length} widget${failingWidgets.length > 1 ? 's' : ''} failed to load`}
