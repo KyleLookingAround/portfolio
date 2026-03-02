@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { fetchWeather, fetchAirQuality, fetchCrime, fetchFloodData } from '../lib/api';
+import { fetchWeather, fetchAirQuality, fetchFloodData } from '../lib/api';
 import { getWeatherInfo } from '../lib/weatherCodes';
-import type { WeatherData, AirQualityData, CrimeRecord, FloodData } from '../types';
+import type { WeatherData, AirQualityData, FloodData } from '../types';
 import WidgetCard from './WidgetCard';
 
 function aqiLabel(aqi: number): string {
@@ -16,7 +16,6 @@ function aqiLabel(aqi: number): string {
 function buildPrompt(
   weather: WeatherData | null,
   airQuality: AirQualityData | null,
-  crime: CrimeRecord[] | null,
   flood: FloodData | null,
 ): string {
   const today = new Date().toLocaleDateString('en-GB', {
@@ -62,17 +61,6 @@ function buildPrompt(
     if (readings) sections.push(`River Mersey levels near Stockport: ${readings}`);
   }
 
-  if (crime?.length) {
-    const counts: Record<string, number> = {};
-    crime.forEach(r => { counts[r.category] = (counts[r.category] ?? 0) + 1; });
-    const top = Object.entries(counts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 4)
-      .map(([cat, n]) => `${cat.replace(/-/g, ' ')} (${n})`)
-      .join(', ');
-    sections.push(`Recent local crime summary (context only): ${top}`);
-  }
-
   return (
     `You are a friendly local guide for Stockport, Greater Manchester, UK. ` +
     `Based on the real-time data below for ${today}, suggest an enjoyable, ` +
@@ -91,7 +79,6 @@ function buildPrompt(
 export default function StockportAIWidget({ className = '' }: { className?: string }) {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [airQuality, setAirQuality] = useState<AirQualityData | null>(null);
-  const [crime, setCrime] = useState<CrimeRecord[] | null>(null);
   const [flood, setFlood] = useState<FloodData | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
 
@@ -102,19 +89,17 @@ export default function StockportAIWidget({ className = '' }: { className?: stri
     Promise.allSettled([
       fetchWeather(),
       fetchAirQuality(),
-      fetchCrime(),
       fetchFloodData(),
-    ]).then(([w, aq, cr, fl]) => {
+    ]).then(([w, aq, fl]) => {
       if (w.status === 'fulfilled') setWeather(w.value);
       if (aq.status === 'fulfilled') setAirQuality(aq.value);
-      if (cr.status === 'fulfilled') setCrime(cr.value);
       if (fl.status === 'fulfilled') setFlood(fl.value);
     }).finally(() => setDataLoading(false));
   }, []);
 
   const copyPrompt = async () => {
     setCopyError(false);
-    const prompt = buildPrompt(weather, airQuality, crime, flood);
+    const prompt = buildPrompt(weather, airQuality, flood);
     try {
       await navigator.clipboard.writeText(prompt);
       setCopied(true);
@@ -125,19 +110,19 @@ export default function StockportAIWidget({ className = '' }: { className?: stri
     }
   };
 
-  const dataCount = [weather, airQuality, crime, flood].filter(Boolean).length;
+  const dataCount = [weather, airQuality, flood].filter(Boolean).length;
 
   return (
     <WidgetCard
       title="Plan Your Day Out"
       icon="📋"
-      meta={dataLoading ? 'Loading data…' : `${dataCount}/4 sources ready`}
+      meta={dataLoading ? 'Loading data…' : `${dataCount}/3 sources ready`}
       className={className}
     >
       <div className="flex flex-col items-center text-center py-4 gap-4">
         <p className="text-sm text-gray-500 max-w-md">
           Copies a ready-made AI prompt loaded with today's live Stockport data — weather,
-          air quality, river levels &amp; crime stats. Paste it into your favourite AI to
+          air quality &amp; river levels. Paste it into your favourite AI to
           get a personalised day out itinerary.
         </p>
 
@@ -146,7 +131,6 @@ export default function StockportAIWidget({ className = '' }: { className?: stri
           {[
             { label: 'Weather', ready: !!weather },
             { label: 'Air Quality', ready: !!airQuality },
-            { label: 'Crime', ready: !!crime },
             { label: 'River Levels', ready: !!flood },
           ].map(({ label, ready }) => (
             <span

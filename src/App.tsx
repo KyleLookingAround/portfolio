@@ -72,6 +72,8 @@ export default function App() {
         </ErrorBoundary>
         <ErrorBoundary>
           <StockportAIWidget className="lg:col-span-3 md:col-span-2" />
+        </ErrorBoundary>
+        <ErrorBoundary>
           <LocalServicesWidget />
         </ErrorBoundary>
         <ErrorBoundary>
