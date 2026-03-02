@@ -20,7 +20,7 @@ describe('TransportWidget', () => {
     const trainLink = screen.getByText(/Live train departures/).closest('a');
     expect(trainLink).toHaveAttribute('href', 'https://www.nationalrail.co.uk/live-trains/departures/stockport/');
     const journeyLink = screen.getByText(/TfGM journey planner/).closest('a');
-    expect(journeyLink).toHaveAttribute('href', 'https://www.tfgm.com/journey-planner');
+    expect(journeyLink).toHaveAttribute('href', 'https://tfgm.com/plan-a-journey');
   });
 
   it('calls onStatusChange with ready on mount', async () => {
