@@ -7,10 +7,11 @@ const RAIL_SERVICES = [
 ];
 
 const LINKS = [
-  { label: '🚂 Live train departures', href: 'https://www.nationalrail.co.uk/live-trains/departures/stockport/' },
-  { label: '🚌 TfGM journey planner', href: 'https://www.tfgm.com/journey-planner' },
-  { label: '🚍 Stagecoach bus times', href: 'https://www.stagecoachbus.com/timetables' },
-  { label: '🅿️ Stockport car parks', href: 'https://www.stockport.gov.uk/topic/parking' },
+  { label: '🚂 Live train departures',    href: 'https://www.nationalrail.co.uk/live-trains/departures/stockport/' },
+  { label: '🚌 TfGM journey planner',     href: 'https://www.tfgm.com/journey-planner' },
+  { label: '🐝 Bee Network buses & trams', href: 'https://tfgm.com/bee-network' },
+  { label: '🚍 Stagecoach bus times',     href: 'https://www.stagecoachbus.com/timetables' },
+  { label: '🅿️ Stockport car parks',     href: 'https://www.stockport.gov.uk/topic/parking' },
 ];
 
 export default function TransportWidget() {
@@ -32,27 +33,19 @@ export default function TransportWidget() {
       </div>
 
       {/* Quick links */}
-      <div className="border-t border-blue-100 pt-4 space-y-2">
+      <div className="border-t border-blue-100 pt-2">
         {LINKS.map((l) => (
           <a
             key={l.href}
             href={l.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm text-[#003A70] hover:text-[#009FE3] transition-colors"
+            className="flex items-center gap-2 text-sm text-[#003A70] hover:text-[#009FE3] transition-colors py-2.5 border-b border-blue-50 last:border-0"
           >
             {l.label} →
           </a>
         ))}
       </div>
-
-      <p className="text-xs text-gray-400 mt-4">
-        Register free at{' '}
-        <a href="https://developer.tfgm.com" target="_blank" rel="noopener noreferrer" className="text-[#009FE3]">
-          developer.tfgm.com
-        </a>{' '}
-        for live car park availability.
-      </p>
     </WidgetCard>
   );
 }
