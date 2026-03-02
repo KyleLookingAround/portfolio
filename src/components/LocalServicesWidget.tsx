@@ -6,43 +6,43 @@ const EMERGENCY_SERVICES = [
 ];
 
 const LOCAL_SERVICES = [
-  { 
-    icon: '🏛️', 
+  {
+    icon: '🏛️',
     label: 'Stockport Council',
-    phone: '0161 480 4949',
+    phone: '0161 474 4949',
     link: 'https://www.stockport.gov.uk/',
     description: 'Main switchboard'
   },
-  { 
-    icon: '🗑️', 
+  {
+    icon: '🗑️',
     label: 'Bin Collections',
-    phone: '0161 474 4949',
-    link: 'https://www.stockport.gov.uk/bin-collections',
+    phone: '0161 217 6111',
+    link: 'https://www.stockport.gov.uk/topic/bins-and-recycling',
     description: 'Report missed collections'
   },
-  { 
-    icon: '💡', 
+  {
+    icon: '💡',
     label: 'Street Lighting',
-    phone: '0161 474 3814',
-    link: 'https://www.stockport.gov.uk/street-lighting',
+    phone: '0161 217 6111',
+    link: 'https://www.stockport.gov.uk/start/report-a-street-light-fault',
     description: 'Report faults'
   },
-  { 
-    icon: '🚧', 
+  {
+    icon: '🚧',
     label: 'Highways & Roads',
-    phone: '0161 474 4949',
-    link: 'https://www.stockport.gov.uk/highways',
+    phone: '0161 217 6111',
+    link: 'https://www.stockport.gov.uk/topic/roads',
     description: 'Report problems'
   },
 ];
 
 const USEFUL_LINKS = [
-  { label: '📚 Stockport Libraries', href: 'https://www.stockport.gov.uk/libraries' },
+  { label: '📚 Stockport Libraries', href: 'https://www.stockport.gov.uk/topic/libraries' },
   { label: '🏊 Leisure Centres', href: 'https://www.stockport.gov.uk/leisure-centres' },
-  { label: '♻️ Recycling Centres', href: 'https://www.stockport.gov.uk/recycling-centres' },
-  { label: '🎭 Plaza Theatre', href: 'https://www.stockportplaza.co.uk/' },
-  { label: '🏛️ Hat Works Museum', href: 'https://www.hatworks.org.uk/' },
-  { label: '🛒 Merseyway Shopping', href: 'https://www.merseyway.com/' },
+  { label: '♻️ Recycling Centres', href: 'https://www.stockport.gov.uk/tips-and-recycling-centres' },
+  { label: '🎭 Plaza Theatre', href: 'https://stockportplaza.co.uk/' },
+  { label: '🏛️ Hat Works Museum', href: 'https://www.stockport.gov.uk/topic/hat-works' },
+  { label: '🛒 Merseyway Shopping', href: 'https://merseyway.com/' },
 ];
 
 export default function LocalServicesWidget({ className = '' }: { className?: string }) {

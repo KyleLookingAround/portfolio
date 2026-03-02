@@ -10,7 +10,7 @@ const LINKS = [
   { label: '🚂 Live train departures', href: 'https://www.nationalrail.co.uk/live-trains/departures/stockport/' },
   { label: '🚌 TfGM journey planner', href: 'https://www.tfgm.com/journey-planner' },
   { label: '🚍 Stagecoach bus times', href: 'https://www.stagecoachbus.com/timetables' },
-  { label: '🅿️ Stockport car parks', href: 'https://www.stockport.gov.uk/parking' },
+  { label: '🅿️ Stockport car parks', href: 'https://www.stockport.gov.uk/topic/parking' },
 ];
 
 export default function TransportWidget() {
