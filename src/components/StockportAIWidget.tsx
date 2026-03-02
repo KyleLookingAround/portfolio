@@ -1,4 +1,12 @@
 import { useState, useEffect } from 'react';
+// TODO: Replace these three independent fetch calls with props passed down from App.tsx
+//       (or a shared React context). WeatherWidget, AirQualityWidget, and FloodWidget
+//       already fetch this data — re-fetching it here triples the network requests on
+//       every page load. Proposed API:
+//         interface Props { weather: WeatherData | null; airQuality: AirQualityData | null;
+//                           flood: FloodData | null; dataLoading: boolean; className?: string; }
+//       App.tsx would lift the fetch calls and pass results as props to both the display
+//       widgets and this one.
 import { fetchWeather, fetchAirQuality, fetchFloodData } from '../lib/api';
 import { getWeatherInfo } from '../lib/weatherCodes';
 import type { WeatherData, AirQualityData, FloodData } from '../types';
@@ -76,7 +84,12 @@ function buildPrompt(
   );
 }
 
-export default function StockportAIWidget({ className = '' }: { className?: string }) {
+interface Props {
+  onStatusChange?: (status: 'loading' | 'ready' | 'error') => void;
+  className?: string;
+}
+
+export default function StockportAIWidget({ onStatusChange, className = '' }: Props) {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [airQuality, setAirQuality] = useState<AirQualityData | null>(null);
   const [flood, setFlood] = useState<FloodData | null>(null);
@@ -86,6 +99,7 @@ export default function StockportAIWidget({ className = '' }: { className?: stri
   const [copyError, setCopyError] = useState(false);
 
   useEffect(() => {
+    onStatusChange?.('loading');
     Promise.allSettled([
       fetchWeather(),
       fetchAirQuality(),
@@ -94,8 +108,10 @@ export default function StockportAIWidget({ className = '' }: { className?: stri
       if (w.status === 'fulfilled') setWeather(w.value);
       if (aq.status === 'fulfilled') setAirQuality(aq.value);
       if (fl.status === 'fulfilled') setFlood(fl.value);
+      const allFailed = [w, aq, fl].every((r) => r.status === 'rejected');
+      onStatusChange?.(allFailed ? 'error' : 'ready');
     }).finally(() => setDataLoading(false));
-  }, []);
+  }, [onStatusChange]);
 
   const copyPrompt = async () => {
     setCopyError(false);

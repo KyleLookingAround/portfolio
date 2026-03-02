@@ -26,12 +26,27 @@ const TRIVIA = [
 export default function FactsWidget({ className = '' }: { className?: string }) {
   const [triviaIndex, setTriviaIndex] = useState(() => new Date().getHours() % TRIVIA.length);
 
+  // TODO: Pause the trivia rotation when the widget is off-screen using the
+  //       Intersection Observer API, so the interval does not fire when the user
+  //       has scrolled past this widget. Example:
+  //         const ref = useRef<HTMLDivElement>(null);
+  //         useEffect(() => {
+  //           const obs = new IntersectionObserver(([e]) => setVisible(e.isIntersecting));
+  //           if (ref.current) obs.observe(ref.current);
+  //           return () => obs.disconnect();
+  //         }, []);
+  //       Then only run the setInterval while visible.
   useEffect(() => {
     const timer = setInterval(() => {
       setTriviaIndex((i) => (i + 1) % TRIVIA.length);
     }, 8000);
     return () => clearInterval(timer);
   }, []);
+
+  // TODO: Add a dedicated test file src/test/FactsWidget.test.tsx covering:
+  //   1. Widget renders all STATS cards
+  //   2. Widget renders the first trivia fact on mount
+  //   3. Clicking a pagination dot updates the displayed trivia fact
 
   return (
     <WidgetCard title="Stockport by Numbers" icon="📊" meta="Census & Local Data" className={className}>

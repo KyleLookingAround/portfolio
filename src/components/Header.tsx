@@ -8,6 +8,9 @@ export default function Header({ failingWidgets = [] }: Props) {
   const [now, setNow] = useState(new Date());
   const [errorOpen, setErrorOpen] = useState(false);
 
+  // TODO: Reduce the clock update interval from 1000 ms to something larger (e.g. 10 000 ms)
+  //       or wrap the clock in React.memo, since the 1-second re-render causes the entire
+  //       Header to re-render every second even when no data changes.
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
@@ -40,6 +43,8 @@ export default function Header({ failingWidgets = [] }: Props) {
             <button
               onMouseEnter={() => setErrorOpen(true)}
               onMouseLeave={() => setErrorOpen(false)}
+              onFocus={() => setErrorOpen(true)}
+              onBlur={() => setErrorOpen(false)}
               onClick={() => setErrorOpen((v) => !v)}
               aria-expanded={errorOpen}
               aria-label={`${failingWidgets.length} widget${failingWidgets.length > 1 ? 's' : ''} failed to load`}

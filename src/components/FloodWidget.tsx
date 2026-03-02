@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { fetchFloodData } from '../lib/api';
 import type { FloodMeasure } from '../types';
 import WidgetCard from './WidgetCard';
@@ -12,7 +12,7 @@ export default function FloodWidget({ onStatusChange }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const load = () => {
+  const load = useCallback(() => {
     setLoading(true);
     setError(null);
     onStatusChange?.('loading');
@@ -31,14 +31,17 @@ export default function FloodWidget({ onStatusChange }: Props) {
           onStatusChange?.('error');
         }
       })
-      .catch(() => {
-        setError('Unable to load flood monitoring data.');
+      .catch((err: unknown) => {
+        const msg = err instanceof Error && err.message === 'TIMEOUT'
+          ? 'Flood data request timed out. Please check your connection.'
+          : 'Unable to load flood monitoring data.';
+        setError(msg);
         onStatusChange?.('error');
       })
       .finally(() => setLoading(false));
-  };
+  }, [onStatusChange]);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]); // eslint-disable-line react-hooks/set-state-in-effect
 
   function getStatusColor(measure: FloodMeasure): string {
     if (!measure.latestReading || !measure.stageScale?.highestRecent) return 'bg-gray-100';

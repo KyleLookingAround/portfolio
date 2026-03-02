@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { fetchCrime } from '../lib/api';
 import type { CrimeRecord } from '../types';
 import WidgetCard from './WidgetCard';
@@ -30,7 +30,7 @@ export default function CrimeWidget({ onStatusChange }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [month, setMonth] = useState('');
 
-  const load = () => {
+  const load = useCallback(() => {
     setLoading(true);
     setError(null);
     onStatusChange?.('loading');
@@ -44,17 +44,20 @@ export default function CrimeWidget({ onStatusChange }: Props) {
           onStatusChange?.('error');
         }
       })
-      .catch(() => {
-        setError('Crime data unavailable. The Police API may be temporarily down.');
+      .catch((err: unknown) => {
+        const msg = err instanceof Error && err.message === 'TIMEOUT'
+          ? 'Crime data request timed out. Please check your connection.'
+          : 'Crime data unavailable. The Police API may be temporarily down.';
+        setError(msg);
         onStatusChange?.('error');
       })
       .finally(() => setLoading(false));
-  };
+  }, [onStatusChange]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [load]);
 
   // Tally by category
   const tally: Record<string, number> = {};

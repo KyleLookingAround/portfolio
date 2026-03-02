@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import WidgetCard from './WidgetCard';
 
 const EMERGENCY_SERVICES = [
@@ -48,7 +49,16 @@ const USEFUL_LINKS = [
   { label: '🎪 What\'s On Stockport', href: 'https://www.whatsoninstockport.com/' },
 ];
 
-export default function LocalServicesWidget({ className = '' }: { className?: string }) {
+interface Props {
+  onStatusChange?: (status: 'loading' | 'ready' | 'error') => void;
+  className?: string;
+}
+
+export default function LocalServicesWidget({ onStatusChange, className = '' }: Props) {
+  useEffect(() => {
+    onStatusChange?.('ready');
+  }, [onStatusChange]);
+
   return (
     <WidgetCard
       title="Local Services"

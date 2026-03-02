@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { fetchPlanning } from '../lib/api';
 import type { PlanningRecord } from '../types';
 import WidgetCard from './WidgetCard';
@@ -10,26 +10,36 @@ const STATUS_CLASSES: Record<string, string> = {
   designated: 'bg-blue-100 text-blue-700',
 };
 
-export default function PlanningWidget({ className = '' }: { className?: string }) {
+interface Props {
+  onStatusChange?: (status: 'loading' | 'ready' | 'error') => void;
+  className?: string;
+}
+
+export default function PlanningWidget({ onStatusChange, className = '' }: Props) {
   const [areas, setAreas] = useState<PlanningRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const load = () => {
+  const load = useCallback(() => {
     setLoading(true);
     setError(null);
+    onStatusChange?.('loading');
     fetchPlanning()
-      .then((data) => setAreas(data.entities ?? []))
-      .catch(() => setError(null)) // silently fall back to static data
+      .then((data) => {
+        setAreas(data.entities ?? []);
+        onStatusChange?.('ready');
+      })
+      .catch((err: unknown) => {
+        const msg = err instanceof Error && err.message === 'TIMEOUT'
+          ? 'Planning data request timed out. Please check your connection.'
+          : 'Unable to load planning data.';
+        setError(msg);
+        onStatusChange?.('error');
+      })
       .finally(() => setLoading(false));
-  };
+  }, [onStatusChange]);
 
-  useEffect(() => {
-    fetchPlanning()
-      .then((data) => setAreas(data.entities ?? []))
-      .catch(() => setError(null)) // silently fall back to static data
-      .finally(() => setLoading(false));
-  }, []);
+  useEffect(() => { load(); }, [load]); // eslint-disable-line react-hooks/set-state-in-effect
 
   return (
     <WidgetCard

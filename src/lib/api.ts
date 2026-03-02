@@ -10,6 +10,11 @@ async function fetchJson<T>(url: string): Promise<T> {
     const res = await fetch(url, { signal: controller.signal });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return (await res.json()) as T;
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new Error('TIMEOUT');
+    }
+    throw err;
   } finally {
     clearTimeout(timer);
   }

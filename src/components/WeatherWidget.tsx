@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { fetchWeather } from '../lib/api';
 import { getWeatherInfo } from '../lib/weatherCodes';
 import type { WeatherData } from '../types';
@@ -15,7 +15,7 @@ export default function WeatherWidget({ onStatusChange }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const load = () => {
+  const load = useCallback(() => {
     setLoading(true);
     setError(null);
     onStatusChange?.('loading');
@@ -24,17 +24,20 @@ export default function WeatherWidget({ onStatusChange }: Props) {
         setData(d);
         onStatusChange?.('ready');
       })
-      .catch(() => {
-        setError('Unable to load weather data.');
+      .catch((err: unknown) => {
+        const msg = err instanceof Error && err.message === 'TIMEOUT'
+          ? 'Weather request timed out. Please check your connection.'
+          : 'Unable to load weather data.';
+        setError(msg);
         onStatusChange?.('error');
       })
       .finally(() => setLoading(false));
-  };
+  }, [onStatusChange]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [load]);
 
   const current = data?.current;
   const daily = data?.daily;

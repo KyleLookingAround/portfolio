@@ -53,12 +53,20 @@ describe('WeatherWidget', () => {
 
   it('shows error message when fetch fails', async () => {
     vi.mocked(api.fetchWeather).mockRejectedValueOnce(new Error('Network error'));
-    
+
     render(<WeatherWidget />);
-    
+
     await waitFor(() => {
       expect(screen.getByText('Unable to load weather data.')).toBeInTheDocument();
     });
+  });
+
+  it('shows timeout message when request times out', async () => {
+    vi.mocked(api.fetchWeather).mockRejectedValueOnce(new Error('TIMEOUT'));
+    render(<WeatherWidget />);
+    await waitFor(() =>
+      expect(screen.getByText(/timed out/i)).toBeInTheDocument()
+    );
   });
 
   it('retry button works after error', async () => {

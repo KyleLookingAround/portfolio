@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import App from '../App';
 import * as api from '../lib/api';
 
@@ -64,10 +64,37 @@ describe('App', () => {
 
   it('wraps widgets in error boundaries', () => {
     const { container } = render(<App />);
-    
+
     // Check that main element exists with grid layout
     const main = container.querySelector('main');
     expect(main).toBeInTheDocument();
     expect(main?.classList.contains('grid')).toBe(true);
+  });
+
+  it('hides a widget from the grid after onStatusChange error fires', async () => {
+    vi.mocked(api.fetchWeather).mockRejectedValueOnce(new Error('Failed'));
+
+    render(<App />);
+
+    // Weather widget is initially present
+    expect(screen.getByText('Weather')).toBeInTheDocument();
+
+    // After the rejection resolves, weather widget should be removed
+    await waitFor(() =>
+      expect(screen.queryByText('Weather')).not.toBeInTheDocument()
+    );
+
+    // Other widgets remain
+    expect(screen.getByText('Air Quality')).toBeInTheDocument();
+  });
+
+  it('shows the Header error indicator when a widget reports error', async () => {
+    vi.mocked(api.fetchWeather).mockRejectedValueOnce(new Error('Failed'));
+
+    render(<App />);
+
+    await waitFor(() =>
+      expect(screen.getByText('1 unavailable')).toBeInTheDocument()
+    );
   });
 });

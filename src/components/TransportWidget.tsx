@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import WidgetCard from './WidgetCard';
 
 const RAIL_SERVICES = [
@@ -14,7 +15,15 @@ const LINKS = [
   { label: '🅿️ Stockport car parks',     href: 'https://www.stockport.gov.uk/topic/parking' },
 ];
 
-export default function TransportWidget() {
+interface Props {
+  onStatusChange?: (status: 'loading' | 'ready' | 'error') => void;
+}
+
+export default function TransportWidget({ onStatusChange }: Props) {
+  useEffect(() => {
+    onStatusChange?.('ready');
+  }, [onStatusChange]);
+
   return (
     <WidgetCard title="Transport" icon="🚆" meta="Stockport Station">
       {/* Rail services */}
