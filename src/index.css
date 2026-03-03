@@ -8,4 +8,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  [data-theme="newspaper"] {
+    font-family: Georgia, 'Times New Roman', serif;
+  }
 }

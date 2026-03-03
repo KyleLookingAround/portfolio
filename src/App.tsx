@@ -10,6 +10,8 @@ import ErrorBoundary from './components/ErrorBoundary';
 import FloodWidget from './components/FloodWidget';
 import LocalServicesWidget from './components/LocalServicesWidget';
 import StockportAIWidget from './components/StockportAIWidget';
+import { ThemeContext } from './lib/ThemeContext';
+import type { Theme } from './lib/ThemeContext';
 
 type WidgetStatus = 'loading' | 'ready' | 'error';
 
@@ -27,6 +29,8 @@ const WIDGET_NAMES: Record<string, string> = {
 };
 
 export default function App() {
+  const [theme, setTheme] = useState<Theme>('modern');
+
   const [statuses, setStatuses] = useState<Record<string, WidgetStatus>>({
     weather:       'loading',
     airQuality:    'loading',
@@ -63,7 +67,11 @@ export default function App() {
   const show = (id: string) => statuses[id] !== 'error';
 
   return (
-    <div className="min-h-screen bg-[#f0f4f8]">
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <div
+      data-theme={theme}
+      className={`min-h-screen transition-colors duration-300 ${theme === 'newspaper' ? 'bg-[#f5f0e8]' : 'bg-[#f0f4f8]'}`}
+    >
       <Header failingWidgets={failingWidgets} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -120,11 +128,16 @@ export default function App() {
         )}
       </main>
 
-      <footer className="max-w-7xl mx-auto px-4 sm:px-6 py-4 text-center text-xs text-gray-400">
+      <footer className={`max-w-7xl mx-auto px-4 sm:px-6 py-4 text-center text-xs ${
+        theme === 'newspaper'
+          ? 'border-t-2 border-black text-gray-600 font-serif mt-2'
+          : 'text-gray-400'
+      }`}>
         Data from Open-Meteo · UK Police API · planning.data.gov.uk · Environment Agency · National Rail
         &nbsp;·&nbsp;
         Refreshes on page load
       </footer>
     </div>
+    </ThemeContext.Provider>
   );
 }

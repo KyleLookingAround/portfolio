@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTheme } from '../lib/ThemeContext';
 
 interface Props {
   failingWidgets?: string[];
@@ -7,6 +8,7 @@ interface Props {
 export default function Header({ failingWidgets = [] }: Props) {
   const [now, setNow] = useState(new Date());
   const [errorOpen, setErrorOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   // TODO: Reduce the clock update interval from 1000 ms to something larger (e.g. 10 000 ms)
   //       or wrap the clock in React.memo, since the 1-second re-render causes the entire
@@ -20,6 +22,90 @@ export default function Header({ failingWidgets = [] }: Props) {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   });
   const timeStr = now.toLocaleTimeString('en-GB');
+
+  if (theme === 'newspaper') {
+    return (
+      <header className="bg-[#f5f0e8] border-b-2 border-black">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-0">
+          {/* Top rule */}
+          <div className="border-t-4 border-black mb-2" />
+
+          {/* Masthead row: title + toggle */}
+          <div className="flex items-center justify-between pb-1">
+            <h1 className="font-['Playfair_Display',Georgia,serif] text-5xl sm:text-7xl font-black tracking-tight uppercase text-black leading-none">
+              Stockport Today
+            </h1>
+            <button
+              onClick={() => setTheme('modern')}
+              className="shrink-0 px-3 py-1.5 border border-black text-xs font-serif hover:bg-black hover:text-[#f5f0e8] transition-colors"
+            >
+              Modern View
+            </button>
+          </div>
+
+          {/* Second rule */}
+          <div className="border-t-2 border-black mt-1 mb-1" />
+
+          {/* Info bar */}
+          <div className="flex flex-wrap items-center gap-x-3 py-1.5 text-xs font-serif text-black">
+            <span>{dateStr}</span>
+            <span className="hidden sm:inline text-gray-500 select-none">|</span>
+            <span>Vol. 1, No. 1</span>
+            <span className="hidden sm:inline text-gray-500 select-none">|</span>
+            <span>Est. 1894</span>
+            <span className="hidden sm:inline text-gray-500 select-none">|</span>
+            <span>Price: Free</span>
+            <span className="hidden sm:inline text-gray-500 select-none">|</span>
+            <time dateTime={now.toISOString()} className="tabular-nums">{timeStr}</time>
+            {failingWidgets.length > 0 && (
+              <>
+                <span className="hidden sm:inline text-gray-500 select-none">|</span>
+                <div className="relative">
+                  <button
+                    onMouseEnter={() => setErrorOpen(true)}
+                    onMouseLeave={() => setErrorOpen(false)}
+                    onFocus={() => setErrorOpen(true)}
+                    onBlur={() => setErrorOpen(false)}
+                    onClick={() => setErrorOpen((v) => !v)}
+                    aria-expanded={errorOpen}
+                    aria-label={`${failingWidgets.length} widget${failingWidgets.length > 1 ? 's' : ''} failed to load`}
+                    className="text-red-800 hover:underline cursor-pointer"
+                  >
+                    ⚠ {failingWidgets.length} data source{failingWidgets.length > 1 ? 's' : ''} unavailable
+                  </button>
+                  {errorOpen && (
+                    <div
+                      onMouseEnter={() => setErrorOpen(true)}
+                      onMouseLeave={() => setErrorOpen(false)}
+                      className="absolute top-full left-0 mt-2 w-52 bg-white border border-black shadow-xl p-3 z-50 text-left"
+                    >
+                      <p className="text-xs font-bold text-black uppercase tracking-wide mb-2">
+                        Failed to load:
+                      </p>
+                      <ul className="space-y-1">
+                        {failingWidgets.map((name) => (
+                          <li key={name} className="flex items-center gap-2 text-sm text-red-800">
+                            <span aria-hidden="true">•</span>
+                            {name}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="text-xs text-gray-500 mt-3 border-t border-gray-300 pt-2">
+                        Refresh the page to retry
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Bottom rule */}
+          <div className="border-t border-black" />
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="bg-gradient-to-r from-[#003A70] to-[#005A9E] text-white shadow-lg">
@@ -80,6 +166,14 @@ export default function Header({ failingWidgets = [] }: Props) {
             )}
           </div>
         )}
+
+        {/* Theme toggle */}
+        <button
+          onClick={() => setTheme('newspaper')}
+          className="shrink-0 px-3 py-1.5 border border-white/40 rounded text-white text-xs hover:bg-white/10 transition-colors"
+        >
+          Newspaper
+        </button>
 
         {/* Clock */}
         <div className="text-right">

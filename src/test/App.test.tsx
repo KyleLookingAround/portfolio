@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import App from '../App';
 import * as api from '../lib/api';
 
@@ -96,5 +96,33 @@ describe('App', () => {
     await waitFor(() =>
       expect(screen.getByText('1 unavailable')).toBeInTheDocument()
     );
+  });
+
+  it('renders the theme toggle button in modern mode', () => {
+    render(<App />);
+    expect(screen.getByRole('button', { name: /newspaper/i })).toBeInTheDocument();
+  });
+
+  it('switches to newspaper mode when toggle is clicked', () => {
+    render(<App />);
+    const toggleBtn = screen.getByRole('button', { name: /newspaper/i });
+    fireEvent.click(toggleBtn);
+    expect(screen.getByRole('button', { name: /modern view/i })).toBeInTheDocument();
+  });
+
+  it('renders the masthead title in newspaper mode', () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /newspaper/i }));
+    // The masthead h1 contains "Stockport Today"
+    const headings = screen.getAllByRole('heading', { level: 1 });
+    expect(headings.some((h) => /stockport today/i.test(h.textContent ?? ''))).toBe(true);
+  });
+
+  it('switches back to modern mode from newspaper mode', () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /newspaper/i }));
+    const modernBtn = screen.getByRole('button', { name: /modern view/i });
+    fireEvent.click(modernBtn);
+    expect(screen.getByRole('button', { name: /newspaper/i })).toBeInTheDocument();
   });
 });
