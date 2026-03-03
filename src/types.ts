@@ -89,3 +89,58 @@ export interface FloodMeasure {
 export interface FloodData {
   items: FloodMeasure[];
 }
+
+// ---------------------------------------------------------------------------
+// TfGM (Transport for Greater Manchester)
+// ---------------------------------------------------------------------------
+
+export interface TfGMDeparture {
+  atcoCode: string;
+  stationName: string;
+  destination: string;
+  wait: number; // minutes
+  status: string;
+  type: 'tram' | 'bus';
+}
+
+export interface TfGMData {
+  departures: TfGMDeparture[];
+  stationName: string;
+}
+
+// ---------------------------------------------------------------------------
+// NHS Services
+// ---------------------------------------------------------------------------
+
+export interface NHSService {
+  organisationId: string;
+  organisationName: string;
+  address1?: string;
+  city?: string;
+  postcode?: string;
+  phone?: string;
+  website?: string;
+  serviceType: string;
+}
+
+export interface NHSResponse {
+  value: NHSService[];
+}
+
+// ---------------------------------------------------------------------------
+// Events (Eventbrite)
+// ---------------------------------------------------------------------------
+
+export interface EventbriteEvent {
+  id: string;
+  name: { text: string };
+  start: { local: string };
+  end: { local: string };
+  url: string;
+  venue?: { name: string; address?: { localized_address_display?: string } };
+  description?: { text: string };
+}
+
+export interface EventbriteResponse {
+  events: EventbriteEvent[];
+}

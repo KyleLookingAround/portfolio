@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import WidgetCard from './WidgetCard';
 import { useTheme } from '../lib/ThemeContext';
 
@@ -34,30 +34,25 @@ const TRIVIA = [
 
 export default function FactsWidget({ className = '' }: { className?: string }) {
   const [triviaIndex, setTriviaIndex] = useState(() => new Date().getHours() % TRIVIA.length);
+  const [visible, setVisible] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
   const newspaper = theme === 'newspaper';
 
-  // TODO: Pause the trivia rotation when the widget is off-screen using the
-  //       Intersection Observer API, so the interval does not fire when the user
-  //       has scrolled past this widget. Example:
-  //         const ref = useRef<HTMLDivElement>(null);
-  //         useEffect(() => {
-  //           const obs = new IntersectionObserver(([e]) => setVisible(e.isIntersecting));
-  //           if (ref.current) obs.observe(ref.current);
-  //           return () => obs.disconnect();
-  //         }, []);
-  //       Then only run the setInterval while visible.
+  // Pause trivia rotation when the widget is scrolled off-screen.
   useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => setVisible(e.isIntersecting));
+    if (containerRef.current) obs.observe(containerRef.current);
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!visible) return;
     const timer = setInterval(() => {
       setTriviaIndex((i) => (i + 1) % TRIVIA.length);
     }, 8000);
     return () => clearInterval(timer);
-  }, []);
-
-  // TODO: Add a dedicated test file src/test/FactsWidget.test.tsx covering:
-  //   1. Widget renders all STATS cards
-  //   2. Widget renders the first trivia fact on mount
-  //   3. Clicking a pagination dot updates the displayed trivia fact
+  }, [visible]);
 
   const statCardClass = newspaper
     ? 'bg-[#f5f0e8] border border-gray-300 rounded-lg p-3 text-center'
@@ -79,7 +74,7 @@ export default function FactsWidget({ className = '' }: { className?: string }) 
   return (
     <WidgetCard title="Stockport by Numbers" icon="📊" meta="Census & Local Data" className={className}>
       {/* Stats grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+      <div ref={containerRef} className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
         {STATS.map((s) => (
           <div key={s.label} className={statCardClass}>
             <span className={statValueClass}>{s.value}</span>

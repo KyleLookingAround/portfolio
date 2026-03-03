@@ -8,7 +8,10 @@ vi.mock('../lib/api');
 describe('App', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+    // Clear persisted theme so each test starts in the default 'modern' mode.
+    localStorage.clear();
+    sessionStorage.clear();
+
     // Mock all API calls to prevent actual network requests
     vi.mocked(api.fetchWeather).mockImplementation(() => new Promise(() => {}));
     vi.mocked(api.fetchAirQuality).mockImplementation(() => new Promise(() => {}));

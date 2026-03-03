@@ -11,6 +11,7 @@ export default function FloodWidget({ onStatusChange }: Props) {
   const [measures, setMeasures] = useState<FloodMeasure[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -26,6 +27,7 @@ export default function FloodWidget({ onStatusChange }: Props) {
         const top3 = merseyMeasures.slice(0, 3);
         setMeasures(top3);
         if (top3.length > 0) {
+          setLastUpdated(new Date());
           onStatusChange?.('ready');
         } else {
           onStatusChange?.('error');
@@ -84,6 +86,7 @@ export default function FloodWidget({ onStatusChange }: Props) {
       isLoading={loading}
       error={error}
       onRetry={load}
+      lastUpdated={lastUpdated ?? undefined}
     >
       {measures.length > 0 && (
         <div className="space-y-3">

@@ -39,17 +39,20 @@ StockportToday/
 │   │   ├── AirQualityWidget.tsx
 │   │   ├── CrimeWidget.tsx
 │   │   ├── ErrorBoundary.tsx      # Class component; wraps every widget
+│   │   ├── EventsWidget.tsx       # Curated local events + optional Eventbrite live feed
 │   │   ├── FactsWidget.tsx
 │   │   ├── FloodWidget.tsx
 │   │   ├── Header.tsx
 │   │   ├── LocalServicesWidget.tsx
+│   │   ├── NHSServicesWidget.tsx  # Static healthcare info + optional NHS API live data
 │   │   ├── PlanningWidget.tsx
 │   │   ├── StockportAIWidget.tsx
-│   │   ├── TransportWidget.tsx
+│   │   ├── TransportWidget.tsx    # Rail services + optional TfGM live departures
 │   │   ├── WeatherWidget.tsx
-│   │   └── WidgetCard.tsx         # Shared wrapper (loading skeleton, error state, retry)
+│   │   └── WidgetCard.tsx         # Shared wrapper (loading skeleton, error state, retry, lastUpdated)
 │   ├── lib/
-│   │   ├── api.ts                 # All API fetch functions + 8-second timeout logic
+│   │   ├── api.ts                 # All API fetch functions + 8-second timeout + sessionStorage cache
+│   │   ├── ThemeContext.tsx        # React context for modern/newspaper theme + localStorage persistence
 │   │   └── weatherCodes.ts        # WMO code → label + emoji mapping
 │   ├── test/
 │   │   ├── setup.ts               # Vitest global setup (@testing-library/jest-dom)
@@ -197,15 +200,20 @@ async function fetchJson<T>(url: string): Promise<T> {
 
 All APIs are free and require no key by default. Optional keys can be added via `.env` (see `.env.example` and `API_KEYS.md`).
 
-| Widget | API | Endpoint |
-|--------|-----|----------|
-| Weather | Open-Meteo | `api.open-meteo.com/v1/forecast` |
-| Air Quality | Open-Meteo | `air-quality-api.open-meteo.com/v1/air-quality` |
-| Crime | UK Police Data | `data.police.uk/api/crimes-street/all-crime` |
-| Planning | planning.data.gov.uk | `/api/v1/entity/` |
-| Flood | Environment Agency | `environment.data.gov.uk/flood-monitoring/` |
+| Widget | API | Endpoint | Key required? |
+|--------|-----|----------|---------------|
+| Weather | Open-Meteo | `api.open-meteo.com/v1/forecast` | No |
+| Air Quality | Open-Meteo | `air-quality-api.open-meteo.com/v1/air-quality` | No |
+| Crime | UK Police Data | `data.police.uk/api/crimes-street/all-crime` | No |
+| Planning | planning.data.gov.uk | `/api/search.json` | No |
+| Flood | Environment Agency | `environment.data.gov.uk/flood-monitoring/` | No |
+| Transport | TfGM OData API | `api.tfgm.com/odata/StopDepartures` | Optional (`VITE_TFGM_API_KEY`) |
+| NHS Services | NHS Service Search | `api.nhs.uk/service-search/search` | Optional (`VITE_NHS_API_KEY`) |
+| Events | Eventbrite API | `eventbriteapi.com/v3/events/search/` | Optional (`VITE_EVENTBRITE_TOKEN`) |
 
 Crime data availability: the Police API may lag 2–4 months behind, so `fetchCrime()` searches back up to 4 months and uses the most recent available month.
+
+API responses are cached in `sessionStorage` for 10 minutes. Call `clearApiCache()` from `src/lib/api.ts` before triggering a manual refresh (already wired into the `↺ Refresh` button in `Header`).
 
 ---
 
@@ -313,11 +321,15 @@ grep -rn "TODO" src/ index.html   # list all outstanding TODOs
 
 | Cluster | Files | Summary |
 |---------|-------|---------|
-| Widget status tracking | `App.tsx`, `PlanningWidget.tsx`, `TransportWidget.tsx`, `LocalServicesWidget.tsx`, `StockportAIWidget.tsx` | Add `onStatusChange` prop + register in `WIDGET_NAMES` / statuses |
-| `useCallback` on `load` | `WeatherWidget.tsx`, `AirQualityWidget.tsx`, `CrimeWidget.tsx`, `FloodWidget.tsx`, `PlanningWidget.tsx` | Wrap `load` in `useCallback([onStatusChange])`, remove eslint-disable |
+| Missing test files | `src/test/App.test.tsx` | One test file per widget covering loading / success / error states |
 | Timeout error distinction | `src/lib/api.ts` + all widget files | Surface `AbortError` separately so widgets can show "timed out" messages |
-| Missing test files | `src/test/App.test.tsx` (see list at top of file) | One test file per widget covering loading / success / error states |
 | Accessibility | `Header.tsx`, `WidgetCard.tsx` | Keyboard focus for error tooltip; aria-label on icon span |
+
+The following clusters from earlier versions have been resolved:
+- ✅ Widget status tracking — all 11 widgets are registered in `WIDGET_NAMES` and `INITIAL_STATUSES`
+- ✅ `useCallback` on `load` — all API-fetching widgets use `useCallback([onStatusChange])`; eslint-disable comments removed
+- ✅ Header clock performance — clock isolated in `React.memo` sub-component
+- ✅ FactsWidget trivia rotation — paused via `IntersectionObserver` when off-screen
 
 ---
 

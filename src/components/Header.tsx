@@ -1,27 +1,55 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { useTheme } from '../lib/ThemeContext';
 
-interface Props {
-  failingWidgets?: string[];
-}
-
-export default function Header({ failingWidgets = [] }: Props) {
+// Isolated clock components wrapped in React.memo so only the clock subtree
+// re-renders every second instead of the entire Header.
+const ModernClock = memo(function ModernClock() {
   const [now, setNow] = useState(new Date());
-  const [errorOpen, setErrorOpen] = useState(false);
-  const { theme, setTheme } = useTheme();
-
-  // TODO: Reduce the clock update interval from 1000 ms to something larger (e.g. 10 000 ms)
-  //       or wrap the clock in React.memo, since the 1-second re-render causes the entire
-  //       Header to re-render every second even when no data changes.
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
-
   const dateStr = now.toLocaleDateString('en-GB', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   });
   const timeStr = now.toLocaleTimeString('en-GB');
+  return (
+    <div className="text-right">
+      <div className="text-[#009FE3] text-xs uppercase tracking-wide">{dateStr}</div>
+      <time className="text-2xl font-bold tabular-nums tracking-widest" dateTime={now.toISOString()}>
+        {timeStr}
+      </time>
+    </div>
+  );
+});
+
+const NewspaperClock = memo(function NewspaperClock() {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+  const dateStr = now.toLocaleDateString('en-GB', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+  });
+  const timeStr = now.toLocaleTimeString('en-GB');
+  return (
+    <>
+      <span>{dateStr}</span>
+      <span className="hidden sm:inline text-gray-500 select-none">|</span>
+      <time dateTime={now.toISOString()} className="tabular-nums">{timeStr}</time>
+    </>
+  );
+});
+
+interface Props {
+  failingWidgets?: string[];
+  onRefresh?: () => void;
+}
+
+export default function Header({ failingWidgets = [], onRefresh }: Props) {
+  const [errorOpen, setErrorOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   if (theme === 'newspaper') {
     return (
@@ -30,17 +58,28 @@ export default function Header({ failingWidgets = [] }: Props) {
           {/* Top rule */}
           <div className="border-t-4 border-black mb-2" />
 
-          {/* Masthead row: title + toggle */}
+          {/* Masthead row: title + controls */}
           <div className="flex items-center justify-between pb-1">
             <h1 className="font-['Playfair_Display',Georgia,serif] text-5xl sm:text-7xl font-black tracking-tight uppercase text-black leading-none">
               Stockport Today
             </h1>
-            <button
-              onClick={() => setTheme('modern')}
-              className="shrink-0 px-3 py-1.5 border border-black text-xs font-serif hover:bg-black hover:text-[#f5f0e8] transition-colors"
-            >
-              Modern View
-            </button>
+            <div className="flex items-center gap-2">
+              {onRefresh && (
+                <button
+                  onClick={onRefresh}
+                  aria-label="Refresh all widgets"
+                  className="shrink-0 px-3 py-1.5 border border-black text-xs font-serif hover:bg-black hover:text-[#f5f0e8] transition-colors"
+                >
+                  ↺ Refresh
+                </button>
+              )}
+              <button
+                onClick={() => setTheme('modern')}
+                className="shrink-0 px-3 py-1.5 border border-black text-xs font-serif hover:bg-black hover:text-[#f5f0e8] transition-colors"
+              >
+                Modern View
+              </button>
+            </div>
           </div>
 
           {/* Second rule */}
@@ -48,15 +87,13 @@ export default function Header({ failingWidgets = [] }: Props) {
 
           {/* Info bar */}
           <div className="flex flex-wrap items-center gap-x-3 py-1.5 text-xs font-serif text-black">
-            <span>{dateStr}</span>
+            <NewspaperClock />
             <span className="hidden sm:inline text-gray-500 select-none">|</span>
             <span>Vol. 1, No. 1</span>
             <span className="hidden sm:inline text-gray-500 select-none">|</span>
             <span>Est. 1894</span>
             <span className="hidden sm:inline text-gray-500 select-none">|</span>
             <span>Price: Free</span>
-            <span className="hidden sm:inline text-gray-500 select-none">|</span>
-            <time dateTime={now.toISOString()} className="tabular-nums">{timeStr}</time>
             {failingWidgets.length > 0 && (
               <>
                 <span className="hidden sm:inline text-gray-500 select-none">|</span>
@@ -91,7 +128,7 @@ export default function Header({ failingWidgets = [] }: Props) {
                         ))}
                       </ul>
                       <p className="text-xs text-gray-500 mt-3 border-t border-gray-300 pt-2">
-                        Refresh the page to retry
+                        Use ↺ Refresh or reload the page to retry
                       </p>
                     </div>
                   )}
@@ -160,28 +197,34 @@ export default function Header({ failingWidgets = [] }: Props) {
                   ))}
                 </ul>
                 <p className="text-xs text-gray-400 mt-3 border-t border-[#003A70] pt-2">
-                  Refresh the page to retry
+                  Use ↺ Refresh or reload the page to retry
                 </p>
               </div>
             )}
           </div>
         )}
 
-        {/* Theme toggle */}
-        <button
-          onClick={() => setTheme('newspaper')}
-          className="shrink-0 px-3 py-1.5 border border-white/40 rounded text-white text-xs hover:bg-white/10 transition-colors"
-        >
-          Newspaper
-        </button>
-
-        {/* Clock */}
-        <div className="text-right">
-          <div className="text-[#009FE3] text-xs uppercase tracking-wide">{dateStr}</div>
-          <time className="text-2xl font-bold tabular-nums tracking-widest" dateTime={now.toISOString()}>
-            {timeStr}
-          </time>
+        {/* Refresh + theme toggle */}
+        <div className="flex items-center gap-2">
+          {onRefresh && (
+            <button
+              onClick={onRefresh}
+              aria-label="Refresh all widgets"
+              className="shrink-0 px-3 py-1.5 border border-white/40 rounded text-white text-xs hover:bg-white/10 transition-colors"
+            >
+              ↺ Refresh
+            </button>
+          )}
+          <button
+            onClick={() => setTheme('newspaper')}
+            className="shrink-0 px-3 py-1.5 border border-white/40 rounded text-white text-xs hover:bg-white/10 transition-colors"
+          >
+            Newspaper
+          </button>
         </div>
+
+        {/* Clock — isolated in React.memo so only it re-renders every second */}
+        <ModernClock />
       </div>
     </header>
   );

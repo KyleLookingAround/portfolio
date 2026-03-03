@@ -14,6 +14,7 @@ export default function WeatherWidget({ onStatusChange }: Props) {
   const [data, setData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -22,6 +23,7 @@ export default function WeatherWidget({ onStatusChange }: Props) {
     fetchWeather()
       .then((d) => {
         setData(d);
+        setLastUpdated(new Date());
         onStatusChange?.('ready');
       })
       .catch((err: unknown) => {
@@ -34,10 +36,7 @@ export default function WeatherWidget({ onStatusChange }: Props) {
       .finally(() => setLoading(false));
   }, [onStatusChange]);
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    load();
-  }, [load]);
+  useEffect(() => { load(); }, [load]); // eslint-disable-line react-hooks/set-state-in-effect
 
   const current = data?.current;
   const daily = data?.daily;
@@ -51,6 +50,7 @@ export default function WeatherWidget({ onStatusChange }: Props) {
       isLoading={loading}
       error={error}
       onRetry={load}
+      lastUpdated={lastUpdated ?? undefined}
     >
       {current && info && (
         <div>
