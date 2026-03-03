@@ -1,0 +1,1 @@
+{"name":"Stockport Today","short_name":"Stockport","description":"Live local dashboard for Stockport, Greater Manchester","start_url":"/StockportToday/","display":"standalone","background_color":"#f0f4f8","theme_color":"#003A70","lang":"en","scope":"/StockportToday/","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
