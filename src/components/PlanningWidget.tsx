@@ -19,6 +19,7 @@ export default function PlanningWidget({ onStatusChange, className = '' }: Props
   const [areas, setAreas] = useState<PlanningRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -27,6 +28,7 @@ export default function PlanningWidget({ onStatusChange, className = '' }: Props
     fetchPlanning()
       .then((data) => {
         setAreas(data.entities ?? []);
+        setLastUpdated(new Date());
         onStatusChange?.('ready');
       })
       .catch((err: unknown) => {
@@ -50,6 +52,7 @@ export default function PlanningWidget({ onStatusChange, className = '' }: Props
       error={error}
       onRetry={load}
       className={className}
+      lastUpdated={lastUpdated ?? undefined}
     >
       <div>
         {/* Conservation areas from live API */}

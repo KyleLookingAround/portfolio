@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import Header from './components/Header';
 import WeatherWidget from './components/WeatherWidget';
 import AirQualityWidget from './components/AirQualityWidget';
@@ -10,10 +10,25 @@ import ErrorBoundary from './components/ErrorBoundary';
 import FloodWidget from './components/FloodWidget';
 import LocalServicesWidget from './components/LocalServicesWidget';
 import StockportAIWidget from './components/StockportAIWidget';
+import NHSServicesWidget from './components/NHSServicesWidget';
+import EventsWidget from './components/EventsWidget';
 import { ThemeContext } from './lib/ThemeContext';
 import type { Theme } from './lib/ThemeContext';
+import { clearApiCache } from './lib/api';
 
 type WidgetStatus = 'loading' | 'ready' | 'error';
+
+const THEME_STORAGE_KEY = 'st-theme';
+
+function readStoredTheme(): Theme {
+  try {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored === 'newspaper' || stored === 'modern') return stored;
+  } catch {
+    // localStorage unavailable
+  }
+  return 'modern';
+}
 
 // Human-readable names shown in the error indicator tooltip
 const WIDGET_NAMES: Record<string, string> = {
@@ -26,22 +41,45 @@ const WIDGET_NAMES: Record<string, string> = {
   facts:         'Stockport by Numbers',
   localServices: 'Local Services',
   stockportAI:   'Plan Your Day Out',
+  nhs:           'NHS Services',
+  events:        'Local Events',
+};
+
+const INITIAL_STATUSES: Record<string, WidgetStatus> = {
+  weather:       'loading',
+  airQuality:    'loading',
+  crime:         'loading',
+  flood:         'loading',
+  planning:      'loading',
+  transport:     'loading',
+  facts:         'ready',
+  localServices: 'loading',
+  stockportAI:   'loading',
+  nhs:           'ready',
+  events:        'ready',
 };
 
 export default function App() {
-  const [theme, setTheme] = useState<Theme>('modern');
+  const [theme, setThemeState] = useState<Theme>(readStoredTheme);
+  const [statuses, setStatuses] = useState<Record<string, WidgetStatus>>(INITIAL_STATUSES);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const [statuses, setStatuses] = useState<Record<string, WidgetStatus>>({
-    weather:       'loading',
-    airQuality:    'loading',
-    crime:         'loading',
-    flood:         'loading',
-    planning:      'loading',
-    transport:     'loading',
-    facts:         'ready',
-    localServices: 'loading',
-    stockportAI:   'loading',
-  });
+  // Persist theme choice across sessions
+  const setTheme = useCallback((t: Theme) => {
+    setThemeState(t);
+    try { localStorage.setItem(THEME_STORAGE_KEY, t); } catch { /* no-op */ }
+  }, []);
+
+  // Keep document title in sync
+  useEffect(() => {
+    document.title = 'Stockport Today';
+  }, []);
+
+  const handleRefresh = useCallback(() => {
+    clearApiCache();
+    setStatuses(INITIAL_STATUSES);
+    setRefreshKey((k) => k + 1);
+  }, []);
 
   const setStatus = useCallback((id: string, status: WidgetStatus) => {
     setStatuses((prev) => ({ ...prev, [id]: status }));
@@ -58,6 +96,8 @@ export default function App() {
     transport:     (s: WidgetStatus) => setStatus('transport', s),
     localServices: (s: WidgetStatus) => setStatus('localServices', s),
     stockportAI:   (s: WidgetStatus) => setStatus('stockportAI', s),
+    nhs:           (s: WidgetStatus) => setStatus('nhs', s),
+    events:        (s: WidgetStatus) => setStatus('events', s),
   }), [setStatus]);
 
   const failingWidgets = Object.entries(statuses)
@@ -72,26 +112,26 @@ export default function App() {
       data-theme={theme}
       className={`min-h-screen transition-colors duration-300 ${theme === 'newspaper' ? 'bg-[#f5f0e8]' : 'bg-[#f0f4f8]'}`}
     >
-      <Header failingWidgets={failingWidgets} />
+      <Header failingWidgets={failingWidgets} onRefresh={handleRefresh} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {show('weather') && (
-          <ErrorBoundary>
+          <ErrorBoundary key={`weather-${refreshKey}`}>
             <WeatherWidget onStatusChange={onStatus.weather} />
           </ErrorBoundary>
         )}
         {show('airQuality') && (
-          <ErrorBoundary>
+          <ErrorBoundary key={`airQuality-${refreshKey}`}>
             <AirQualityWidget onStatusChange={onStatus.airQuality} />
           </ErrorBoundary>
         )}
         {show('crime') && (
-          <ErrorBoundary>
+          <ErrorBoundary key={`crime-${refreshKey}`}>
             <CrimeWidget onStatusChange={onStatus.crime} />
           </ErrorBoundary>
         )}
         {show('planning') && (
-          <ErrorBoundary>
+          <ErrorBoundary key={`planning-${refreshKey}`}>
             <PlanningWidget
               className="md:col-span-2"
               onStatusChange={onStatus.planning}
@@ -99,17 +139,27 @@ export default function App() {
           </ErrorBoundary>
         )}
         {show('flood') && (
-          <ErrorBoundary>
+          <ErrorBoundary key={`flood-${refreshKey}`}>
             <FloodWidget onStatusChange={onStatus.flood} />
           </ErrorBoundary>
         )}
         {show('transport') && (
-          <ErrorBoundary>
+          <ErrorBoundary key={`transport-${refreshKey}`}>
             <TransportWidget onStatusChange={onStatus.transport} />
           </ErrorBoundary>
         )}
+        {show('nhs') && (
+          <ErrorBoundary key={`nhs-${refreshKey}`}>
+            <NHSServicesWidget onStatusChange={onStatus.nhs} />
+          </ErrorBoundary>
+        )}
+        {show('events') && (
+          <ErrorBoundary key={`events-${refreshKey}`}>
+            <EventsWidget onStatusChange={onStatus.events} />
+          </ErrorBoundary>
+        )}
         {show('stockportAI') && (
-          <ErrorBoundary>
+          <ErrorBoundary key={`stockportAI-${refreshKey}`}>
             <StockportAIWidget
               className="lg:col-span-3 md:col-span-2"
               onStatusChange={onStatus.stockportAI}
@@ -117,12 +167,12 @@ export default function App() {
           </ErrorBoundary>
         )}
         {show('localServices') && (
-          <ErrorBoundary>
+          <ErrorBoundary key={`localServices-${refreshKey}`}>
             <LocalServicesWidget onStatusChange={onStatus.localServices} />
           </ErrorBoundary>
         )}
         {show('facts') && (
-          <ErrorBoundary>
+          <ErrorBoundary key={`facts-${refreshKey}`}>
             <FactsWidget className="lg:col-span-3" />
           </ErrorBoundary>
         )}

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { fetchWeather, fetchAirQuality, fetchCrime, fetchPlanning } from '../lib/api';
+import { fetchWeather, fetchAirQuality, fetchCrime, fetchPlanning, clearApiCache } from '../lib/api';
 
 // Mock global fetch
 const mockFetch = vi.fn();
@@ -9,6 +9,7 @@ describe('API Functions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
+    clearApiCache(); // ensure no cached responses bleed between tests
   });
 
   afterEach(() => {

@@ -10,6 +10,7 @@ interface Props {
   onRetry?: () => void;
   children?: ReactNode;
   className?: string;
+  lastUpdated?: Date;
 }
 
 function Skeleton({ newspaper }: { newspaper: boolean }) {
@@ -33,6 +34,7 @@ export default function WidgetCard({
   onRetry,
   children,
   className = '',
+  lastUpdated,
 }: Props) {
   const { theme } = useTheme();
   const newspaper = theme === 'newspaper';
@@ -60,32 +62,39 @@ export default function WidgetCard({
         <h2 className={titleClass}>{title}</h2>
         {meta && <span className={metaClass}>{meta}</span>}
       </header>
-      <div className="p-5 flex-1">
-        {isLoading ? (
-          <Skeleton newspaper={newspaper} />
-        ) : error ? (
-          <div className="flex flex-col items-center gap-2 py-4 text-center text-gray-500">
-            {newspaper ? (
-              <p className="text-sm font-bold font-serif text-black">Error</p>
-            ) : (
-              <span className="text-3xl">⚠️</span>
-            )}
-            <p className="text-sm">{error}</p>
-            {onRetry && (
-              <button
-                onClick={onRetry}
-                className={
-                  newspaper
-                    ? 'mt-1 px-4 py-1 border border-black text-black text-sm rounded-none font-serif hover:bg-black hover:text-[#f5f0e8] transition-colors'
-                    : 'mt-1 px-4 py-1 bg-[#009FE3] text-white text-sm rounded hover:bg-[#007AB8] transition-colors'
-                }
-              >
-                Try again
-              </button>
-            )}
-          </div>
-        ) : (
-          children
+      <div className="p-5 flex-1 flex flex-col">
+        <div className="flex-1">
+          {isLoading ? (
+            <Skeleton newspaper={newspaper} />
+          ) : error ? (
+            <div className="flex flex-col items-center gap-2 py-4 text-center text-gray-500">
+              {newspaper ? (
+                <p className="text-sm font-bold font-serif text-black">Error</p>
+              ) : (
+                <span className="text-3xl">⚠️</span>
+              )}
+              <p className="text-sm">{error}</p>
+              {onRetry && (
+                <button
+                  onClick={onRetry}
+                  className={
+                    newspaper
+                      ? 'mt-1 px-4 py-1 border border-black text-black text-sm rounded-none font-serif hover:bg-black hover:text-[#f5f0e8] transition-colors'
+                      : 'mt-1 px-4 py-1 bg-[#009FE3] text-white text-sm rounded hover:bg-[#007AB8] transition-colors'
+                  }
+                >
+                  Try again
+                </button>
+              )}
+            </div>
+          ) : (
+            children
+          )}
+        </div>
+        {lastUpdated && !isLoading && !error && (
+          <p className={`mt-3 text-right text-xs ${newspaper ? 'text-gray-500 font-serif' : 'text-gray-400'}`}>
+            Updated {lastUpdated.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+          </p>
         )}
       </div>
     </article>

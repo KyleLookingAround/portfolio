@@ -29,6 +29,7 @@ export default function CrimeWidget({ onStatusChange }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [month, setMonth] = useState('');
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -39,6 +40,7 @@ export default function CrimeWidget({ onStatusChange }: Props) {
         setCrimes(data);
         if (data.length > 0) {
           setMonth(data[0].month);
+          setLastUpdated(new Date());
           onStatusChange?.('ready');
         } else {
           onStatusChange?.('error');
@@ -54,10 +56,7 @@ export default function CrimeWidget({ onStatusChange }: Props) {
       .finally(() => setLoading(false));
   }, [onStatusChange]);
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    load();
-  }, [load]);
+  useEffect(() => { load(); }, [load]); // eslint-disable-line react-hooks/set-state-in-effect
 
   // Tally by category
   const tally: Record<string, number> = {};
@@ -79,6 +78,7 @@ export default function CrimeWidget({ onStatusChange }: Props) {
       isLoading={loading}
       error={error}
       onRetry={load}
+      lastUpdated={lastUpdated ?? undefined}
     >
       {crimes.length > 0 && (
         <div>
