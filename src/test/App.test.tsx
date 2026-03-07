@@ -129,3 +129,47 @@ describe('App', () => {
     expect(screen.getByRole('button', { name: /newspaper/i })).toBeInTheDocument();
   });
 });
+
+describe('HousingWidget', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+    sessionStorage.clear();
+
+    vi.mocked(api.fetchWeather).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(api.fetchAirQuality).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(api.fetchCrime).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(api.fetchPlanning).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(api.fetchFloodData).mockImplementation(() => new Promise(() => {}));
+  });
+
+  it('renders the Housing widget title', () => {
+    render(<App />);
+    expect(screen.getByText('Housing')).toBeInTheDocument();
+  });
+
+  it('renders council housing section', () => {
+    render(<App />);
+    expect(screen.getByText('Stockport Homes')).toBeInTheDocument();
+    expect(screen.getByText('Apply for Social Housing')).toBeInTheDocument();
+    expect(screen.getByText('Homelessness & Emergency Housing')).toBeInTheDocument();
+  });
+
+  it('renders private renting links', () => {
+    render(<App />);
+    expect(screen.getByText(/Rightmove — Rentals in Stockport/)).toBeInTheDocument();
+    expect(screen.getByText(/Zoopla — Rentals in Stockport/)).toBeInTheDocument();
+  });
+
+  it('renders buying a home links', () => {
+    render(<App />);
+    expect(screen.getByText(/Rightmove — Buy in Stockport/)).toBeInTheDocument();
+    expect(screen.getByText(/Shared Ownership/)).toBeInTheDocument();
+  });
+
+  it('renders advice and support contacts', () => {
+    render(<App />);
+    expect(screen.getByText('Citizens Advice Stockport')).toBeInTheDocument();
+    expect(screen.getByText('Shelter (Housing Charity)')).toBeInTheDocument();
+  });
+});

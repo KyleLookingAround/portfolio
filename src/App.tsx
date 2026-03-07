@@ -12,6 +12,7 @@ import LocalServicesWidget from './components/LocalServicesWidget';
 import StockportAIWidget from './components/StockportAIWidget';
 import NHSServicesWidget from './components/NHSServicesWidget';
 import EventsWidget from './components/EventsWidget';
+import HousingWidget from './components/HousingWidget';
 import { ThemeContext } from './lib/ThemeContext';
 import type { Theme } from './lib/ThemeContext';
 import { clearApiCache } from './lib/api';
@@ -43,6 +44,7 @@ const WIDGET_NAMES: Record<string, string> = {
   stockportAI:   'Plan Your Day Out',
   nhs:           'NHS Services',
   events:        'Local Events',
+  housing:       'Housing',
 };
 
 const INITIAL_STATUSES: Record<string, WidgetStatus> = {
@@ -57,6 +59,7 @@ const INITIAL_STATUSES: Record<string, WidgetStatus> = {
   stockportAI:   'loading',
   nhs:           'ready',
   events:        'ready',
+  housing:       'ready',
 };
 
 export default function App() {
@@ -98,6 +101,7 @@ export default function App() {
     stockportAI:   (s: WidgetStatus) => setStatus('stockportAI', s),
     nhs:           (s: WidgetStatus) => setStatus('nhs', s),
     events:        (s: WidgetStatus) => setStatus('events', s),
+    housing:       (s: WidgetStatus) => setStatus('housing', s),
   }), [setStatus]);
 
   const failingWidgets = Object.entries(statuses)
@@ -156,6 +160,14 @@ export default function App() {
         {show('events') && (
           <ErrorBoundary key={`events-${refreshKey}`}>
             <EventsWidget onStatusChange={onStatus.events} />
+          </ErrorBoundary>
+        )}
+        {show('housing') && (
+          <ErrorBoundary key={`housing-${refreshKey}`}>
+            <HousingWidget
+              className="md:col-span-2"
+              onStatusChange={onStatus.housing}
+            />
           </ErrorBoundary>
         )}
         {show('stockportAI') && (
