@@ -11,11 +11,11 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
       manifest: {
-        name: 'Stockport Today',
-        short_name: 'Stockport',
-        description: 'Live local dashboard for Stockport, Greater Manchester',
-        theme_color: '#003A70',
-        background_color: '#f0f4f8',
+        name: 'Stockport Quest Tracker',
+        short_name: 'Quest Tracker',
+        description: 'Discover and complete curated quests around Stockport, UK',
+        theme_color: '#4F46E5',
+        background_color: '#0B0F1A',
         display: 'standalone',
         scope: '/StockportToday/',
         start_url: '/StockportToday/',
@@ -29,34 +29,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // Cache API responses for offline resilience (network-first strategy)
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/api\.open-meteo\.com\/.*/,
-            handler: 'NetworkFirst',
-            options: { cacheName: 'open-meteo-cache', expiration: { maxAgeSeconds: 600 } },
-          },
-          {
-            urlPattern: /^https:\/\/air-quality-api\.open-meteo\.com\/.*/,
-            handler: 'NetworkFirst',
-            options: { cacheName: 'air-quality-cache', expiration: { maxAgeSeconds: 600 } },
-          },
-          {
-            urlPattern: /^https:\/\/data\.police\.uk\/.*/,
-            handler: 'NetworkFirst',
-            options: { cacheName: 'police-cache', expiration: { maxAgeSeconds: 3600 } },
-          },
-          {
-            urlPattern: /^https:\/\/environment\.data\.gov\.uk\/.*/,
-            handler: 'NetworkFirst',
-            options: { cacheName: 'flood-cache', expiration: { maxAgeSeconds: 300 } },
-          },
-          {
-            urlPattern: /^https:\/\/www\.planning\.data\.gov\.uk\/.*/,
-            handler: 'NetworkFirst',
-            options: { cacheName: 'planning-cache', expiration: { maxAgeSeconds: 86400 } },
-          },
-        ],
+        runtimeCaching: [],
       },
     }),
   ],

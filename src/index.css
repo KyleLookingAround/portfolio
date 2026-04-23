@@ -4,12 +4,8 @@
 
 @layer base {
   body {
-    font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+    font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-
-  [data-theme="newspaper"] {
-    font-family: Georgia, 'Times New Roman', serif;
   }
 }
