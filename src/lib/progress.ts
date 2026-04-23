@@ -67,6 +67,30 @@ export function checkStreakReset(progress: UserProgress): UserProgress {
   return progress;
 }
 
+export function isMetaQuest(quest: Quest): boolean {
+  return !!quest.memberQuestIds && quest.memberQuestIds.length > 0;
+}
+
+export function getMetaQuestProgress(
+  quest: Quest,
+  completed: Record<string, string>
+): { done: number; total: number } {
+  const members = quest.memberQuestIds ?? [];
+  let done = 0;
+  for (const id of members) {
+    if (completed[id]) done++;
+  }
+  return { done, total: members.length };
+}
+
+export function isMetaQuestFullyComplete(
+  quest: Quest,
+  completed: Record<string, string>
+): boolean {
+  const members = quest.memberQuestIds ?? [];
+  return members.length > 0 && members.every(id => !!completed[id]);
+}
+
 export function hashDateString(dateStr: string): number {
   let hash = 0;
   for (let i = 0; i < dateStr.length; i++) {

@@ -114,7 +114,7 @@ export function ProfilePage({ isDark, onToggleDark }: ProfilePageProps) {
         <section className="bg-white dark:bg-surface-dark rounded-2xl px-4 py-4 space-y-1">
           <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">About</h2>
           <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-            Stockport Quest Tracker is a free, offline app for residents and visitors. Discover 50 curated activities, earn XP, and build your streak as you explore Greater Manchester&apos;s hidden gem.
+            Stockport Quest Tracker is a free, offline app for residents and visitors. Discover dozens of curated activities, earn XP, and build your streak as you explore Greater Manchester&apos;s hidden gem.
           </p>
           <p className="text-xs text-gray-400 dark:text-gray-500 pt-1">
             No account required · All data stays on your device · No ads
