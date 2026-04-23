@@ -1227,4 +1227,97 @@ export const QUESTS: Quest[] = [
       'outdoors-fpw-south',
     ],
   },
+
+  // ── Curated trails built from existing quests ────────────────────────────────
+  // These meta-quests don't introduce new members — they stitch together quests
+  // that naturally belong to the same theme or location. Members crossover with
+  // other trails on purpose (e.g. the Tudor Frog counts for both the Frog Trail
+  // and the Bramhall Circuit).
+  {
+    id: 'history-bramhall-circuit',
+    title: 'The Bramhall Circuit',
+    description:
+      'Spend a day in Bramhall — tour the Tudor hall, find the Frog in the park, take afternoon cream tea on the lawn, lunch on the village\'s café strip and finish with a proper family day out.',
+    location: 'Bramhall, Stockport',
+    category: 'history',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '🏰',
+    tags: ['bramhall', 'circuit', 'day out', 'trail'],
+    memberQuestIds: [
+      'history-bramall-hall',
+      'culture-frog-tudor',
+      'food-bramall-cream-tea',
+      'food-bramhall-village-cafe',
+      'family-bramall-day-out',
+    ],
+  },
+  {
+    id: 'outdoors-viaduct-spotter',
+    title: 'The Viaduct Spotter',
+    description:
+      'Stockport\'s 27-arch viaduct is its most recognisable landmark. Frame it from three different angles — the classic Mersey Square view, the postcard vista from the hillside viewpoint, and its twin in Reddish Vale.',
+    location: 'Stockport (viaduct-spanning)',
+    category: 'outdoors',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '🌉',
+    tags: ['viaduct', 'views', 'photography', 'landmark', 'trail'],
+    memberQuestIds: [
+      'outdoors-viaduct-viewpoint',
+      'hidden-viaduct-mersey-square',
+      'history-reddish-vale-viaduct',
+    ],
+  },
+  {
+    id: 'outdoors-reddish-rounder',
+    title: 'The Reddish Rounder',
+    description:
+      'See every side of Reddish Vale in a single outing — walk the country park trail, introduce the kids to the animals at Reddish Vale Farm and photograph the stunning Victorian viaduct that crosses the valley.',
+    location: 'Reddish Vale, Stockport',
+    category: 'outdoors',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '🌾',
+    tags: ['reddish vale', 'country park', 'family', 'trail'],
+    memberQuestIds: [
+      'outdoors-reddish-vale',
+      'family-reddish-vale-farm',
+      'history-reddish-vale-viaduct',
+    ],
+  },
+  {
+    id: 'history-wartime-stockport',
+    title: 'Wartime Stockport',
+    description:
+      'Uncover Stockport\'s WWII story — descend into the Chestergate air-raid shelters that protected thousands, find the blue plaque marking their entrance and pay respects at the plaque honouring the Channel Island evacuees the town took in.',
+    location: 'Stockport town centre',
+    category: 'history',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '🪖',
+    tags: ['wwii', 'air raid', 'heritage', 'trail'],
+    memberQuestIds: [
+      'history-air-raid-shelters',
+      'history-plaque-air-raid',
+      'history-plaque-channel-island',
+    ],
+  },
+  {
+    id: 'outdoors-goyt-triple',
+    title: 'The Goyt Valley Triple',
+    description:
+      'Take on the Goyt Valley three ways — walk it on foot, ride the hilly road circuit past Errwood Reservoir, and finish with the full trail-running challenge from Marple to Whaley Bridge.',
+    location: 'Goyt Valley, Stockport/Peak District',
+    category: 'outdoors',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '⛰️',
+    tags: ['goyt valley', 'peak district', 'endurance', 'trail'],
+    memberQuestIds: [
+      'outdoors-goyt-valley',
+      'fitness-cycle-goyt-valley',
+      'fitness-goyt-trail-challenge',
+    ],
+  },
 ];

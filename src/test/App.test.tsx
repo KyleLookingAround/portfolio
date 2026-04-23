@@ -480,6 +480,29 @@ describe('meta-quest crossover', () => {
   });
 });
 
+describe('meta-quest crossover (real data)', () => {
+  beforeEach(() => { localStorage.clear(); });
+
+  // culture-frog-tudor is a member of both the Frog Trail (17 stops) and the
+  // Bramhall Circuit (5 stops). Ticking it should contribute to both trails'
+  // progress counters in parallel.
+  it('a shared member counts towards every parent meta-quest in the real data', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const tudor = result.current.quests.find(q => q.id === 'culture-frog-tudor')!;
+    const frogTrail = result.current.quests.find(q => q.id === 'culture-frog-trail')!;
+    const bramhall = result.current.quests.find(q => q.id === 'history-bramhall-circuit')!;
+
+    // Both trails list the Tudor Frog as a member.
+    expect(frogTrail.memberQuestIds).toContain(tudor.id);
+    expect(bramhall.memberQuestIds).toContain(tudor.id);
+
+    act(() => { result.current.toggleComplete(tudor.id); });
+
+    expect(getMetaQuestProgress(frogTrail, result.current.progress.completed).done).toBe(1);
+    expect(getMetaQuestProgress(bramhall, result.current.progress.completed).done).toBe(1);
+  });
+});
+
 // ─── MetaQuestsPage ───────────────────────────────────────────────────────────
 
 import { MetaQuestsPage } from '../pages/MetaQuestsPage';
