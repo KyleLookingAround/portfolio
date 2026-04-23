@@ -1,197 +1,116 @@
-# Stockport Information Dashboard
+# Stockport Quest Tracker
 
-A modern, real-time information dashboard for Stockport, Greater Manchester. Built with React, TypeScript, Vite, and Tailwind CSS.
+A free, offline-first progressive web app for residents and visitors of Stockport, UK. Discover 50 curated local adventures — walks, hidden gems, food stops, cultural landmarks — tick them off as you explore, earn XP, level up, and build a daily streak.
 
-> **Note:** This dashboard is part of a portfolio project showcasing real-world API integration and modern web development practices.
+Built with React 19, TypeScript, Vite, and Tailwind CSS. No accounts, no backend, no tracking — all progress stays on your device.
 
 ## Features
 
-### Live Data Widgets
+- **50 curated quests** across 8 categories: Outdoors, Food & Drink, Culture, History, Family, Hidden Gems, Fitness, Nightlife
+- **Three difficulty tiers** — Easy (10 XP), Medium (25 XP), Hard (50 XP)
+- **Themed progression** — level up from Stockport Newcomer to Stockport Legend
+- **Quest of the Day** — a deterministic daily suggestion
+- **Daily streaks** — complete a quest every day to keep the fire going
+- **Favourites** — save the places you want to come back to
+- **Search & filter** — by category, difficulty, or hide what you've already done
+- **Dark mode** — with system-preference default and manual override
+- **Installable PWA** — add to your home screen, works offline
+- **Accessible** — keyboard navigation, ARIA labelling, respects `prefers-reduced-motion`
 
-- **🌤️ Weather** - Current conditions and 3-day forecast for Stockport (Open-Meteo API)
-- **💨 Air Quality** - European AQI and pollutant levels (Open-Meteo API)
-- **🚔 Crime Statistics** - Monthly crime data by category (UK Police API)
-- **🌊 River Monitoring** - River Mersey water levels and flood warnings (Environment Agency API)
-- **📞 Local Services** - Emergency contacts, council services, and useful links
-- **🏗️ Planning & Development** - Conservation areas and notable planning applications
-- **🚆 Transport** - Rail services and public transport links
-- **📊 Stockport by Numbers** - Local facts, statistics, and rotating trivia
+## Tech Stack
 
-### Technical Features
-
-- Real-time data from multiple public APIs
-- Responsive design that works on mobile, tablet, and desktop
-- Graceful error handling with retry functionality
-- Loading states for better UX
-- No backend required - all API calls from the browser
-- TypeScript for type safety
-- Tailwind CSS for styling
+- **React 19** with hooks and StrictMode
+- **TypeScript 5** (strict mode)
+- **Vite 7** + `vite-plugin-pwa`
+- **Tailwind CSS 3** (class-based dark mode)
+- **Vitest 4** + Testing Library for unit and integration tests
+- **ESLint 9** (flat config)
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 or higher recommended)
-- npm or yarn
+- Node.js 20 or higher
+- npm
 
 ### Installation
 
-1. Clone the repository:
 ```bash
-git clone https://github.com/KyleLookingAround/portfolio.git
-cd portfolio
-```
-
-2. Install dependencies:
-```bash
+git clone https://github.com/KyleLookingAround/StockportToday.git
+cd StockportToday
 npm install
 ```
 
-3. (Optional) Set up API keys for enhanced features:
-```bash
-cp .env.example .env
-# Edit .env and add your API keys (see API_KEYS.md for details)
-```
+### Development
 
-4. Start the development server:
 ```bash
 npm run dev
 ```
 
-5. Open your browser to `http://localhost:5173`
+Open <http://localhost:5173/StockportToday/> in your browser.
 
-## Available Scripts
+### Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-
-## API Keys
-
-Most features work without any API keys. For enhanced features (live transport data, extended health services), see [API_KEYS.md](./API_KEYS.md) for instructions on obtaining free API keys.
-
-### APIs Used (No Key Required)
-- Open-Meteo Weather & Air Quality
-- UK Police Data
-- Environment Agency Flood Monitoring
-- Planning Data (planning.data.gov.uk)
-
-### Optional APIs (Free Registration)
-- Transport for Greater Manchester (TfGM) - Live transport data
-- NHS API - Extended health services
-- Eventbrite - Local events
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Type-check and build for production → `dist/` |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Run ESLint |
+| `npm run test` | Run Vitest in watch mode |
+| `npm run test:run` | Run the full test suite once (CI mode) |
+| `npm run test:ui` | Open the Vitest UI dashboard |
 
 ## Project Structure
 
-# Stockport Today - Local Dashboard
-
-A live local dashboard for Stockport, UK featuring real-time information about weather, air quality, crime statistics, planning applications, and transport.
-
-## Features
-
-- **Weather Widget**: Current conditions and 3-day forecast from Open-Meteo
-- **Air Quality Widget**: European AQI and pollutant readings
-- **Crime Statistics**: Recent crime data from UK Police API
-- **Planning & Development**: Conservation areas and notable planning applications
-- **Transport**: Rail services and quick links to journey planners
-- **Stockport Facts**: Interesting statistics and rotating trivia about Stockport
-
-## Tech Stack
-
-- React 19 with TypeScript
-- Vite for development and building
-- Tailwind CSS for styling
-- ESLint for code quality
-
-## Getting Started
-
-```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-
-# Lint code
-npm run lint
 ```
 src/
-├── components/         # React components
-│   ├── Header.tsx
-│   ├── WeatherWidget.tsx
-│   ├── AirQualityWidget.tsx
-│   ├── CrimeWidget.tsx
-│   ├── FloodWidget.tsx
-│   ├── LocalServicesWidget.tsx
-│   ├── PlanningWidget.tsx
-│   ├── TransportWidget.tsx
-│   ├── FactsWidget.tsx
-│   └── WidgetCard.tsx
-├── lib/               # API functions and utilities
-│   ├── api.ts
-│   └── weatherCodes.ts
-├── types.ts           # TypeScript type definitions
-├── App.tsx            # Main app component
-└── main.tsx           # Entry point
+├── components/      # BottomNav, QuestCard, QuestDetailSheet, ErrorBoundary
+├── pages/           # DiscoverPage, QuestsPage, ProgressPage, ProfilePage
+├── data/            # quests.ts (50 quests), categories.ts
+├── lib/             # QuestContext, progress (XP/level/streak logic), storage
+├── test/            # App.test.tsx, setup.ts
+├── App.tsx          # Root: hash routing, theme, level-up toast
+├── main.tsx         # React entry point
+├── types.ts         # Quest, Category, UserProgress, etc.
+└── index.css        # Tailwind directives
 ```
 
-## Customization
+## How It Works
 
-### Changing Location
+### Progression
 
-To use this dashboard for a different location, update the coordinates in `src/lib/api.ts`:
+XP is earned per quest based on difficulty (10 / 25 / 50). Your level is derived from total XP using a quadratic curve: level `n` requires `20 · (n − 1)²` XP. Seven themed ranks are unlocked along the way.
 
-```typescript
-const LAT = 53.4083;  // Your latitude
-const LNG = -2.1494;  // Your longitude
-```
+### Streaks
 
-### Adding New Widgets
+Complete at least one quest per day to extend your streak. Miss a day and the current streak resets to zero — but your longest-ever streak is kept forever.
 
-1. Create a new component in `src/components/`
-2. Add any new types to `src/types.ts`
-3. Add API functions to `src/lib/api.ts`
-4. Import and add the widget to `src/App.tsx`
+### Data & Privacy
+
+The app ships with zero telemetry. Your display name, completed quests, favourites, and streaks live only in your browser's `localStorage` (key `stockport-quest-progress-v1`). Use **Profile → Reset all progress** to wipe everything.
+
+## Deployment
+
+The app deploys to GitHub Pages automatically on every push to `main` via `.github/workflows/deploy.yml`. The built `dist/` folder is pushed to the `gh-pages` branch.
+
+The Vite `base` path, PWA `scope`, and `start_url` are all `/StockportToday/` — if you fork this under a different repo name, update all three in `vite.config.ts`.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Issues and pull requests are welcome. Before opening a PR:
+
+```bash
+npm run test:run
+npm run lint
+```
+
+See [CLAUDE.md](./CLAUDE.md) for deeper architectural notes and conventions.
 
 ## License
 
-This project is open source and available under the MIT License.
+MIT
 
-## Acknowledgments
+## Acknowledgements
 
-- Weather data from [Open-Meteo](https://open-meteo.com/)
-- Crime statistics from [UK Police Data API](https://data.police.uk/)
-- Planning data from [Planning Data](https://www.planning.data.gov.uk/)
-- Flood monitoring from [Environment Agency](https://environment.data.gov.uk/)
-- Local information from [Stockport Council](https://www.stockport.gov.uk/)
-
----
-
-Built with ❤️ for the people of Stockport
-## Data Sources
-
-- Weather: [Open-Meteo API](https://open-meteo.com/)
-- Air Quality: [Open-Meteo Air Quality API](https://open-meteo.com/en/docs/air-quality-api)
-- Crime: [UK Police API](https://data.police.uk/)
-- Planning: [Planning Data Gov UK](https://www.planning.data.gov.uk/)
-- Transport: Static data and links to National Rail & TfGM
-
-## Development
-
-This project uses:
-- **React 19** with hooks and strict mode
-- **TypeScript** for type safety
-- **Tailwind CSS** for utility-first styling
-- **Vite** for fast development and optimized builds
-- **ESLint** with React hooks rules for code quality
+All quest descriptions are written for this project. Place names, landmarks, and attractions belong to the people and organisations of Stockport — go visit them.
