@@ -18,6 +18,8 @@ import {
   getLocalDateStr,
   updateStreak,
   checkStreakReset,
+  isMetaQuest,
+  isMetaQuestFullyComplete,
 } from './progress';
 
 interface ToggleCompleteResult {
@@ -66,18 +68,37 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
     let newLevelName = '';
 
     setProgress(prev => {
+      // Meta-quests cannot be toggled directly — their state is derived.
+      const target = QUESTS.find(q => q.id === id);
+      if (target && isMetaQuest(target)) {
+        newLevel = computeLevel(computeTotalXP(prev.completed, QUESTS));
+        newLevelName = getLevelName(newLevel);
+        return prev;
+      }
+
       const xpBefore = computeTotalXP(prev.completed, QUESTS);
       const levelBefore = computeLevel(xpBefore);
 
       const isCompleted = Boolean(prev.completed[id]);
-      let updatedCompleted: Record<string, string>;
+      const updatedCompleted: Record<string, string> = { ...prev.completed };
+      const nowIso = new Date().toISOString();
 
       if (isCompleted) {
-        const rest = { ...prev.completed };
-        delete rest[id];
-        updatedCompleted = rest;
+        delete updatedCompleted[id];
       } else {
-        updatedCompleted = { ...prev.completed, [id]: new Date().toISOString() };
+        updatedCompleted[id] = nowIso;
+      }
+
+      // Sync every meta-quest whose derived state may have changed.
+      for (const meta of QUESTS) {
+        if (!isMetaQuest(meta)) continue;
+        const fullyDone = isMetaQuestFullyComplete(meta, updatedCompleted);
+        const wasMarked = Boolean(updatedCompleted[meta.id]);
+        if (fullyDone && !wasMarked) {
+          updatedCompleted[meta.id] = nowIso;
+        } else if (!fullyDone && wasMarked) {
+          delete updatedCompleted[meta.id];
+        }
       }
 
       const today = getLocalDateStr();

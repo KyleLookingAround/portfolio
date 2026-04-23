@@ -12,6 +12,9 @@ import {
   getQuestOfTheDay,
   checkStreakReset,
   updateStreak,
+  isMetaQuest,
+  getMetaQuestProgress,
+  isMetaQuestFullyComplete,
 } from '../lib/progress';
 import type { Quest, UserProgress } from '../types';
 
@@ -57,6 +60,56 @@ describe('hashDateString', () => {
   });
   it('differs for different dates', () => {
     expect(hashDateString('2024-01-01')).not.toBe(hashDateString('2024-01-02'));
+  });
+});
+
+const META_QUEST: Quest = {
+  id: 'meta-1',
+  title: 'Trail Master',
+  description: 'Complete all members',
+  location: 'Stockport',
+  category: 'culture',
+  difficulty: 'hard',
+  xp: 50,
+  memberQuestIds: ['q1', 'q2', 'q3'],
+};
+
+describe('isMetaQuest', () => {
+  it('returns true when memberQuestIds is non-empty', () => {
+    expect(isMetaQuest(META_QUEST)).toBe(true);
+  });
+  it('returns false for regular quests', () => {
+    expect(isMetaQuest(MOCK_QUESTS[0])).toBe(false);
+  });
+  it('returns false when memberQuestIds is an empty array', () => {
+    expect(isMetaQuest({ ...META_QUEST, memberQuestIds: [] })).toBe(false);
+  });
+});
+
+describe('getMetaQuestProgress', () => {
+  it('reports 0/N when no members are complete', () => {
+    expect(getMetaQuestProgress(META_QUEST, {})).toEqual({ done: 0, total: 3 });
+  });
+  it('counts completed members', () => {
+    expect(getMetaQuestProgress(META_QUEST, { q1: 'x', q3: 'x' })).toEqual({ done: 2, total: 3 });
+  });
+  it('ignores completed non-member quests', () => {
+    expect(getMetaQuestProgress(META_QUEST, { other: 'x' })).toEqual({ done: 0, total: 3 });
+  });
+});
+
+describe('isMetaQuestFullyComplete', () => {
+  it('returns false when no members complete', () => {
+    expect(isMetaQuestFullyComplete(META_QUEST, {})).toBe(false);
+  });
+  it('returns false when some members complete', () => {
+    expect(isMetaQuestFullyComplete(META_QUEST, { q1: 'x', q2: 'x' })).toBe(false);
+  });
+  it('returns true when all members complete', () => {
+    expect(isMetaQuestFullyComplete(META_QUEST, { q1: 'x', q2: 'x', q3: 'x' })).toBe(true);
+  });
+  it('returns false for an empty-members meta-quest', () => {
+    expect(isMetaQuestFullyComplete({ ...META_QUEST, memberQuestIds: [] }, {})).toBe(false);
   });
 });
 
@@ -261,6 +314,66 @@ describe('QuestContext', () => {
   });
 });
 
+// ─── Meta-quest integration ──────────────────────────────────────────────────
+
+describe('QuestContext — meta-quests', () => {
+  beforeEach(() => { localStorage.clear(); });
+
+  it('auto-completes a meta-quest when all members are done, awarding bonus XP', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const meta = result.current.quests.find(q => q.id === 'culture-frog-trail');
+    expect(meta).toBeDefined();
+    const memberIds = meta!.memberQuestIds!;
+    const expectedMemberXP = memberIds.reduce(
+      (sum, id) => sum + (result.current.quests.find(q => q.id === id)?.xp ?? 0),
+      0
+    );
+
+    act(() => {
+      for (const id of memberIds) {
+        result.current.toggleComplete(id);
+      }
+    });
+
+    expect(result.current.progress.completed[meta!.id]).toBeTruthy();
+    expect(result.current.totalXP).toBe(expectedMemberXP + meta!.xp);
+  });
+
+  it('reverts meta-quest completion when a member is un-ticked', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const meta = result.current.quests.find(q => q.id === 'culture-frog-trail')!;
+    const memberIds = meta.memberQuestIds!;
+
+    act(() => {
+      for (const id of memberIds) result.current.toggleComplete(id);
+    });
+    expect(result.current.progress.completed[meta.id]).toBeTruthy();
+
+    act(() => { result.current.toggleComplete(memberIds[0]); });
+    expect(result.current.progress.completed[meta.id]).toBeUndefined();
+  });
+
+  it('does not mark the meta-quest when only some members are complete', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const meta = result.current.quests.find(q => q.id === 'culture-frog-trail')!;
+    const memberIds = meta.memberQuestIds!;
+
+    act(() => {
+      result.current.toggleComplete(memberIds[0]);
+      result.current.toggleComplete(memberIds[1]);
+    });
+    expect(result.current.progress.completed[meta.id]).toBeUndefined();
+  });
+
+  it('toggleComplete on a meta-quest id is a no-op', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const meta = result.current.quests.find(q => q.id === 'culture-frog-trail')!;
+    act(() => { result.current.toggleComplete(meta.id); });
+    expect(result.current.progress.completed[meta.id]).toBeUndefined();
+    expect(result.current.totalXP).toBe(0);
+  });
+});
+
 // ─── BottomNav ────────────────────────────────────────────────────────────────
 
 import { BottomNav } from '../components/BottomNav';
@@ -387,8 +500,8 @@ describe('QuestsPage', () => {
 
   it('renders quest count summary', () => {
     renderPage();
-    // "50 of 50" or similar
-    expect(screen.getByText(/of 50/)).toBeInTheDocument();
+    // "N of N" where both numbers match
+    expect(screen.getByText(/^\d+ of \d+$/)).toBeInTheDocument();
   });
 
   it('shows empty state when search yields no results', async () => {

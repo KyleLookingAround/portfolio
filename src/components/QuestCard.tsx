@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import type { Quest } from '../types';
 import { CATEGORY_MAP } from '../data/categories';
 import { useQuestContext } from '../lib/QuestContext';
+import { isMetaQuest, getMetaQuestProgress } from '../lib/progress';
 
 interface QuestCardProps {
   quest: Quest;
@@ -27,6 +28,8 @@ export function QuestCard({ quest, onSelect, onLevelUp, compact = false }: Quest
   const isCompleted = Boolean(progress.completed[quest.id]);
   const isFavourite = progress.favourites.includes(quest.id);
   const category = CATEGORY_MAP[quest.category];
+  const meta = isMetaQuest(quest);
+  const metaProgress = meta ? getMetaQuestProgress(quest, progress.completed) : null;
 
   const handleCardClick = useCallback(() => {
     onSelect(quest);
@@ -118,7 +121,9 @@ export function QuestCard({ quest, onSelect, onLevelUp, compact = false }: Quest
           >
             {DIFFICULTY_LABEL[quest.difficulty]}
           </span>
-          <span className="text-xs text-accent font-semibold ml-auto">+{quest.xp} XP</span>
+          <span className="text-xs text-accent font-semibold ml-auto">
+            +{quest.xp}{meta ? ' bonus' : ' XP'}
+          </span>
           <span className="text-xs text-gray-400 dark:text-gray-500">
             📍 {quest.location.split(',')[0]}
           </span>
@@ -134,19 +139,37 @@ export function QuestCard({ quest, onSelect, onLevelUp, compact = false }: Quest
       >
         <span aria-hidden="true">{isFavourite ? '❤️' : '🤍'}</span>
       </button>
-      <button
-        type="button"
-        className={[
-          'absolute top-3 right-2 p-1.5 rounded-full transition-colors',
-          isCompleted
-            ? 'text-accent hover:bg-emerald-50 dark:hover:bg-emerald-900/30'
-            : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700',
-        ].join(' ')}
-        onClick={handleComplete}
-        aria-label={isCompleted ? `Mark ${quest.title} as incomplete` : `Mark ${quest.title} as complete`}
-      >
-        <span aria-hidden="true">{isCompleted ? '✅' : '○'}</span>
-      </button>
+      {meta && metaProgress ? (
+        <div
+          className={[
+            'absolute top-2.5 right-2 px-2 py-0.5 rounded-full text-xs font-semibold pointer-events-none',
+            isCompleted
+              ? 'bg-accent/10 text-accent'
+              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300',
+          ].join(' ')}
+          role="progressbar"
+          aria-valuenow={metaProgress.done}
+          aria-valuemin={0}
+          aria-valuemax={metaProgress.total}
+          aria-label={`${metaProgress.done} of ${metaProgress.total} stops completed`}
+        >
+          {isCompleted ? '✅ ' : ''}{metaProgress.done}/{metaProgress.total}
+        </div>
+      ) : (
+        <button
+          type="button"
+          className={[
+            'absolute top-3 right-2 p-1.5 rounded-full transition-colors',
+            isCompleted
+              ? 'text-accent hover:bg-emerald-50 dark:hover:bg-emerald-900/30'
+              : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700',
+          ].join(' ')}
+          onClick={handleComplete}
+          aria-label={isCompleted ? `Mark ${quest.title} as incomplete` : `Mark ${quest.title} as complete`}
+        >
+          <span aria-hidden="true">{isCompleted ? '✅' : '○'}</span>
+        </button>
+      )}
     </article>
   );
 }

@@ -1,12 +1,14 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useMemo } from 'react';
 import type { Quest } from '../types';
 import { CATEGORY_MAP } from '../data/categories';
 import { useQuestContext } from '../lib/QuestContext';
+import { isMetaQuest, getMetaQuestProgress } from '../lib/progress';
 
 interface QuestDetailSheetProps {
   quest: Quest;
   onClose: () => void;
   onLevelUp: (message: string) => void;
+  onSelectQuest: (quest: Quest) => void;
 }
 
 const DIFFICULTY_LABEL: Record<Quest['difficulty'], string> = {
@@ -15,13 +17,29 @@ const DIFFICULTY_LABEL: Record<Quest['difficulty'], string> = {
   hard: 'Hard',
 };
 
-export function QuestDetailSheet({ quest, onClose, onLevelUp }: QuestDetailSheetProps) {
-  const { progress, toggleComplete, toggleFavourite } = useQuestContext();
+export function QuestDetailSheet({ quest, onClose, onLevelUp, onSelectQuest }: QuestDetailSheetProps) {
+  const { quests, progress, toggleComplete, toggleFavourite } = useQuestContext();
   const isCompleted = Boolean(progress.completed[quest.id]);
   const isFavourite = progress.favourites.includes(quest.id);
   const category = CATEGORY_MAP[quest.category];
   const closeRef = useRef<HTMLButtonElement>(null);
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const meta = isMetaQuest(quest);
+  const memberQuests = useMemo<Quest[]>(() => {
+    if (!meta || !quest.memberQuestIds) return [];
+    const byId = new Map(quests.map(q => [q.id, q]));
+    return quest.memberQuestIds
+      .map(id => byId.get(id))
+      .filter((q): q is Quest => !!q);
+  }, [meta, quest.memberQuestIds, quests]);
+  const metaProgress = meta ? getMetaQuestProgress(quest, progress.completed) : null;
+
+  // Parent meta-quests that include this quest as a member.
+  const parentMetaQuests = useMemo<Quest[]>(() => {
+    if (meta) return [];
+    return quests.filter(q => isMetaQuest(q) && q.memberQuestIds?.includes(quest.id));
+  }, [meta, quest.id, quests]);
 
   useEffect(() => {
     closeRef.current?.focus();
@@ -102,8 +120,27 @@ export function QuestDetailSheet({ quest, onClose, onLevelUp }: QuestDetailSheet
             <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
               {DIFFICULTY_LABEL[quest.difficulty]}
             </span>
-            <span className="text-sm text-accent font-semibold ml-auto">+{quest.xp} XP</span>
+            <span className="text-sm text-accent font-semibold ml-auto">
+              +{quest.xp}{meta ? ' bonus XP' : ' XP'}
+            </span>
           </div>
+
+          {/* Part-of: parent meta-quest pills */}
+          {parentMetaQuests.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-3" aria-label="Part of">
+              {parentMetaQuests.map(parent => (
+                <button
+                  key={parent.id}
+                  type="button"
+                  onClick={() => onSelectQuest(parent)}
+                  className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-brand/10 dark:bg-brand-dark/20 text-brand dark:text-brand-dark hover:bg-brand/20 dark:hover:bg-brand-dark/30 transition-colors"
+                >
+                  <span aria-hidden="true">🧭</span>
+                  Part of: {parent.title}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Title */}
           <h2
@@ -129,18 +166,37 @@ export function QuestDetailSheet({ quest, onClose, onLevelUp }: QuestDetailSheet
 
           {/* Action buttons */}
           <div className="flex flex-col gap-3">
-            <button
-              type="button"
-              onClick={handleComplete}
-              className={[
-                'w-full py-3 rounded-xl text-sm font-semibold transition-colors',
-                isCompleted
-                  ? 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  : 'bg-accent text-white hover:bg-emerald-600',
-              ].join(' ')}
-            >
-              {isCompleted ? '↩ Mark as incomplete' : '✓ Mark as complete'}
-            </button>
+            {meta && metaProgress ? (
+              <div
+                className={[
+                  'w-full py-3 px-4 rounded-xl text-sm font-semibold text-center',
+                  isCompleted
+                    ? 'bg-accent/10 text-accent'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200',
+                ].join(' ')}
+                role="progressbar"
+                aria-valuenow={metaProgress.done}
+                aria-valuemin={0}
+                aria-valuemax={metaProgress.total}
+              >
+                {isCompleted
+                  ? `✅ Trail complete — ${metaProgress.done}/${metaProgress.total} stops`
+                  : `🐸 ${metaProgress.done} of ${metaProgress.total} stops ticked — complete them all to earn +${quest.xp} bonus XP`}
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handleComplete}
+                className={[
+                  'w-full py-3 rounded-xl text-sm font-semibold transition-colors',
+                  isCompleted
+                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    : 'bg-accent text-white hover:bg-emerald-600',
+                ].join(' ')}
+              >
+                {isCompleted ? '↩ Mark as incomplete' : '✓ Mark as complete'}
+              </button>
+            )}
 
             <div className="flex gap-3">
               <button
@@ -178,6 +234,72 @@ export function QuestDetailSheet({ quest, onClose, onLevelUp }: QuestDetailSheet
                   #{tag}
                 </span>
               ))}
+            </div>
+          )}
+
+          {/* Member checklist (meta-quest only) */}
+          {meta && memberQuests.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                Trail stops
+              </h3>
+              <ul className="flex flex-col gap-2">
+                {memberQuests.map(member => {
+                  const memberDone = Boolean(progress.completed[member.id]);
+                  const memberCategory = CATEGORY_MAP[member.category];
+                  return (
+                    <li key={member.id}>
+                      <button
+                        type="button"
+                        onClick={() => onSelectQuest(member)}
+                        className={[
+                          'w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-colors',
+                          memberDone
+                            ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-900/10'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-brand dark:hover:border-brand-dark hover:bg-gray-50 dark:hover:bg-gray-700/50',
+                        ].join(' ')}
+                        aria-label={`${member.title}${memberDone ? ' (completed)' : ''} — open details`}
+                      >
+                        <span
+                          className={[
+                            'inline-flex items-center justify-center shrink-0 w-6 h-6 rounded-full text-xs',
+                            memberDone
+                              ? 'bg-accent text-white'
+                              : 'border border-gray-300 dark:border-gray-600 text-gray-400',
+                          ].join(' ')}
+                          aria-hidden="true"
+                        >
+                          {memberDone ? '✓' : ''}
+                        </span>
+                        {member.emoji && (
+                          <span className="text-lg shrink-0" aria-hidden="true">{member.emoji}</span>
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <div
+                            className={[
+                              'text-sm font-medium truncate',
+                              memberDone
+                                ? 'text-gray-500 dark:text-gray-400 line-through'
+                                : 'text-gray-900 dark:text-gray-100',
+                            ].join(' ')}
+                          >
+                            {member.title}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                            📍 {member.location.split(',')[0]}
+                          </div>
+                        </div>
+                        <span
+                          className="text-xs px-1.5 py-0.5 rounded-full shrink-0"
+                          style={{ color: memberCategory.color, backgroundColor: `${memberCategory.color}18` }}
+                        >
+                          +{member.xp}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           )}
         </div>

@@ -121,7 +121,7 @@ export default function App() {
                 Stockport Quest Tracker
               </h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">
-                Discover 50 curated adventures around Stockport, earn XP and level up as you explore.
+                Discover dozens of curated adventures around Stockport, earn XP and level up as you explore.
               </p>
             </div>
           </div>
@@ -132,6 +132,7 @@ export default function App() {
               quest={selectedQuest}
               onClose={() => setSelectedQuest(null)}
               onLevelUp={handleLevelUp}
+              onSelectQuest={setSelectedQuest}
             />
           )}
         </QuestContextProvider>

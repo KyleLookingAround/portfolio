@@ -20,6 +20,10 @@ export interface Quest {
   xp: number;
   emoji?: string;
   tags?: string[];
+  // When non-empty, this quest is a meta-quest whose completion is derived
+  // from all listed member quest ids. Its `xp` is a bonus awarded on top of
+  // the members' XP when the set is fully completed.
+  memberQuestIds?: string[];
 }
 
 export interface Category {
