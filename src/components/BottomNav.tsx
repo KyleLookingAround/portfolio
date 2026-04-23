@@ -1,6 +1,7 @@
 const TABS = [
   { hash: '#/discover', label: 'Discover', icon: '🧭' },
   { hash: '#/quests', label: 'Quests', icon: '📋' },
+  { hash: '#/trails', label: 'Trails', icon: '🗺️' },
   { hash: '#/progress', label: 'Progress', icon: '📊' },
   { hash: '#/profile', label: 'Profile', icon: '👤' },
 ] as const;

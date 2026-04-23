@@ -45,4 +45,6 @@ export interface UserProgress {
   completed: Record<string, string>;
   favourites: string[];
   streak: StreakData;
+  // Id of the meta-quest the user has chosen to focus on. Null if none selected.
+  trackedMetaQuestId: string | null;
 }

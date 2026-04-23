@@ -18,12 +18,20 @@ const DIFFICULTY_LABEL: Record<Quest['difficulty'], string> = {
 };
 
 export function QuestDetailSheet({ quest, onClose, onLevelUp, onSelectQuest }: QuestDetailSheetProps) {
-  const { quests, progress, toggleComplete, toggleFavourite } = useQuestContext();
+  const {
+    quests,
+    progress,
+    toggleComplete,
+    toggleFavourite,
+    trackedMetaQuest,
+    setTrackedMetaQuest,
+  } = useQuestContext();
   const isCompleted = Boolean(progress.completed[quest.id]);
   const isFavourite = progress.favourites.includes(quest.id);
   const category = CATEGORY_MAP[quest.category];
   const closeRef = useRef<HTMLButtonElement>(null);
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isTracked = trackedMetaQuest?.id === quest.id;
 
   const meta = isMetaQuest(quest);
   const memberQuests = useMemo<Quest[]>(() => {
@@ -167,21 +175,38 @@ export function QuestDetailSheet({ quest, onClose, onLevelUp, onSelectQuest }: Q
           {/* Action buttons */}
           <div className="flex flex-col gap-3">
             {meta && metaProgress ? (
-              <div
-                className={[
-                  'w-full py-3 px-4 rounded-xl text-sm font-semibold text-center',
-                  isCompleted
-                    ? 'bg-accent/10 text-accent'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200',
-                ].join(' ')}
-                role="progressbar"
-                aria-valuenow={metaProgress.done}
-                aria-valuemin={0}
-                aria-valuemax={metaProgress.total}
-              >
-                {isCompleted
-                  ? `✅ Trail complete — ${metaProgress.done}/${metaProgress.total} stops`
-                  : `🐸 ${metaProgress.done} of ${metaProgress.total} stops ticked — complete them all to earn +${quest.xp} bonus XP`}
+              <div className="flex flex-col gap-3">
+                <div
+                  className={[
+                    'w-full py-3 px-4 rounded-xl text-sm font-semibold text-center',
+                    isCompleted
+                      ? 'bg-accent/10 text-accent'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200',
+                  ].join(' ')}
+                  role="progressbar"
+                  aria-valuenow={metaProgress.done}
+                  aria-valuemin={0}
+                  aria-valuemax={metaProgress.total}
+                >
+                  {isCompleted
+                    ? `✅ Trail complete — ${metaProgress.done}/${metaProgress.total} stops`
+                    : `🗺️ ${metaProgress.done} of ${metaProgress.total} stops ticked — complete them all to earn +${quest.xp} bonus XP`}
+                </div>
+                {!isCompleted && (
+                  <button
+                    type="button"
+                    onClick={() => setTrackedMetaQuest(isTracked ? null : quest.id)}
+                    className={[
+                      'w-full py-3 rounded-xl text-sm font-semibold transition-colors',
+                      isTracked
+                        ? 'bg-brand/10 dark:bg-brand-dark/20 text-brand dark:text-brand-dark hover:bg-brand/20 dark:hover:bg-brand-dark/30'
+                        : 'bg-brand text-white hover:bg-indigo-700',
+                    ].join(' ')}
+                    aria-pressed={isTracked}
+                  >
+                    {isTracked ? '📌 Tracking — tap to stop' : '📌 Track this trail'}
+                  </button>
+                )}
               </div>
             ) : (
               <button

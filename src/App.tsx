@@ -4,6 +4,7 @@ import { BottomNav } from './components/BottomNav';
 import { QuestDetailSheet } from './components/QuestDetailSheet';
 import { DiscoverPage } from './pages/DiscoverPage';
 import { QuestsPage } from './pages/QuestsPage';
+import { MetaQuestsPage } from './pages/MetaQuestsPage';
 import { ProgressPage } from './pages/ProgressPage';
 import { ProfilePage } from './pages/ProfilePage';
 import type { Quest } from './types';
@@ -92,6 +93,7 @@ export default function App() {
 
   const activePage = (() => {
     if (hash === '#/quests') return 'quests';
+    if (hash === '#/trails') return 'trails';
     if (hash === '#/progress') return 'progress';
     if (hash === '#/profile') return 'profile';
     return 'discover';
@@ -109,6 +111,9 @@ export default function App() {
               )}
               {activePage === 'quests' && (
                 <QuestsPage onSelectQuest={setSelectedQuest} onLevelUp={handleLevelUp} />
+              )}
+              {activePage === 'trails' && (
+                <MetaQuestsPage onSelectQuest={setSelectedQuest} />
               )}
               {activePage === 'progress' && <ProgressPage />}
               {activePage === 'profile' && (
