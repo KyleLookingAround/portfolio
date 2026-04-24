@@ -57,4 +57,89 @@ export const QUEST_COORDS: Record<string, { lat: number; lng: number }> = {
   'culture-stockport-college-music': { lat: 53.4068, lng: -2.1516 },
   'history-strawberry-studios':      { lat: 53.4071, lng: -2.1573 },
   'history-10cc-stockport':          { lat: 53.4097, lng: -2.1559 },
+
+  // Outdoors — extra
+  'outdoors-mersey-valley':          { lat: 53.4093, lng: -2.1593 },
+  'outdoors-goyt-valley':            { lat: 53.3185, lng: -1.9925 },
+  'outdoors-fpw-north':              { lat: 53.4486, lng: -2.1648 },
+  'outdoors-fpw-middle':             { lat: 53.4090, lng: -2.1551 },
+  'outdoors-fpw-south':              { lat: 53.3837, lng: -2.1148 },
+
+  // Food — extra (town centre eateries + Produce Hall vendors)
+  'food-stockport-pie':              { lat: 53.4097, lng: -2.1556 },
+  'food-street-food-saturday':       { lat: 53.4097, lng: -2.1554 },
+  'food-ph-black-market':            { lat: 53.4097, lng: -2.1552 },
+  'food-ph-chaat-cart':              { lat: 53.4097, lng: -2.1552 },
+  'food-ph-angkor-soul':             { lat: 53.4097, lng: -2.1552 },
+  'food-ph-thief-street':            { lat: 53.4097, lng: -2.1552 },
+  'food-ph-mamma-g':                 { lat: 53.4097, lng: -2.1552 },
+  'food-laco':                       { lat: 53.4096, lng: -2.1560 },
+  'food-bruk':                       { lat: 53.4096, lng: -2.1561 },
+  'food-cantaloupe':                 { lat: 53.4097, lng: -2.1556 },
+  'food-wtlgi':                      { lat: 53.4099, lng: -2.1554 },
+  'food-easy-fish-co':               { lat: 53.4267, lng: -2.1882 },
+  'food-roost-heaton-moor':          { lat: 53.4271, lng: -2.1880 },
+
+  // Culture — Frog Trail (one frog per Stockport ward) + festival
+  'culture-jazz-festival':           { lat: 53.4093, lng: -2.1551 },
+  'culture-frog-tudor':              { lat: 53.3737, lng: -2.1633 },
+  'culture-frog-view':               { lat: 53.3582, lng: -2.1644 },
+  'culture-frog-baker':              { lat: 53.4366, lng: -2.0987 },
+  'culture-frog-theatre':            { lat: 53.4196, lng: -2.0863 },
+  'culture-frog-glow':               { lat: 53.4254, lng: -2.1349 },
+  'culture-frog-blossom':            { lat: 53.3975, lng: -2.2100 },
+  'culture-frog-forest':             { lat: 53.3950, lng: -2.2123 },
+  'culture-frog-resilience':         { lat: 53.4014, lng: -2.1565 },
+  'culture-frog-sunshine':           { lat: 53.4045, lng: -2.1700 },
+  'culture-frog-hazel':              { lat: 53.3839, lng: -2.1067 },
+  'culture-frog-mercury':            { lat: 53.3661, lng: -2.2330 },
+  'culture-frog-river':              { lat: 53.4242, lng: -2.2030 },
+  'culture-frog-park':               { lat: 53.4108, lng: -2.1423 },
+  'culture-frog-canal':              { lat: 53.3975, lng: -2.0651 },
+  'culture-frog-industry':           { lat: 53.4047, lng: -2.1281 },
+  'culture-frog-farm':               { lat: 53.4413, lng: -2.1520 },
+  'culture-frog-florence':           { lat: 53.3850, lng: -2.1142 },
+
+  // History — extra (incl. blue plaques)
+  'history-churchgate-walk':         { lat: 53.4087, lng: -2.1545 },
+  'history-reddish-vale-viaduct':    { lat: 53.4413, lng: -2.1520 },
+  'history-plaque-fred-perry':       { lat: 53.4076, lng: -2.1610 },
+  'history-plaque-gabrielle-ray':    { lat: 53.3985, lng: -2.1608 },
+  'history-plaque-samuel-oldknow':   { lat: 53.4060, lng: -2.1518 },
+  'history-plaque-john-bradshaw':    { lat: 53.3953, lng: -2.1499 },
+  'history-plaque-alan-turing':      { lat: 53.3990, lng: -2.1620 },
+  'history-plaque-channel-island':   { lat: 53.4090, lng: -2.1560 },
+  'history-plaque-stockport-county': { lat: 53.4012, lng: -2.1684 },
+  'history-plaque-air-raid':         { lat: 53.4100, lng: -2.1583 },
+
+  // Family — extra
+  'family-bramall-day-out':          { lat: 53.3822, lng: -2.1701 },
+  'family-reddish-vale-farm':        { lat: 53.4413, lng: -2.1520 },
+  'family-vernon-park-picnic':       { lat: 53.4127, lng: -2.1335 },
+  'family-market-saturday':          { lat: 53.4097, lng: -2.1552 },
+  'family-woodbank-nature-trail':    { lat: 53.4108, lng: -2.1423 },
+
+  // Hidden — extra (incl. mural trail stops)
+  'hidden-great-stone':              { lat: 53.4392, lng: -2.2170 },
+  'hidden-mural-hendrix':            { lat: 53.4096, lng: -2.1559 },
+  'hidden-mural-garden-tiger':       { lat: 53.4076, lng: -2.1538 },
+  'hidden-mural-life':               { lat: 53.4096, lng: -2.1560 },
+  'hidden-mural-water':              { lat: 53.4096, lng: -2.1559 },
+  'hidden-mural-shop-local':         { lat: 53.4080, lng: -2.1543 },
+
+  // Nightlife — extra (incl. Robinsons Ale Trail stops)
+  'nightlife-craft-beer-crawl':      { lat: 53.4079, lng: -2.1537 },
+  'nightlife-heaton-moor-late':      { lat: 53.4267, lng: -2.1883 },
+  'nightlife-ale-arden-arms':        { lat: 53.4115, lng: -2.1568 },
+  'nightlife-ale-armoury':           { lat: 53.4049, lng: -2.1718 },
+  'nightlife-ale-bakers-vaults':     { lat: 53.4097, lng: -2.1552 },
+  'nightlife-ale-queens-head':       { lat: 53.4097, lng: -2.1560 },
+  'nightlife-ale-red-bull':          { lat: 53.4068, lng: -2.1528 },
+  'nightlife-ale-visitor-centre':    { lat: 53.4065, lng: -2.1525 },
+  'nightlife-ale-swan':              { lat: 53.4093, lng: -2.1545 },
+
+  // Fitness — extra
+  'fitness-vernon-park-parkrun':     { lat: 53.4127, lng: -2.1335 },
+  'fitness-cycle-goyt-valley':       { lat: 53.3300, lng: -2.0094 },
+  'fitness-goyt-trail-challenge':    { lat: 53.3975, lng: -2.0651 },
 };

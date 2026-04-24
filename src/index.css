@@ -9,3 +9,16 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
+
+/* Animated pulse for the Quest-of-the-Day pin on the map. */
+@keyframes sq-pin-pulse-anim {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+.sq-pin-pulse {
+  animation: sq-pin-pulse-anim 2.2s ease-in-out infinite;
+  transform-origin: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sq-pin-pulse { animation: none; }
+}
