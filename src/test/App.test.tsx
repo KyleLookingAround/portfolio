@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // ─── Progress logic ──────────────────────────────────────────────────────────
@@ -947,6 +947,46 @@ describe('QuestsPage — sort and favourites', () => {
     await userEvent.click(mapBtn);
     // The pin-summary copy appears only in map mode.
     expect(screen.getByText(/\d+ pins · \d+ done · \d+ to go/)).toBeInTheDocument();
+  });
+
+  it('toggling a map legend chip hides that category from the pin summary', async () => {
+    render(
+      <QuestContextProvider>
+        <QuestsPage onSelectQuest={vi.fn()} />
+      </QuestContextProvider>
+    );
+    await userEvent.click(screen.getByRole('button', { name: /Map/i }));
+
+    const legend = screen.getByRole('group', { name: /Toggle category visibility/i });
+    const summaryBefore = screen.getByText(/(\d+) pins · \d+ done · \d+ to go/);
+    const beforeCount = Number(summaryBefore.textContent!.match(/^(\d+) pins/)![1]);
+
+    // Pick the first legend chip (any category that has pins). Read its
+    // count from the label so we can assert the summary drops by exactly that.
+    const chips = within(legend).getAllByRole('button');
+    expect(chips.length).toBeGreaterThan(0);
+    const firstChip = chips[0];
+    expect(firstChip).toHaveAttribute('aria-pressed', 'true');
+    const chipCount = Number(firstChip.textContent!.match(/\((\d+)\)/)![1]);
+
+    await userEvent.click(firstChip);
+
+    expect(firstChip).toHaveAttribute('aria-pressed', 'false');
+    expect(
+      screen.getByText(new RegExp(`^${beforeCount - chipCount} pins · `))
+    ).toBeInTheDocument();
+  });
+});
+
+// ─── Quest coordinates integrity ──────────────────────────────────────────────
+
+describe('QUEST_COORDS', () => {
+  it('every key references a real quest id', async () => {
+    const { QUEST_COORDS } = await import('../data/quest-coords');
+    const { QUESTS } = await import('../data/quests');
+    const ids = new Set(QUESTS.map(q => q.id));
+    const orphans = Object.keys(QUEST_COORDS).filter(id => !ids.has(id));
+    expect(orphans).toEqual([]);
   });
 });
 
