@@ -1463,4 +1463,224 @@ export const QUESTS: Quest[] = [
       'hidden-viaduct-mersey-square',
     ],
   },
+
+  // ── Produce Hall Vendor Trail (5 stops + 1 meta) ─────────────────────────────
+  // Each stop is a named independent trader inside the Victorian Produce Hall on
+  // Market Place. The meta awards bonus XP for sampling all five in one visit.
+  {
+    id: 'food-ph-black-market',
+    title: 'Black Market Espresso',
+    description:
+      'Kick off your Produce Hall visit at Black Market Espresso — the specialty coffee stall turning out exceptional flat whites, pastries and sandwiches beneath the Victorian roof of Stockport Market.',
+    location: 'The Produce Hall, Market Place, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '☕',
+    tags: ['coffee', 'espresso', 'produce hall', 'market place'],
+  },
+  {
+    id: 'food-ph-chaat-cart',
+    title: 'Chaat Cart: South Indian Street Food',
+    description:
+      'Queue up at Chaat Cart inside the Produce Hall for crispy vada pav, tangy chaats and a vegan tiffin tin that is one of the best-value lunches in the borough.',
+    location: 'The Produce Hall, Market Place, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🌶️',
+    tags: ['indian', 'street food', 'vegan', 'produce hall'],
+  },
+  {
+    id: 'food-ph-angkor-soul',
+    title: 'Angkor Soul: Cambodian Street Food',
+    description:
+      'Order from Angkor Soul\'s stall at the Produce Hall — Kari coconut curries, chilli garlic fries and punchy Cambodian flavours you will not find anywhere else in Greater Manchester.',
+    location: 'The Produce Hall, Market Place, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🍜',
+    tags: ['cambodian', 'street food', 'produce hall', 'market place'],
+  },
+  {
+    id: 'food-ph-thief-street',
+    title: 'Thief Street Smash Burger',
+    description:
+      'Join the queue at Thief Street for their cult smash burger inside the Produce Hall — a Stockport street-food favourite with serious credentials and a loyal lunchtime crowd.',
+    location: 'The Produce Hall, Market Place, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🍔',
+    tags: ['burger', 'street food', 'produce hall', 'market place'],
+  },
+  {
+    id: 'food-ph-mamma-g',
+    title: "Mamma G's Soul Food",
+    description:
+      "Load up a plate at Mamma G's Caribbean soul food stall inside the Produce Hall — jerk chicken, rice and peas, and the kind of warm welcome that makes this a local institution.",
+    location: 'The Produce Hall, Market Place, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🥘',
+    tags: ['caribbean', 'soul food', 'produce hall', 'market place'],
+  },
+  {
+    id: 'food-produce-hall-world-tour',
+    title: 'The Produce Hall World Tour',
+    description:
+      'The Victorian Produce Hall on Market Place is Stockport\'s most exciting food destination — and its traders take you around the world without leaving the postcode. Sample all five: specialty coffee at Black Market Espresso, South Indian street food from Chaat Cart, Cambodian curries at Angkor Soul, a smash burger from Thief Street, and Caribbean soul from Mamma G\'s.',
+    location: 'The Produce Hall, Market Place, Stockport',
+    category: 'food',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '🌍',
+    tags: ['produce hall', 'trail', 'market place', 'world food', 'street food'],
+    memberQuestIds: [
+      'food-ph-black-market',
+      'food-ph-chaat-cart',
+      'food-ph-angkor-soul',
+      'food-ph-thief-street',
+      'food-ph-mamma-g',
+    ],
+  },
+
+  // ── Underbanks Plates & Pours Trail (4 stops + 1 meta) ───────────────────────
+  // Four of the best food and drink addresses hidden in Stockport's medieval
+  // Underbanks — from a neighbourhood bistro to a Michelin Green Star restaurant.
+  {
+    id: 'food-laco',
+    title: 'Laco Café & Bistro',
+    description:
+      'Settle in at Laco on Little Underbank — TripAdvisor\'s top-rated Stockport restaurant, serving honest all-day café and bistro food in a warm, unhurried atmosphere beneath one of the town\'s oldest cobbled lanes.',
+    location: 'Laco, 32 Little Underbank, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🍽️',
+    tags: ['cafe', 'bistro', 'underbanks', 'little underbank', 'all-day'],
+  },
+  {
+    id: 'food-bruk',
+    title: 'Bruk Wine Bar',
+    description:
+      'Spend an evening at Bruk, the contemporary wine bar at 8 Little Underbank — an expertly curated list of natural and low-intervention wines, hand-crafted cocktails, and a lively events calendar from life drawing to DJ nights.',
+    location: 'Bruk, 8 Little Underbank, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🍷',
+    tags: ['wine bar', 'cocktails', 'underbanks', 'little underbank', 'natural wine'],
+  },
+  {
+    id: 'food-cantaloupe',
+    title: 'Cantaloupe: Small Plates & Wine',
+    description:
+      'Squeeze into Cantaloupe at 71 Great Underbank — a stripped-back neighbourhood restaurant from ex-WTLGI chefs serving exceptional, frequently changing small plates and a thoughtfully chosen wine list from an unlikely former vape shop.',
+    location: 'Cantaloupe, 71 Great Underbank, Stockport',
+    category: 'food',
+    difficulty: 'medium',
+    xp: 25,
+    emoji: '🫒',
+    tags: ['small plates', 'wine', 'underbanks', 'great underbank', 'neighbourhood'],
+  },
+  {
+    id: 'food-wtlgi',
+    title: 'Dinner at Where The Light Gets In',
+    description:
+      'Book a table at Where The Light Gets In — the Michelin Green Star restaurant hidden up Rostron Brow, a narrow alley off the Underbanks. WTLGI\'s ever-changing seasonal tasting menus helped put Stockport on Britain\'s fine-dining map.',
+    location: 'Where The Light Gets In, Rostron Brow, Stockport',
+    category: 'food',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '⭐',
+    tags: ['michelin', 'fine dining', 'tasting menu', 'underbanks', 'seasonal'],
+  },
+  {
+    id: 'food-underbanks-plates-and-pours',
+    title: 'The Underbanks Plates & Pours Trail',
+    description:
+      'Stockport\'s medieval Underbanks has quietly become one of the North West\'s most exciting eating and drinking destinations. Graze through its four best stops: all-day lunch at Laco, natural wine at Bruk, seasonal small plates at Cantaloupe, and — if you can bag a reservation — a Michelin Green Star evening at Where The Light Gets In.',
+    location: 'Underbanks, Stockport town centre',
+    category: 'food',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '🏚️',
+    tags: ['underbanks', 'trail', 'fine dining', 'wine bar', 'restaurants'],
+    memberQuestIds: [
+      'food-laco',
+      'food-bruk',
+      'food-cantaloupe',
+      'food-wtlgi',
+    ],
+  },
+
+  // ── Heaton Moor Food Mile (2 new stops + 1 meta) ─────────────────────────────
+  // Two specific venue quests to complement the existing food-heaton-moor-dining
+  // quest, bundled into a dedicated Food Mile meta.
+  {
+    id: 'food-easy-fish-co',
+    title: 'Lunch at The Easy Fish Co.',
+    description:
+      'Sit down for the freshest seafood lunch in Stockport at The Easy Fish Co. on Heaton Moor Road — a 120-year family-run fishmonger that doubles as a 30-cover restaurant with a menu that changes with the morning catch.',
+    location: 'The Easy Fish Co., Heaton Moor Road, Heaton Moor, Stockport',
+    category: 'food',
+    difficulty: 'medium',
+    xp: 25,
+    emoji: '🐟',
+    tags: ['seafood', 'fishmonger', 'restaurant', 'heaton moor', 'fresh fish'],
+  },
+  {
+    id: 'food-roost-heaton-moor',
+    title: 'Roost: Rotisserie Chicken & Wood-Fired Pizza',
+    description:
+      'Head to Roost at 113 Heaton Moor Road for whole Goosnargh chickens off the rotisserie and Neapolitan-style wood-fired pizza — Steve Pilling\'s relaxed neighbourhood follow-up to Damson, and a local favourite for casual weeknight dining.',
+    location: 'Roost, 113 Heaton Moor Road, Heaton Moor, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🍗',
+    tags: ['pizza', 'rotisserie', 'chicken', 'heaton moor', 'wood-fired'],
+  },
+  {
+    id: 'food-heaton-moor-food-mile',
+    title: 'The Heaton Moor Food Mile',
+    description:
+      'Heaton Moor Road is Stockport\'s most complete independent dining strip. Do it properly: seafood lunch at The Easy Fish Co., wood-fired pizza at Roost, then an evening grazing the strip\'s bars and restaurants to round off your Food Mile.',
+    location: 'Heaton Moor Road, Heaton Moor, Stockport',
+    category: 'food',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '🛣️',
+    tags: ['heaton moor', 'trail', 'restaurant mile', 'independents', 'day out'],
+    memberQuestIds: [
+      'food-easy-fish-co',
+      'food-roost-heaton-moor',
+      'food-heaton-moor-dining',
+    ],
+  },
+
+  // ── Stockport Foodie Grand Tour (meta-of-metas) ───────────────────────────────
+  // The ultimate food and drink challenge: complete all three food trails —
+  // the Produce Hall World Tour, the Underbanks Plates & Pours, and the
+  // Heaton Moor Food Mile — to earn the Grand Tour badge.
+  {
+    id: 'food-stockport-grand-tour',
+    title: 'The Stockport Foodie Grand Tour',
+    description:
+      'Stockport\'s food scene spans ancient cobbled lanes, a world-class food hall and a suburb full of independent gems. The Grand Tour challenges you to complete all three food trails: sample every trader at the Produce Hall, eat and drink your way through the Underbanks, and conquer the Heaton Moor Food Mile.',
+    location: 'Stockport (borough-wide)',
+    category: 'food',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '🏆',
+    tags: ['grand tour', 'trail', 'food', 'drink', 'borough', 'challenge'],
+    memberQuestIds: [
+      'food-produce-hall-world-tour',
+      'food-underbanks-plates-and-pours',
+      'food-heaton-moor-food-mile',
+    ],
+  },
 ];
