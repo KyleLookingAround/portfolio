@@ -525,6 +525,94 @@ export const QUESTS: Quest[] = [
     tags: ['moat', 'medieval', 'archaeology', 'heaton moor', 'earthworks'],
   },
 
+  // ── Marple (4) ───────────────────────────────────────────────────────────────
+  {
+    id: 'outdoors-marple-aqueduct',
+    title: 'Cross the Marple Aqueduct',
+    description:
+      'Walk across Samuel Oldknow\'s Grade I listed Marple Aqueduct — the tallest masonry aqueduct in England — as it carries the Peak Forest Canal 100 feet above the River Goyt.',
+    location: 'Marple Aqueduct, Marple, Stockport',
+    category: 'outdoors',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🏞️',
+    tags: ['marple', 'aqueduct', 'canal', 'engineering', 'heritage'],
+  },
+  {
+    id: 'outdoors-marple-locks',
+    title: 'Walk the Marple Locks Flight',
+    description:
+      'Follow the Peak Forest Canal towpath up the 16-lock Marple Flight — a 214-foot climb in a mile, and one of the most dramatic stretches of canal engineering in the North West.',
+    location: 'Marple Locks, Marple, Stockport',
+    category: 'outdoors',
+    difficulty: 'medium',
+    xp: 25,
+    emoji: '🚤',
+    tags: ['marple', 'canal', 'locks', 'towpath', 'walk'],
+  },
+  {
+    id: 'outdoors-roman-lakes',
+    title: 'Circuit the Roman Lakes',
+    description:
+      'Stroll the peaceful circuit around the Roman Lakes at Bottoms Hall — a Victorian mill pond turned boating and fishing retreat on the River Goyt.',
+    location: 'Roman Lakes, Mellor, Stockport',
+    category: 'outdoors',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🦆',
+    tags: ['marple', 'mellor', 'lake', 'wildlife', 'family'],
+  },
+  {
+    id: 'outdoors-brabyns-park',
+    title: 'Brabyns Park & Iron Bridge',
+    description:
+      'Wander Brabyns Park in Marple — a Grade II listed Victorian public park with an ornate iron footbridge, bandstand lawn and riverside paths along the Goyt.',
+    location: 'Brabyns Park, Marple, Stockport',
+    category: 'outdoors',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🌳',
+    tags: ['marple', 'park', 'iron bridge', 'bandstand', 'family'],
+  },
+
+  // ── The Heatons & town-centre evenings (3) ───────────────────────────────────
+  {
+    id: 'outdoors-heaton-moor-park',
+    title: 'Sunday at Heaton Moor Park',
+    description:
+      'Spend a lazy afternoon in Heaton Moor Park — the suburb\'s beloved Victorian green space with tennis courts, a bowling green and a weekly cafe-on-the-green in summer.',
+    location: 'Heaton Moor Park, Heaton Moor, Stockport',
+    category: 'outdoors',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🌳',
+    tags: ['heaton moor', 'park', 'sunday', 'family'],
+  },
+  {
+    id: 'family-light-cinema-redrock',
+    title: 'Catch a film at the Light Cinema',
+    description:
+      'Take in a blockbuster at the Light Cinema on the rooftop of Redrock — Stockport\'s leisure-and-dining development overlooking the Mersey and the M60.',
+    location: 'Light Cinema, Redrock, Stockport',
+    category: 'family',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🎬',
+    tags: ['cinema', 'redrock', 'family', 'evening'],
+  },
+  {
+    id: 'nightlife-petersgate-tap',
+    title: 'Pint at the Petersgate Tap',
+    description:
+      'Settle in at the Petersgate Tap — a small-but-mighty craft beer bar on the corner of St Petersgate that consistently ranks among Greater Manchester\'s best.',
+    location: 'Petersgate Tap, St Petersgate, Stockport',
+    category: 'nightlife',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🍺',
+    tags: ['craft beer', 'bar', 'town centre', 'petersgate'],
+  },
+
   // ── Fitness (4) ─────────────────────────────────────────────────────────────
   {
     id: 'fitness-etherow-lake-run',
@@ -1318,6 +1406,61 @@ export const QUESTS: Quest[] = [
       'outdoors-goyt-valley',
       'fitness-cycle-goyt-valley',
       'fitness-goyt-trail-challenge',
+    ],
+  },
+  {
+    id: 'outdoors-marple-heritage',
+    title: 'The Marple Heritage Walk',
+    description:
+      'See the best of Marple in one go — the Grade I aqueduct high above the Goyt, the 16-lock flight that climbs beside it, the serene Roman Lakes and the Victorian iron bridge in Brabyns Park.',
+    location: 'Marple, Stockport',
+    category: 'outdoors',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '🚤',
+    tags: ['marple', 'canal', 'heritage', 'trail'],
+    memberQuestIds: [
+      'outdoors-marple-aqueduct',
+      'outdoors-marple-locks',
+      'outdoors-roman-lakes',
+      'outdoors-brabyns-park',
+    ],
+  },
+  {
+    id: 'outdoors-heatons-loop',
+    title: 'The Heatons Loop',
+    description:
+      'Spend a day in Heaton Moor — wander the park, hunt down the medieval moat tucked between the terraces, dine on the strip and linger for late-night drinks along Heaton Moor Road.',
+    location: 'Heaton Moor, Stockport',
+    category: 'outdoors',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '🌳',
+    tags: ['heaton moor', 'neighbourhood', 'day out', 'trail'],
+    memberQuestIds: [
+      'outdoors-heaton-moor-park',
+      'hidden-peel-moat',
+      'food-heaton-moor-dining',
+      'nightlife-heaton-moor-late',
+    ],
+  },
+  {
+    id: 'culture-stockport-essentials',
+    title: 'Stockport Essentials',
+    description:
+      'Five quests that capture the heart of Stockport — the Hat Works museum, the Staircase House time capsule, the cobbled Underbanks, the Produce Hall on Market Place and the iconic viaduct view from Mersey Square.',
+    location: 'Stockport town centre',
+    category: 'culture',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '⭐',
+    tags: ['essentials', 'town centre', 'first-time', 'trail'],
+    memberQuestIds: [
+      'culture-hat-works',
+      'history-staircase-house',
+      'history-underbanks',
+      'food-produce-hall',
+      'hidden-viaduct-mersey-square',
     ],
   },
 ];
