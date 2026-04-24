@@ -9,8 +9,15 @@ import {
 } from 'react';
 import type { ReactNode } from 'react';
 import type { Quest, UserProgress } from '../types';
-import { QUESTS } from '../data/quests';
+import { QUESTS as RAW_QUESTS } from '../data/quests';
+import { QUEST_COORDS } from '../data/quest-coords';
 import { loadProgress, saveProgress, clearProgress } from './storage';
+
+// Merge optional coordinates from the sidecar map.
+const QUESTS: Quest[] = RAW_QUESTS.map(q => {
+  const c = QUEST_COORDS[q.id];
+  return c ? { ...q, ...c } : q;
+});
 import {
   computeLevel,
   computeTotalXP,
@@ -21,11 +28,13 @@ import {
   isMetaQuest,
   isMetaQuestFullyComplete,
 } from './progress';
+import { getNewlyUnlocked, type Achievement } from './achievements';
 
 interface ToggleCompleteResult {
   levelDelta: number;
   newLevel: number;
   levelName: string;
+  unlockedAchievements: Achievement[];
 }
 
 interface QuestContextValue {
@@ -39,6 +48,8 @@ interface QuestContextValue {
   toggleFavourite: (id: string) => void;
   updateDisplayName: (name: string) => void;
   setTrackedMetaQuest: (id: string | null) => void;
+  setNote: (id: string, value: string) => void;
+  markAchievementsSeen: (ids: string[]) => void;
   resetProgress: () => void;
 }
 
@@ -68,6 +79,7 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
     let levelDelta = 0;
     let newLevel = 0;
     let newLevelName = '';
+    let unlockedAchievements: Achievement[] = [];
 
     setProgress(prev => {
       // Meta-quests cannot be toggled directly — their state is derived.
@@ -121,10 +133,12 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
       newLevel = levelAfter;
       newLevelName = getLevelName(levelAfter);
 
+      unlockedAchievements = getNewlyUnlocked(prev, updated, QUESTS);
+
       return updated;
     });
 
-    return { levelDelta, newLevel, levelName: newLevelName };
+    return { levelDelta, newLevel, levelName: newLevelName, unlockedAchievements };
   }, []);
 
   const toggleFavourite = useCallback((id: string) => {
@@ -152,6 +166,35 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const setNote = useCallback((id: string, value: string) => {
+    setProgress(prev => {
+      const trimmed = value.trim();
+      const nextNotes = { ...prev.notes };
+      if (trimmed) {
+        nextNotes[id] = trimmed;
+      } else {
+        delete nextNotes[id];
+      }
+      return { ...prev, notes: nextNotes };
+    });
+  }, []);
+
+  const markAchievementsSeen = useCallback((ids: string[]) => {
+    if (ids.length === 0) return;
+    setProgress(prev => {
+      const next = new Set(prev.seenAchievementIds);
+      let changed = false;
+      for (const id of ids) {
+        if (!next.has(id)) {
+          next.add(id);
+          changed = true;
+        }
+      }
+      if (!changed) return prev;
+      return { ...prev, seenAchievementIds: [...next] };
+    });
+  }, []);
+
   const resetProgress = useCallback(() => {
     clearProgress();
     setProgress(loadProgress());
@@ -174,6 +217,8 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
       toggleFavourite,
       updateDisplayName,
       setTrackedMetaQuest,
+      setNote,
+      markAchievementsSeen,
       resetProgress,
     }),
     [
@@ -186,6 +231,8 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
       toggleFavourite,
       updateDisplayName,
       setTrackedMetaQuest,
+      setNote,
+      markAchievementsSeen,
       resetProgress,
     ]
   );

@@ -1,6 +1,8 @@
 import { useQuestContext } from '../lib/QuestContext';
 import { computeTotalXP, getLevelName } from '../lib/progress';
 import { CATEGORIES } from '../data/categories';
+import { AchievementsPanel } from '../components/AchievementsPanel';
+import { HistoryTimeline } from '../components/HistoryTimeline';
 
 const LEVEL_NAMES = [
   'Stockport Newcomer',
@@ -113,6 +115,9 @@ export function ProgressPage() {
           </div>
         </section>
 
+        {/* Achievements */}
+        <AchievementsPanel progress={progress} quests={quests} />
+
         {/* Streak */}
         <section aria-labelledby="streak-heading" className="bg-white dark:bg-surface-dark rounded-2xl p-4">
           <h2 id="streak-heading" className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
@@ -135,6 +140,9 @@ export function ProgressPage() {
             </div>
           </div>
         </section>
+
+        {/* History timeline */}
+        <HistoryTimeline completed={progress.completed} quests={quests} />
 
         {/* Per-category progress */}
         <section aria-labelledby="categories-heading">

@@ -1,15 +1,16 @@
 import type { Quest } from '../types';
 import { useQuestContext } from '../lib/QuestContext';
-import { getQuestOfTheDay, getMetaQuestProgress } from '../lib/progress';
+import { getQuestOfTheDay, getMetaQuestProgress, isMetaQuest } from '../lib/progress';
 import { CATEGORIES, CATEGORY_MAP } from '../data/categories';
 import { QuestCard } from '../components/QuestCard';
 
 interface DiscoverPageProps {
   onSelectQuest: (quest: Quest) => void;
   onLevelUp: (message: string) => void;
+  onAchievements?: (items: { id: string; message: string }[]) => void;
 }
 
-export function DiscoverPage({ onSelectQuest, onLevelUp }: DiscoverPageProps) {
+export function DiscoverPage({ onSelectQuest, onLevelUp, onAchievements }: DiscoverPageProps) {
   const { quests, progress, level, levelName, totalXP, trackedMetaQuest } = useQuestContext();
   const questOfDay = getQuestOfTheDay(quests, progress.completed);
   const completedCount = Object.keys(progress.completed).length;
@@ -27,6 +28,20 @@ export function DiscoverPage({ onSelectQuest, onLevelUp }: DiscoverPageProps) {
     category: cat,
     quest: quests.find(q => q.category === cat.id && !progress.completed[q.id]),
   })).filter(item => item.quest !== undefined) as Array<{ category: typeof CATEGORIES[number]; quest: Quest }>;
+
+  const favouriteQuests = progress.favourites
+    .map(id => quests.find(q => q.id === id))
+    .filter((q): q is Quest => !!q);
+
+  const incompleteNonMeta = quests.filter(
+    q => !progress.completed[q.id] && !isMetaQuest(q)
+  );
+
+  function handleSurpriseMe() {
+    if (incompleteNonMeta.length === 0) return;
+    const pick = incompleteNonMeta[Math.floor(Math.random() * incompleteNonMeta.length)];
+    onSelectQuest(pick);
+  }
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-5rem)]">
@@ -59,6 +74,18 @@ export function DiscoverPage({ onSelectQuest, onLevelUp }: DiscoverPageProps) {
             <span>{progress.streak.current}-day streak</span>
           </div>
         )}
+
+        {/* Surprise me */}
+        <div className="mt-4">
+          <button
+            type="button"
+            onClick={handleSurpriseMe}
+            disabled={incompleteNonMeta.length === 0}
+            className="w-full py-2.5 rounded-xl text-sm font-semibold bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed text-white transition-colors"
+          >
+            🎲 Surprise me
+          </button>
+        </div>
       </div>
 
       <div className="flex-1 px-4 py-5 space-y-6">
@@ -88,6 +115,40 @@ export function DiscoverPage({ onSelectQuest, onLevelUp }: DiscoverPageProps) {
           </a>
         )}
 
+        {/* Favourites rail */}
+        {favouriteQuests.length > 0 && (
+          <section aria-labelledby="favourites-heading">
+            <div className="flex items-center justify-between mb-3">
+              <h2
+                id="favourites-heading"
+                className="text-base font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2"
+              >
+                <span aria-hidden="true">❤️</span> Your favourites
+              </h2>
+              {favouriteQuests.length > 3 && (
+                <a
+                  href="#/quests"
+                  onClick={() => sessionStorage.setItem('sq-filter-favourites', '1')}
+                  className="text-xs font-semibold text-brand dark:text-brand-dark no-underline hover:underline"
+                >
+                  See all ({favouriteQuests.length})
+                </a>
+              )}
+            </div>
+            <div className="space-y-3">
+              {favouriteQuests.slice(0, 3).map(quest => (
+                <QuestCard
+                  key={quest.id}
+                  quest={quest}
+                  onSelect={onSelectQuest}
+                  onLevelUp={onLevelUp}
+                  onAchievements={onAchievements}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Quest of the day */}
         <section aria-labelledby="qotd-heading">
           <h2
@@ -102,6 +163,7 @@ export function DiscoverPage({ onSelectQuest, onLevelUp }: DiscoverPageProps) {
               quest={questOfDay}
               onSelect={onSelectQuest}
               onLevelUp={onLevelUp}
+              onAchievements={onAchievements}
             />
           ) : (
             <div className="rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-5 text-center">

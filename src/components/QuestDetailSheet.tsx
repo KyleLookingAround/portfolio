@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useMemo } from 'react';
+import { useEffect, useRef, useCallback, useMemo, useState } from 'react';
 import type { Quest } from '../types';
 import { CATEGORY_MAP } from '../data/categories';
 import { useQuestContext } from '../lib/QuestContext';
@@ -8,6 +8,7 @@ interface QuestDetailSheetProps {
   quest: Quest;
   onClose: () => void;
   onLevelUp: (message: string) => void;
+  onAchievements?: (items: { id: string; message: string }[]) => void;
   onSelectQuest: (quest: Quest) => void;
 }
 
@@ -17,7 +18,7 @@ const DIFFICULTY_LABEL: Record<Quest['difficulty'], string> = {
   hard: 'Hard',
 };
 
-export function QuestDetailSheet({ quest, onClose, onLevelUp, onSelectQuest }: QuestDetailSheetProps) {
+export function QuestDetailSheet({ quest, onClose, onLevelUp, onAchievements, onSelectQuest }: QuestDetailSheetProps) {
   const {
     quests,
     progress,
@@ -25,7 +26,15 @@ export function QuestDetailSheet({ quest, onClose, onLevelUp, onSelectQuest }: Q
     toggleFavourite,
     trackedMetaQuest,
     setTrackedMetaQuest,
+    setNote,
   } = useQuestContext();
+  const existingNote = progress.notes[quest.id] ?? '';
+  const [noteDraft, setNoteDraft] = useState(existingNote);
+  const [lastQuestId, setLastQuestId] = useState(quest.id);
+  if (lastQuestId !== quest.id) {
+    setLastQuestId(quest.id);
+    setNoteDraft(existingNote);
+  }
   const isCompleted = Boolean(progress.completed[quest.id]);
   const isFavourite = progress.favourites.includes(quest.id);
   const category = CATEGORY_MAP[quest.category];
@@ -72,7 +81,15 @@ export function QuestDetailSheet({ quest, onClose, onLevelUp, onSelectQuest }: Q
     if (result.levelDelta > 0) {
       onLevelUp(`Level up! You are now a ${result.levelName} 🎉`);
     }
-  }, [quest.id, toggleComplete, onLevelUp]);
+    if (result.unlockedAchievements.length > 0 && onAchievements) {
+      onAchievements(
+        result.unlockedAchievements.map(a => ({
+          id: a.id,
+          message: `${a.emoji} Achievement unlocked: ${a.title}`,
+        }))
+      );
+    }
+  }, [quest.id, toggleComplete, onLevelUp, onAchievements]);
 
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(quest.location + ', Stockport, UK')}`;
 
@@ -261,6 +278,29 @@ export function QuestDetailSheet({ quest, onClose, onLevelUp, onSelectQuest }: Q
               ))}
             </div>
           )}
+
+          {/* Your notes */}
+          <div className="mt-6">
+            <label htmlFor={`note-${quest.id}`} className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1.5">
+              Your notes
+            </label>
+            <textarea
+              id={`note-${quest.id}`}
+              rows={4}
+              maxLength={500}
+              value={noteDraft}
+              onChange={e => setNoteDraft(e.target.value)}
+              onBlur={() => {
+                if (noteDraft !== existingNote) setNote(quest.id, noteDraft);
+              }}
+              placeholder="Add a memory, tip, or who you went with…"
+              aria-describedby={`note-hint-${quest.id}`}
+              className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-surface-dark text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent resize-none"
+            />
+            <p id={`note-hint-${quest.id}`} className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+              Saved to this device only · {noteDraft.length}/500
+            </p>
+          </div>
 
           {/* Member checklist (meta-quest only) */}
           {meta && memberQuests.length > 0 && (

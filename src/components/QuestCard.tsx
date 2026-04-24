@@ -8,6 +8,7 @@ interface QuestCardProps {
   quest: Quest;
   onSelect: (quest: Quest) => void;
   onLevelUp?: (message: string) => void;
+  onAchievements?: (items: { id: string; message: string }[]) => void;
   compact?: boolean;
 }
 
@@ -23,7 +24,7 @@ const DIFFICULTY_COLOR: Record<Quest['difficulty'], string> = {
   hard: 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30',
 };
 
-export function QuestCard({ quest, onSelect, onLevelUp, compact = false }: QuestCardProps) {
+export function QuestCard({ quest, onSelect, onLevelUp, onAchievements, compact = false }: QuestCardProps) {
   const { progress, toggleComplete, toggleFavourite } = useQuestContext();
   const isCompleted = Boolean(progress.completed[quest.id]);
   const isFavourite = progress.favourites.includes(quest.id);
@@ -48,7 +49,15 @@ export function QuestCard({ quest, onSelect, onLevelUp, compact = false }: Quest
     if (result.levelDelta > 0 && onLevelUp) {
       onLevelUp(`Level up! You are now a ${result.levelName} 🎉`);
     }
-  }, [quest.id, toggleComplete, onLevelUp]);
+    if (result.unlockedAchievements.length > 0 && onAchievements) {
+      onAchievements(
+        result.unlockedAchievements.map(a => ({
+          id: a.id,
+          message: `${a.emoji} Achievement unlocked: ${a.title}`,
+        }))
+      );
+    }
+  }, [quest.id, toggleComplete, onLevelUp, onAchievements]);
 
   const handleFavourite = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();

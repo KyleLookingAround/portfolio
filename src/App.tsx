@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { QuestContextProvider } from './lib/QuestContext';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { QuestContextProvider, useQuestContext } from './lib/QuestContext';
 import { BottomNav } from './components/BottomNav';
 import { QuestDetailSheet } from './components/QuestDetailSheet';
 import { DiscoverPage } from './pages/DiscoverPage';
@@ -19,12 +19,16 @@ function useHashRoute(): string {
   return hash;
 }
 
-interface LevelUpToastProps {
+type ToastItem =
+  | { kind: 'level'; message: string }
+  | { kind: 'achievement'; id: string; message: string };
+
+interface ToastProps {
   message: string;
   onDismiss: () => void;
 }
 
-function LevelUpToast({ message, onDismiss }: LevelUpToastProps) {
+function Toast({ message, onDismiss }: ToastProps) {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   useEffect(() => {
@@ -69,7 +73,7 @@ export default function App() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
   const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
-  const [levelUpMessage, setLevelUpMessage] = useState<string | null>(null);
+  const [toastQueue, setToastQueue] = useState<ToastItem[]>([]);
 
   useEffect(() => {
     try {
@@ -79,12 +83,20 @@ export default function App() {
     }
   }, [isDark]);
 
-  const handleLevelUp = useCallback((message: string) => {
-    setLevelUpMessage(message);
+  const pushToast = useCallback((message: string) => {
+    setToastQueue(q => [...q, { kind: 'level', message }]);
   }, []);
 
-  const dismissLevelUp = useCallback(() => {
-    setLevelUpMessage(null);
+  const pushAchievementToasts = useCallback((items: { id: string; message: string }[]) => {
+    if (items.length === 0) return;
+    setToastQueue(q => [
+      ...q,
+      ...items.map<ToastItem>(i => ({ kind: 'achievement', id: i.id, message: i.message })),
+    ]);
+  }, []);
+
+  const dismissToast = useCallback(() => {
+    setToastQueue(q => q.slice(1));
   }, []);
 
   const handleToggleDark = useCallback(() => {
@@ -107,10 +119,18 @@ export default function App() {
           <div className="mx-auto w-full max-w-[480px] xl:max-w-none xl:grid xl:grid-cols-[minmax(0,480px)_minmax(0,1fr)]">
             <main>
               {activePage === 'discover' && (
-                <DiscoverPage onSelectQuest={setSelectedQuest} onLevelUp={handleLevelUp} />
+                <DiscoverPage
+                  onSelectQuest={setSelectedQuest}
+                  onLevelUp={pushToast}
+                  onAchievements={pushAchievementToasts}
+                />
               )}
               {activePage === 'quests' && (
-                <QuestsPage onSelectQuest={setSelectedQuest} onLevelUp={handleLevelUp} />
+                <QuestsPage
+                  onSelectQuest={setSelectedQuest}
+                  onLevelUp={pushToast}
+                  onAchievements={pushAchievementToasts}
+                />
               )}
               {activePage === 'trails' && (
                 <MetaQuestsPage onSelectQuest={setSelectedQuest} />
@@ -136,18 +156,45 @@ export default function App() {
             <QuestDetailSheet
               quest={selectedQuest}
               onClose={() => setSelectedQuest(null)}
-              onLevelUp={handleLevelUp}
+              onLevelUp={pushToast}
+              onAchievements={pushAchievementToasts}
               onSelectQuest={setSelectedQuest}
             />
           )}
+
+          <AchievementSeenFlusher toastQueue={toastQueue} />
         </QuestContextProvider>
 
         <BottomNav activeHash={hash} />
 
-        {levelUpMessage && (
-          <LevelUpToast message={levelUpMessage} onDismiss={dismissLevelUp} />
+        {toastQueue.length > 0 && (
+          <Toast
+            key={`${toastQueue[0].kind}-${toastQueue[0].message}`}
+            message={toastQueue[0].message}
+            onDismiss={dismissToast}
+          />
         )}
       </div>
     </div>
   );
+}
+
+// Marks achievement toasts as seen once they have been enqueued, so they
+// don't retrigger after a subsequent completion.
+function AchievementSeenFlusher({ toastQueue }: { toastQueue: ToastItem[] }) {
+  const { markAchievementsSeen } = useQuestContext();
+  const lastMarkedRef = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    const toMark: string[] = [];
+    for (const item of toastQueue) {
+      if (item.kind === 'achievement' && !lastMarkedRef.current.has(item.id)) {
+        toMark.push(item.id);
+        lastMarkedRef.current.add(item.id);
+      }
+    }
+    if (toMark.length > 0) markAchievementsSeen(toMark);
+  }, [toastQueue, markAchievementsSeen]);
+
+  return null;
 }

@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useQuestContext } from '../lib/QuestContext';
+import { BackupSection } from '../components/BackupSection';
 
 interface ProfilePageProps {
   isDark: boolean;
@@ -120,6 +121,9 @@ export function ProfilePage({ isDark, onToggleDark }: ProfilePageProps) {
             No account required · All data stays on your device · No ads
           </p>
         </section>
+
+        {/* Backup */}
+        <BackupSection progress={progress} />
 
         {/* Danger zone */}
         <section className="bg-white dark:bg-surface-dark rounded-2xl px-4 py-4">
