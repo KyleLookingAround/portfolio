@@ -34,9 +34,11 @@ interface QuestContextValue {
   totalXP: number;
   level: number;
   levelName: string;
+  trackedMetaQuest: Quest | null;
   toggleComplete: (id: string) => ToggleCompleteResult;
   toggleFavourite: (id: string) => void;
   updateDisplayName: (name: string) => void;
+  setTrackedMetaQuest: (id: string | null) => void;
   resetProgress: () => void;
 }
 
@@ -104,6 +106,11 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
       const today = getLocalDateStr();
       let updated = { ...prev, completed: updatedCompleted };
 
+      // Auto-clear the tracked trail once it's fully complete.
+      if (prev.trackedMetaQuestId && updatedCompleted[prev.trackedMetaQuestId]) {
+        updated = { ...updated, trackedMetaQuestId: null };
+      }
+
       if (!isCompleted) {
         updated = updateStreak(updated, today);
       }
@@ -136,10 +143,24 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
     setProgress(prev => ({ ...prev, displayName: name.trim() || 'Explorer' }));
   }, []);
 
+  const setTrackedMetaQuest = useCallback((id: string | null) => {
+    setProgress(prev => {
+      if (id === null) return { ...prev, trackedMetaQuestId: null };
+      const target = QUESTS.find(q => q.id === id);
+      if (!target || !isMetaQuest(target)) return prev;
+      return { ...prev, trackedMetaQuestId: id };
+    });
+  }, []);
+
   const resetProgress = useCallback(() => {
     clearProgress();
     setProgress(loadProgress());
   }, []);
+
+  const trackedMetaQuest = useMemo<Quest | null>(() => {
+    if (!progress.trackedMetaQuestId) return null;
+    return QUESTS.find(q => q.id === progress.trackedMetaQuestId && isMetaQuest(q)) ?? null;
+  }, [progress.trackedMetaQuestId]);
 
   const value = useMemo<QuestContextValue>(
     () => ({
@@ -148,12 +169,25 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
       totalXP,
       level,
       levelName,
+      trackedMetaQuest,
       toggleComplete,
       toggleFavourite,
       updateDisplayName,
+      setTrackedMetaQuest,
       resetProgress,
     }),
-    [progress, totalXP, level, levelName, toggleComplete, toggleFavourite, updateDisplayName, resetProgress]
+    [
+      progress,
+      totalXP,
+      level,
+      levelName,
+      trackedMetaQuest,
+      toggleComplete,
+      toggleFavourite,
+      updateDisplayName,
+      setTrackedMetaQuest,
+      resetProgress,
+    ]
   );
 
   return <QuestContext.Provider value={value}>{children}</QuestContext.Provider>;

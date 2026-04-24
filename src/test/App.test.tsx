@@ -137,6 +137,7 @@ function makeProgress(overrides: Partial<UserProgress['streak']> = {}): UserProg
     completed: {},
     favourites: [],
     streak: { lastActiveDate: '', current: 0, longest: 0, ...overrides },
+    trackedMetaQuestId: null,
   };
 }
 
@@ -202,6 +203,7 @@ describe('storage', () => {
     expect(p.displayName).toBe('Explorer');
     expect(p.completed).toEqual({});
     expect(p.favourites).toEqual([]);
+    expect(p.trackedMetaQuestId).toBeNull();
   });
 
   it('round-trips progress through save and load', () => {
@@ -211,10 +213,27 @@ describe('storage', () => {
       completed: { q1: '2024-01-01T00:00:00.000Z' },
       favourites: ['q2'],
       streak: { lastActiveDate: '2024-01-01', current: 3, longest: 5 },
+      trackedMetaQuestId: 'culture-frog-trail',
     };
     saveProgress(p);
     const loaded = loadProgress();
     expect(loaded).toEqual(p);
+  });
+
+  it('back-fills trackedMetaQuestId for older saves', () => {
+    localStorage.setItem(
+      'stockport-quest-progress-v1',
+      JSON.stringify({
+        version: 1,
+        displayName: 'Legacy',
+        completed: {},
+        favourites: [],
+        streak: { lastActiveDate: '', current: 0, longest: 0 },
+      })
+    );
+    const loaded = loadProgress();
+    expect(loaded.displayName).toBe('Legacy');
+    expect(loaded.trackedMetaQuestId).toBeNull();
   });
 
   it('returns default when stored data has wrong version', () => {
@@ -230,7 +249,14 @@ describe('storage', () => {
   });
 
   it('clearProgress removes the key', () => {
-    saveProgress({ version: 1, displayName: 'X', completed: {}, favourites: [], streak: { lastActiveDate: '', current: 0, longest: 0 } });
+    saveProgress({
+      version: 1,
+      displayName: 'X',
+      completed: {},
+      favourites: [],
+      streak: { lastActiveDate: '', current: 0, longest: 0 },
+      trackedMetaQuestId: null,
+    });
     clearProgress();
     expect(localStorage.getItem('stockport-quest-progress-v1')).toBeNull();
   });
@@ -372,6 +398,158 @@ describe('QuestContext — meta-quests', () => {
     expect(result.current.progress.completed[meta.id]).toBeUndefined();
     expect(result.current.totalXP).toBe(0);
   });
+
+  it('setTrackedMetaQuest stores a valid meta-quest id', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    act(() => { result.current.setTrackedMetaQuest('culture-frog-trail'); });
+    expect(result.current.progress.trackedMetaQuestId).toBe('culture-frog-trail');
+    expect(result.current.trackedMetaQuest?.id).toBe('culture-frog-trail');
+  });
+
+  it('setTrackedMetaQuest ignores non-meta quest ids', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const regularQuest = result.current.quests.find(q => !q.memberQuestIds)!;
+    act(() => { result.current.setTrackedMetaQuest(regularQuest.id); });
+    expect(result.current.progress.trackedMetaQuestId).toBeNull();
+    expect(result.current.trackedMetaQuest).toBeNull();
+  });
+
+  it('setTrackedMetaQuest(null) clears the tracked trail', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    act(() => { result.current.setTrackedMetaQuest('culture-frog-trail'); });
+    act(() => { result.current.setTrackedMetaQuest(null); });
+    expect(result.current.progress.trackedMetaQuestId).toBeNull();
+  });
+
+  it('auto-clears the tracked trail once it is fully complete', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const meta = result.current.quests.find(q => q.id === 'outdoors-fred-perry-way')!;
+    act(() => { result.current.setTrackedMetaQuest(meta.id); });
+    expect(result.current.progress.trackedMetaQuestId).toBe(meta.id);
+    act(() => {
+      for (const id of meta.memberQuestIds!) {
+        result.current.toggleComplete(id);
+      }
+    });
+    expect(result.current.progress.completed[meta.id]).toBeTruthy();
+    expect(result.current.progress.trackedMetaQuestId).toBeNull();
+  });
+});
+
+describe('meta-quest crossover', () => {
+  beforeEach(() => { localStorage.clear(); });
+
+  // A quest may belong to multiple meta-quests simultaneously (for example a pub
+  // that appears on both an ale trail and a historic pub trail). Toggling that
+  // shared member must re-evaluate every parent independently.
+  it('completing a shared member credits every parent meta-quest', () => {
+    const SHARED = 'shared-quest';
+    const sharedQuests: Quest[] = [
+      { id: SHARED, title: 'Shared', description: '', location: '', category: 'food', difficulty: 'easy', xp: 10 },
+      { id: 'only-a', title: 'Only A', description: '', location: '', category: 'food', difficulty: 'easy', xp: 10 },
+      { id: 'only-b', title: 'Only B', description: '', location: '', category: 'food', difficulty: 'easy', xp: 10 },
+    ];
+    const metaA: Quest = {
+      id: 'meta-a', title: 'Trail A', description: '', location: '', category: 'food', difficulty: 'hard', xp: 50,
+      memberQuestIds: [SHARED, 'only-a'],
+    };
+    const metaB: Quest = {
+      id: 'meta-b', title: 'Trail B', description: '', location: '', category: 'food', difficulty: 'hard', xp: 50,
+      memberQuestIds: [SHARED, 'only-b'],
+    };
+
+    // Complete only the shared one + only-a → meta-a done, meta-b not.
+    const completed: Record<string, string> = { [SHARED]: 'x', 'only-a': 'x' };
+    expect(isMetaQuestFullyComplete(metaA, completed)).toBe(true);
+    expect(isMetaQuestFullyComplete(metaB, completed)).toBe(false);
+
+    // Also complete only-b → both meta-quests done.
+    completed['only-b'] = 'x';
+    expect(isMetaQuestFullyComplete(metaA, completed)).toBe(true);
+    expect(isMetaQuestFullyComplete(metaB, completed)).toBe(true);
+
+    // Un-ticking the shared member reverts both.
+    delete completed[SHARED];
+    expect(isMetaQuestFullyComplete(metaA, completed)).toBe(false);
+    expect(isMetaQuestFullyComplete(metaB, completed)).toBe(false);
+    // Sanity: progress helper still counts correctly.
+    expect(getMetaQuestProgress(metaA, completed).done).toBe(1);
+    expect(getMetaQuestProgress(metaB, completed).done).toBe(1);
+    // Reference to unused sharedQuests so it's clear what the set models.
+    expect(sharedQuests.length).toBe(3);
+  });
+});
+
+describe('meta-quest crossover (real data)', () => {
+  beforeEach(() => { localStorage.clear(); });
+
+  // culture-frog-tudor is a member of both the Frog Trail (17 stops) and the
+  // Bramhall Circuit (5 stops). Ticking it should contribute to both trails'
+  // progress counters in parallel.
+  it('a shared member counts towards every parent meta-quest in the real data', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const tudor = result.current.quests.find(q => q.id === 'culture-frog-tudor')!;
+    const frogTrail = result.current.quests.find(q => q.id === 'culture-frog-trail')!;
+    const bramhall = result.current.quests.find(q => q.id === 'history-bramhall-circuit')!;
+
+    // Both trails list the Tudor Frog as a member.
+    expect(frogTrail.memberQuestIds).toContain(tudor.id);
+    expect(bramhall.memberQuestIds).toContain(tudor.id);
+
+    act(() => { result.current.toggleComplete(tudor.id); });
+
+    expect(getMetaQuestProgress(frogTrail, result.current.progress.completed).done).toBe(1);
+    expect(getMetaQuestProgress(bramhall, result.current.progress.completed).done).toBe(1);
+  });
+});
+
+// ─── MetaQuestsPage ───────────────────────────────────────────────────────────
+
+import { MetaQuestsPage } from '../pages/MetaQuestsPage';
+
+describe('MetaQuestsPage', () => {
+  beforeEach(() => { localStorage.clear(); });
+
+  function renderPage() {
+    const onSelect = vi.fn();
+    render(
+      <QuestContextProvider>
+        <MetaQuestsPage onSelectQuest={onSelect} />
+      </QuestContextProvider>
+    );
+    return { onSelect };
+  }
+
+  it('renders the Trails heading', () => {
+    renderPage();
+    expect(screen.getByRole('heading', { name: /Stockport Trails/i })).toBeInTheDocument();
+  });
+
+  it('lists every meta-quest as a card', () => {
+    renderPage();
+    // Each of the five known trails should be present.
+    expect(screen.getByText(/Complete the One Stockport Frog Trail/i)).toBeInTheDocument();
+    expect(screen.getByText(/Complete the Stockport Ale Trail/i)).toBeInTheDocument();
+    expect(screen.getByText(/Complete the Underbanks Street Art Trail/i)).toBeInTheDocument();
+    expect(screen.getByText(/Stockport Blue Plaque Trail/i)).toBeInTheDocument();
+    expect(screen.getByText(/Complete the Fred Perry Way/i)).toBeInTheDocument();
+  });
+
+  it('Track button toggles tracking for a trail', async () => {
+    renderPage();
+    const trackBtn = screen.getByLabelText(/Track Complete the Fred Perry Way/i);
+    await userEvent.click(trackBtn);
+    // Now the same trail has a Tracking badge and its button offers to stop tracking.
+    expect(screen.getByLabelText(/Stop tracking Complete the Fred Perry Way/i)).toBeInTheDocument();
+  });
+
+  it('opens the trail detail when the card is clicked', async () => {
+    const { onSelect } = renderPage();
+    const card = screen.getByRole('button', { name: /^Complete the Fred Perry Way/i });
+    await userEvent.click(card);
+    expect(onSelect).toHaveBeenCalled();
+    expect(onSelect.mock.calls[0][0].id).toBe('outdoors-fred-perry-way');
+  });
 });
 
 // ─── BottomNav ────────────────────────────────────────────────────────────────
@@ -379,12 +557,19 @@ describe('QuestContext — meta-quests', () => {
 import { BottomNav } from '../components/BottomNav';
 
 describe('BottomNav', () => {
-  it('renders all four tab labels', () => {
+  it('renders all five tab labels', () => {
     render(<BottomNav activeHash="#/discover" />);
     expect(screen.getByText('Discover')).toBeInTheDocument();
     expect(screen.getByText('Quests')).toBeInTheDocument();
+    expect(screen.getByText('Trails')).toBeInTheDocument();
     expect(screen.getByText('Progress')).toBeInTheDocument();
     expect(screen.getByText('Profile')).toBeInTheDocument();
+  });
+
+  it('marks the Trails tab as active when hash is #/trails', () => {
+    render(<BottomNav activeHash="#/trails" />);
+    const link = screen.getByText('Trails').closest('a');
+    expect(link).toHaveAttribute('aria-current', 'page');
   });
 
   it('marks the active tab with aria-current="page"', () => {

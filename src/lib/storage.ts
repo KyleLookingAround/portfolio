@@ -9,6 +9,7 @@ function defaultProgress(): UserProgress {
     completed: {},
     favourites: [],
     streak: { lastActiveDate: '', current: 0, longest: 0 },
+    trackedMetaQuestId: null,
   };
 }
 
@@ -16,8 +17,11 @@ export function loadProgress(): UserProgress {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      const parsed = JSON.parse(raw) as UserProgress;
-      if (parsed.version === 1) return parsed;
+      const parsed = JSON.parse(raw) as Partial<UserProgress>;
+      if (parsed.version === 1) {
+        // Merge with defaults so older saves without trackedMetaQuestId still load.
+        return { ...defaultProgress(), ...parsed } as UserProgress;
+      }
     }
   } catch {
     // corrupt or unavailable storage
