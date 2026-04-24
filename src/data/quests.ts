@@ -1662,6 +1662,82 @@ export const QUESTS: Quest[] = [
     ],
   },
 
+  // ── Stockport Music Heritage ──────────────────────────────────────────────────
+  // Three individual quests covering Blossoms' origins and the Strawberry Studios
+  // legacy, followed by two meta-quest trails that bundle them together.
+  {
+    id: 'culture-stockport-college-music',
+    title: "Stockport's Band Factory",
+    description:
+      "Walk the campus where Blossoms first came together as teenagers. Stockport College has a quiet reputation as a musical launchpad — ordinary corridors that quietly shaped one of the UK's most celebrated indie bands.",
+    location: 'Stockport College, Wellington Road South, Stockport',
+    category: 'culture',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🎸',
+    tags: ['blossoms', 'music', 'indie', 'college', 'band'],
+  },
+  {
+    id: 'history-strawberry-studios',
+    title: "Strawberry Studios: Stockport's Abbey Road",
+    description:
+      "Seek out the site on Waterloo Road where 10cc built one of Britain's most celebrated recording studios. Between 1968 and 2010, Strawberry Studios drew the Bee Gees, The Stone Roses, Happy Mondays, and Paul McCartney — a quiet Stockport street that shaped pop history.",
+    location: 'Waterloo Road, Stockport',
+    category: 'history',
+    difficulty: 'medium',
+    xp: 25,
+    emoji: '🎙️',
+    tags: ['strawberry studios', '10cc', 'music', 'recording', 'bee gees', 'stone roses', 'history'],
+  },
+  {
+    id: 'history-10cc-stockport',
+    title: '10cc: The Stockport Sound',
+    description:
+      "Celebrate the legacy of 10cc, the chart-topping band whose creative heart beat at Strawberry Studios on Waterloo Road. From 'Donna' to 'I'm Not in Love', their biggest hits were written and recorded within earshot of Stockport market — four songwriters who put a quiet northern town on the pop map.",
+    location: 'Stockport town centre',
+    category: 'history',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🎵',
+    tags: ['10cc', 'music', 'pop', 'history', 'strawberry studios', 'chart'],
+  },
+  {
+    id: 'meta-blossoms-trail',
+    title: 'The Blossoms Trail',
+    description:
+      "Follow in the footsteps of Stockport's finest indie export. Visit the pub that gave the band their name, the college where they first played together, the recording studio that inspired their hometown pride, and the venues where they built their following.",
+    location: 'Stockport (Heaviley, town centre, Edgeley)',
+    category: 'culture',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '🌸',
+    tags: ['blossoms', 'music', 'indie', 'trail', 'band', 'stockport'],
+    memberQuestIds: [
+      'nightlife-ale-blossoms',
+      'culture-stockport-college-music',
+      'history-strawberry-studios',
+      'culture-plaza-theatre',
+      'nightlife-armoury-micropub',
+    ],
+  },
+  {
+    id: 'meta-strawberry-sessions',
+    title: 'The Strawberry Sessions',
+    description:
+      "Explore the musical heritage that made Stockport legendary. From the site where 10cc recorded their greatest hits to the mural honouring a Girls Aloud icon, this trail connects Stockport's pop history in three essential stops.",
+    location: 'Stockport town centre',
+    category: 'history',
+    difficulty: 'medium',
+    xp: 25,
+    emoji: '🍓',
+    tags: ['10cc', 'strawberry studios', 'sarah harding', 'music', 'history', 'trail'],
+    memberQuestIds: [
+      'history-strawberry-studios',
+      'history-10cc-stockport',
+      'hidden-mural-sarah-harding',
+    ],
+  },
+
   // ── Stockport Foodie Grand Tour (meta-of-metas) ───────────────────────────────
   // The ultimate food and drink challenge: complete all three food trails —
   // the Produce Hall World Tour, the Underbanks Plates & Pours, and the

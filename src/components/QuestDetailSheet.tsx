@@ -3,6 +3,7 @@ import type { Quest } from '../types';
 import { CATEGORY_MAP } from '../data/categories';
 import { useQuestContext } from '../lib/QuestContext';
 import { isMetaQuest, getMetaQuestProgress } from '../lib/progress';
+import { TrailMap } from './TrailMap';
 
 interface QuestDetailSheetProps {
   quest: Quest;
@@ -305,7 +306,12 @@ export function QuestDetailSheet({ quest, onClose, onLevelUp, onAchievements, on
           {/* Member checklist (meta-quest only) */}
           {meta && memberQuests.length > 0 && (
             <div className="mt-6">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              <TrailMap
+                members={memberQuests}
+                completed={progress.completed}
+                onSelectQuest={onSelectQuest}
+              />
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2 mt-4">
                 Trail stops
               </h3>
               <ul className="flex flex-col gap-2">

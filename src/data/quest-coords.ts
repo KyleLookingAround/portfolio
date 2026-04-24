@@ -46,6 +46,15 @@ export const QUEST_COORDS: Record<string, { lat: number; lng: number }> = {
   'hidden-peel-moat': { lat: 53.4274, lng: -2.1897 },
 
   'nightlife-petersgate-tap': { lat: 53.4079, lng: -2.1537 },
+  'nightlife-ale-blossoms':   { lat: 53.3975, lng: -2.1578 },
+  'nightlife-armoury-micropub': { lat: 53.4049, lng: -2.1718 },
+
+  'hidden-mural-sarah-harding': { lat: 53.4096, lng: -2.1548 },
 
   'fitness-etherow-lake-run': { lat: 53.4487, lng: -2.0681 },
+
+  // Music heritage quests
+  'culture-stockport-college-music': { lat: 53.4068, lng: -2.1516 },
+  'history-strawberry-studios':      { lat: 53.4071, lng: -2.1573 },
+  'history-10cc-stockport':          { lat: 53.4097, lng: -2.1559 },
 };

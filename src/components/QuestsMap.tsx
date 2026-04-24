@@ -69,17 +69,31 @@ export function QuestsMap({ quests, completed, onSelectQuest }: QuestsMapProps) 
                 }}
               >
                 <Popup>
-                  <button
-                    type="button"
-                    onClick={() => onSelectQuest(q)}
-                    className="text-left"
-                  >
-                    <strong>{q.title}</strong>
+                  <div style={{ minWidth: '140px' }}>
+                    <strong style={{ fontSize: '13px' }}>{q.title}</strong>
                     <br />
-                    <span style={{ color: cat.color }}>
+                    <span style={{ color: cat.color, fontSize: '12px' }}>
                       {cat.emoji} {cat.label}
                     </span>
-                  </button>
+                    <br />
+                    <button
+                      type="button"
+                      onClick={() => onSelectQuest(q)}
+                      style={{
+                        color: cat.color,
+                        fontWeight: 600,
+                        fontSize: '12px',
+                        marginTop: '5px',
+                        display: 'inline-block',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      View quest →
+                    </button>
+                  </div>
                 </Popup>
               </Marker>
             );
