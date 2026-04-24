@@ -132,12 +132,14 @@ describe('getQuestOfTheDay', () => {
 
 function makeProgress(overrides: Partial<UserProgress['streak']> = {}): UserProgress {
   return {
-    version: 1,
+    version: 2,
     displayName: 'Test',
     completed: {},
     favourites: [],
     streak: { lastActiveDate: '', current: 0, longest: 0, ...overrides },
     trackedMetaQuestId: null,
+    notes: {},
+    seenAchievementIds: [],
   };
 }
 
@@ -199,45 +201,54 @@ describe('storage', () => {
 
   it('returns default progress when storage is empty', () => {
     const p = loadProgress();
-    expect(p.version).toBe(1);
+    expect(p.version).toBe(2);
     expect(p.displayName).toBe('Explorer');
     expect(p.completed).toEqual({});
     expect(p.favourites).toEqual([]);
     expect(p.trackedMetaQuestId).toBeNull();
+    expect(p.notes).toEqual({});
+    expect(p.seenAchievementIds).toEqual([]);
   });
 
   it('round-trips progress through save and load', () => {
     const p: UserProgress = {
-      version: 1,
+      version: 2,
       displayName: 'Kyle',
       completed: { q1: '2024-01-01T00:00:00.000Z' },
       favourites: ['q2'],
       streak: { lastActiveDate: '2024-01-01', current: 3, longest: 5 },
       trackedMetaQuestId: 'culture-frog-trail',
+      notes: { q1: 'Lovely morning walk' },
+      seenAchievementIds: ['first-quest'],
     };
     saveProgress(p);
     const loaded = loadProgress();
     expect(loaded).toEqual(p);
   });
 
-  it('back-fills trackedMetaQuestId for older saves', () => {
+  it('migrates a v1 save to v2 with defaults for new fields', () => {
     localStorage.setItem(
       'stockport-quest-progress-v1',
       JSON.stringify({
         version: 1,
         displayName: 'Legacy',
-        completed: {},
-        favourites: [],
+        completed: { q1: 'x' },
+        favourites: ['q2'],
         streak: { lastActiveDate: '', current: 0, longest: 0 },
       })
     );
     const loaded = loadProgress();
+    expect(loaded.version).toBe(2);
     expect(loaded.displayName).toBe('Legacy');
+    expect(loaded.completed).toEqual({ q1: 'x' });
+    expect(loaded.favourites).toEqual(['q2']);
     expect(loaded.trackedMetaQuestId).toBeNull();
+    expect(loaded.notes).toEqual({});
+    expect(loaded.seenAchievementIds).toEqual([]);
   });
 
-  it('returns default when stored data has wrong version', () => {
-    localStorage.setItem('stockport-quest-progress-v1', JSON.stringify({ version: 2, foo: 'bar' }));
+  it('returns default when stored data has unknown version', () => {
+    localStorage.setItem('stockport-quest-progress-v1', JSON.stringify({ version: 99, foo: 'bar' }));
     const p = loadProgress();
     expect(p.displayName).toBe('Explorer');
   });
@@ -250,12 +261,14 @@ describe('storage', () => {
 
   it('clearProgress removes the key', () => {
     saveProgress({
-      version: 1,
+      version: 2,
       displayName: 'X',
       completed: {},
       favourites: [],
       streak: { lastActiveDate: '', current: 0, longest: 0 },
       trackedMetaQuestId: null,
+      notes: {},
+      seenAchievementIds: [],
     });
     clearProgress();
     expect(localStorage.getItem('stockport-quest-progress-v1')).toBeNull();
@@ -781,5 +794,247 @@ describe('ErrorBoundary', () => {
     );
     expect(screen.getByText('Custom fallback')).toBeInTheDocument();
     spy.mockRestore();
+  });
+});
+
+// ─── Achievements ─────────────────────────────────────────────────────────────
+
+import { ACHIEVEMENTS, getUnlockedIds, getNewlyUnlocked } from '../lib/achievements';
+
+function emptyProgress(): UserProgress {
+  return {
+    version: 2,
+    displayName: 'Test',
+    completed: {},
+    favourites: [],
+    streak: { lastActiveDate: '', current: 0, longest: 0 },
+    trackedMetaQuestId: null,
+    notes: {},
+    seenAchievementIds: [],
+  };
+}
+
+describe('achievements', () => {
+  it('ACHIEVEMENTS contains at least 10 entries with unique ids', () => {
+    expect(ACHIEVEMENTS.length).toBeGreaterThanOrEqual(10);
+    const ids = new Set(ACHIEVEMENTS.map(a => a.id));
+    expect(ids.size).toBe(ACHIEVEMENTS.length);
+  });
+
+  it('unlocks First Steps after completing one easy quest', () => {
+    const quests: Quest[] = [
+      { id: 'easy-one', title: 'Easy', description: '', location: '', category: 'outdoors', difficulty: 'easy', xp: 10 },
+    ];
+    const prog = emptyProgress();
+    expect(getUnlockedIds(prog, quests)).not.toContain('first-quest');
+    prog.completed['easy-one'] = '2026-01-01';
+    expect(getUnlockedIds(prog, quests)).toContain('first-quest');
+  });
+
+  it('unlocks Going Hard only once a hard quest is completed', () => {
+    const quests: Quest[] = [
+      { id: 'easy-one', title: 'E', description: '', location: '', category: 'outdoors', difficulty: 'easy', xp: 10 },
+      { id: 'hard-one', title: 'H', description: '', location: '', category: 'outdoors', difficulty: 'hard', xp: 50 },
+    ];
+    const prog = emptyProgress();
+    prog.completed['easy-one'] = 'x';
+    expect(getUnlockedIds(prog, quests)).not.toContain('first-hard');
+    prog.completed['hard-one'] = 'x';
+    expect(getUnlockedIds(prog, quests)).toContain('first-hard');
+  });
+
+  it('Collector unlocks at 10 favourites', () => {
+    const quests: Quest[] = [];
+    const prog = emptyProgress();
+    prog.favourites = Array.from({ length: 9 }, (_, i) => `q-${i}`);
+    expect(getUnlockedIds(prog, quests)).not.toContain('ten-favourites');
+    prog.favourites.push('q-10');
+    expect(getUnlockedIds(prog, quests)).toContain('ten-favourites');
+  });
+
+  it('getNewlyUnlocked skips achievements already seen', () => {
+    const quests: Quest[] = [
+      { id: 'easy-one', title: 'E', description: '', location: '', category: 'outdoors', difficulty: 'easy', xp: 10 },
+    ];
+    const prev = emptyProgress();
+    const next = emptyProgress();
+    next.completed['easy-one'] = '2026-01-01';
+    // Fresh unlock: should be returned.
+    expect(getNewlyUnlocked(prev, next, quests).some(a => a.id === 'first-quest')).toBe(true);
+    // If already seen, it should not be returned.
+    next.seenAchievementIds = ['first-quest'];
+    expect(getNewlyUnlocked(prev, next, quests).some(a => a.id === 'first-quest')).toBe(false);
+  });
+
+  it('getNewlyUnlocked returns only the diff between prev and next', () => {
+    const quests: Quest[] = [
+      { id: 'q1', title: 'A', description: '', location: '', category: 'outdoors', difficulty: 'easy', xp: 10 },
+    ];
+    const prev = emptyProgress();
+    prev.completed['q1'] = 'x';
+    const next = emptyProgress();
+    next.completed['q1'] = 'x';
+    // First Steps was already unlocked in prev, so it should not appear here.
+    expect(getNewlyUnlocked(prev, next, quests).some(a => a.id === 'first-quest')).toBe(false);
+  });
+});
+
+// ─── Notes (setNote) ──────────────────────────────────────────────────────────
+
+describe('QuestContext — notes', () => {
+  beforeEach(() => { localStorage.clear(); });
+
+  it('setNote stores the trimmed value', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    act(() => { result.current.setNote('q1', '  My note  '); });
+    expect(result.current.progress.notes['q1']).toBe('My note');
+  });
+
+  it('setNote with empty string removes the key', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    act(() => { result.current.setNote('q1', 'something'); });
+    expect(result.current.progress.notes['q1']).toBe('something');
+    act(() => { result.current.setNote('q1', ''); });
+    expect(result.current.progress.notes['q1']).toBeUndefined();
+  });
+
+  it('notes persist through storage round-trip', () => {
+    const { result, unmount } = renderHook(() => useQuestContext(), { wrapper });
+    act(() => { result.current.setNote('q1', 'Lovely day'); });
+    unmount();
+    const { result: result2 } = renderHook(() => useQuestContext(), { wrapper });
+    expect(result2.current.progress.notes['q1']).toBe('Lovely day');
+  });
+});
+
+// ─── QuestsPage sort/filter extensions ────────────────────────────────────────
+
+describe('QuestsPage — sort and favourites', () => {
+  beforeEach(() => { localStorage.clear(); });
+
+  it('renders the sort dropdown', () => {
+    render(
+      <QuestContextProvider>
+        <QuestsPage onSelectQuest={vi.fn()} />
+      </QuestContextProvider>
+    );
+    expect(screen.getByLabelText('Sort quests')).toBeInTheDocument();
+  });
+
+  it('Favourites chip filters to favourited quests only', async () => {
+    render(
+      <QuestContextProvider>
+        <QuestsPage onSelectQuest={vi.fn()} />
+      </QuestContextProvider>
+    );
+    // Pick the first incomplete quest card's favourite button and favourite it.
+    const favBtns = screen.getAllByLabelText(/Add .+ to favourites/);
+    await userEvent.click(favBtns[0]);
+    // Activate the Favourites filter chip. The chip starts with 🤍, flips to ❤️ on toggle.
+    const favChip = screen.getByRole('button', { name: /^🤍 Favourites$/ });
+    await userEvent.click(favChip);
+    // Now only favourites remain; the filtered counter should reflect that.
+    expect(screen.getByText(/^1 of \d+$/)).toBeInTheDocument();
+  });
+
+  it('switches to map view when the Map toggle is clicked', async () => {
+    render(
+      <QuestContextProvider>
+        <QuestsPage onSelectQuest={vi.fn()} />
+      </QuestContextProvider>
+    );
+    const mapBtn = screen.getByRole('button', { name: /Map/i });
+    await userEvent.click(mapBtn);
+    // The pinned-count copy appears only in map mode.
+    expect(screen.getByText(/\d+ of \d+ pinned/)).toBeInTheDocument();
+  });
+});
+
+// ─── DiscoverPage — Surprise me and Favourites rail ───────────────────────────
+
+describe('DiscoverPage — Surprise me', () => {
+  beforeEach(() => { localStorage.clear(); });
+
+  it('opens a detail sheet for a random quest when Surprise me is clicked', async () => {
+    const onSelect = vi.fn();
+    render(
+      <QuestContextProvider>
+        <DiscoverPage onSelectQuest={onSelect} onLevelUp={vi.fn()} />
+      </QuestContextProvider>
+    );
+    await userEvent.click(screen.getByRole('button', { name: /Surprise me/i }));
+    expect(onSelect).toHaveBeenCalled();
+    // It should have been called with a real Quest object that is not completed.
+    const picked = onSelect.mock.calls[0][0] as Quest;
+    expect(picked.id).toBeTruthy();
+  });
+});
+
+// ─── Backup section ───────────────────────────────────────────────────────────
+
+import { BackupSection } from '../components/BackupSection';
+
+describe('BackupSection', () => {
+  beforeEach(() => { localStorage.clear(); });
+
+  function sampleProgress(): UserProgress {
+    return {
+      version: 2,
+      displayName: 'Kyle',
+      completed: { q1: '2024-01-01' },
+      favourites: ['q2'],
+      streak: { lastActiveDate: '2024-01-01', current: 1, longest: 1 },
+      trackedMetaQuestId: null,
+      notes: { q1: 'a note' },
+      seenAchievementIds: [],
+    };
+  }
+
+  it('renders Download and Restore buttons', () => {
+    render(<BackupSection progress={sampleProgress()} />);
+    expect(screen.getByRole('button', { name: /Download backup/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Restore from backup/i })).toBeInTheDocument();
+  });
+
+  it('shows an error when an invalid file is imported', async () => {
+    render(<BackupSection progress={sampleProgress()} />);
+    const input = screen.getByLabelText(/Choose backup file to restore/i) as HTMLInputElement;
+    const badFile = new File(['not json at all'], 'backup.json', { type: 'application/json' });
+    // Use fireEvent since userEvent doesn't reliably handle hidden file inputs.
+    Object.defineProperty(input, 'files', { value: [badFile], configurable: true });
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    await waitFor(() => {
+      expect(screen.getByText(/Could not read backup/i)).toBeInTheDocument();
+    });
+  });
+});
+
+// ─── History timeline ────────────────────────────────────────────────────────
+
+import { HistoryTimeline } from '../components/HistoryTimeline';
+
+describe('HistoryTimeline', () => {
+  const QUESTS_FIXTURE: Quest[] = [
+    { id: 'q1', title: 'Quest One', description: '', location: '', category: 'outdoors', difficulty: 'easy', xp: 10, emoji: '🌿' },
+    { id: 'q2', title: 'Quest Two', description: '', location: '', category: 'food', difficulty: 'easy', xp: 10, emoji: '🍽️' },
+  ];
+
+  it('renders nothing when there are no completions', () => {
+    const { container } = render(<HistoryTimeline completed={{}} quests={QUESTS_FIXTURE} />);
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('buckets a just-completed quest into Today', () => {
+    const now = new Date().toISOString();
+    render(<HistoryTimeline completed={{ q1: now }} quests={QUESTS_FIXTURE} />);
+    expect(screen.getByText('Today')).toBeInTheDocument();
+    expect(screen.getByText('Quest One')).toBeInTheDocument();
+  });
+
+  it('buckets an older completion into Earlier', () => {
+    const longAgo = new Date(Date.now() - 200 * 86400000).toISOString();
+    render(<HistoryTimeline completed={{ q1: longAgo }} quests={QUESTS_FIXTURE} />);
+    expect(screen.getByText('Earlier')).toBeInTheDocument();
+    expect(screen.queryByText('Today')).not.toBeInTheDocument();
   });
 });

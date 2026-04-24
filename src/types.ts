@@ -24,6 +24,10 @@ export interface Quest {
   // from all listed member quest ids. Its `xp` is a bonus awarded on top of
   // the members' XP when the set is fully completed.
   memberQuestIds?: string[];
+  // Optional coordinates for rendering on the in-app map. Quests without
+  // coordinates simply don't appear as pins.
+  lat?: number;
+  lng?: number;
 }
 
 export interface Category {
@@ -40,11 +44,15 @@ export interface StreakData {
 }
 
 export interface UserProgress {
-  version: 1;
+  version: 2;
   displayName: string;
   completed: Record<string, string>;
   favourites: string[];
   streak: StreakData;
   // Id of the meta-quest the user has chosen to focus on. Null if none selected.
   trackedMetaQuestId: string | null;
+  // Freeform per-quest notes keyed by quest id. Missing keys mean no note.
+  notes: Record<string, string>;
+  // Achievement ids the user has already seen an unlock toast for.
+  seenAchievementIds: string[];
 }
