@@ -945,8 +945,8 @@ describe('QuestsPage — sort and favourites', () => {
     );
     const mapBtn = screen.getByRole('button', { name: /Map/i });
     await userEvent.click(mapBtn);
-    // The pinned-count copy appears only in map mode.
-    expect(screen.getByText(/\d+ of \d+ pinned/)).toBeInTheDocument();
+    // The pin-summary copy appears only in map mode.
+    expect(screen.getByText(/\d+ pins · \d+ done · \d+ to go/)).toBeInTheDocument();
   });
 });
 

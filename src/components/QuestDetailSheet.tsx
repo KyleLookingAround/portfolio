@@ -101,9 +101,9 @@ export function QuestDetailSheet({ quest, onClose, onLevelUp, onAchievements, on
       aria-modal="true"
       aria-labelledby="sheet-title"
     >
-      {/* Backdrop */}
+      {/* Backdrop — opaque + blurred so any underlying map is fully defocused */}
       <div
-        className="absolute inset-0 bg-black/50"
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -111,7 +111,7 @@ export function QuestDetailSheet({ quest, onClose, onLevelUp, onAchievements, on
       {/* Sheet */}
       <div
         className={[
-          'relative bg-white dark:bg-surface-dark rounded-t-3xl shadow-2xl max-h-[90vh] overflow-y-auto',
+          'relative bg-white dark:bg-surface-dark rounded-t-3xl shadow-2xl min-h-[80vh] max-h-[95vh] overflow-y-auto',
           !prefersReduced ? 'animate-slide-up' : '',
         ].join(' ')}
       >

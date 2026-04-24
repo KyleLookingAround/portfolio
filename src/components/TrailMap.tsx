@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import type { Quest } from '../types';
 import { CATEGORY_MAP } from '../data/categories';
@@ -78,6 +78,17 @@ export function TrailMap({ members, completed, onSelectQuest }: TrailMapProps) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <BoundsFitter pinned={pinned} />
+        {pinned.length > 1 && (
+          <Polyline
+            positions={pinned.map(p => [p.lat, p.lng] as [number, number])}
+            pathOptions={{
+              color: '#4F46E5',
+              weight: 3,
+              opacity: 0.6,
+              dashArray: '6 8',
+            }}
+          />
+        )}
         {pinned.map(({ quest: q, lat, lng, stopNumber }) => {
           const cat = CATEGORY_MAP[q.category];
           const done = Boolean(completed[q.id]);
