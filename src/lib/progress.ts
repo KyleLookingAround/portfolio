@@ -1,8 +1,14 @@
-import type { Quest, UserProgress } from '../types';
+import type { Difficulty, Quest, UserProgress } from '../types';
 
 export const XP_BY_DIFFICULTY = { easy: 10, medium: 25, hard: 50 } as const;
 
-const LEVEL_NAMES = [
+export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
+  easy: 'Easy',
+  medium: 'Medium',
+  hard: 'Hard',
+};
+
+export const LEVEL_NAMES = [
   'Stockport Newcomer',
   'Underbanks Explorer',
   'Viaduct Wanderer',
@@ -11,6 +17,10 @@ const LEVEL_NAMES = [
   'Reddish Vale Ranger',
   'Stockport Legend',
 ] as const;
+
+export function xpForLevel(level: number): number {
+  return 20 * (level - 1) * (level - 1);
+}
 
 export function computeLevel(xp: number): number {
   return Math.floor(Math.sqrt(xp / 20)) + 1;

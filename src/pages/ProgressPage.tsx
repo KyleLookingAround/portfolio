@@ -1,24 +1,20 @@
+import type { CategoryId, Quest } from '../types';
 import { useQuestContext } from '../lib/QuestContext';
-import { computeTotalXP, getLevelName } from '../lib/progress';
+import { computeTotalXP, getLevelName, xpForLevel, LEVEL_NAMES } from '../lib/progress';
 import { CATEGORIES } from '../data/categories';
 import { AchievementsPanel } from '../components/AchievementsPanel';
 import { HistoryTimeline } from '../components/HistoryTimeline';
 
-const LEVEL_NAMES = [
-  'Stockport Newcomer',
-  'Underbanks Explorer',
-  'Viaduct Wanderer',
-  'Hat Works Historian',
-  'Bramall Baron',
-  'Reddish Vale Ranger',
-  'Stockport Legend',
-];
-
-function xpForLevel(l: number): number {
-  return 20 * (l - 1) * (l - 1);
+interface ProgressPageProps {
+  onSelectQuest?: (quest: Quest) => void;
 }
 
-export function ProgressPage() {
+function navigateToCategory(category: CategoryId) {
+  sessionStorage.setItem('sq-filter-category', category);
+  window.location.hash = '#/quests';
+}
+
+export function ProgressPage({ onSelectQuest }: ProgressPageProps) {
   const { quests, progress, totalXP, level, levelName } = useQuestContext();
   const completedCount = Object.keys(progress.completed).length;
   const totalCount = quests.length;
@@ -116,7 +112,7 @@ export function ProgressPage() {
         </section>
 
         {/* Achievements */}
-        <AchievementsPanel progress={progress} quests={quests} />
+        <AchievementsPanel progress={progress} quests={quests} onNavigate={navigateToCategory} />
 
         {/* Streak */}
         <section aria-labelledby="streak-heading" className="bg-white dark:bg-surface-dark rounded-2xl p-4">
@@ -142,7 +138,7 @@ export function ProgressPage() {
         </section>
 
         {/* History timeline */}
-        <HistoryTimeline completed={progress.completed} quests={quests} />
+        <HistoryTimeline completed={progress.completed} quests={quests} onSelectQuest={onSelectQuest} />
 
         {/* Per-category progress */}
         <section aria-labelledby="categories-heading">
@@ -153,7 +149,13 @@ export function ProgressPage() {
             {categoryStats.map(({ cat, total, done, xp, maxXP }) => {
               const pct = total > 0 ? (done / total) * 100 : 0;
               return (
-                <div key={cat.id} className="bg-white dark:bg-surface-dark rounded-xl p-3">
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => navigateToCategory(cat.id)}
+                  aria-label={`View ${cat.label} quests`}
+                  className="w-full text-left bg-white dark:bg-surface-dark rounded-xl p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
                   <div className="flex items-center justify-between mb-2">
                     <span className="flex items-center gap-1.5 text-sm font-medium text-gray-900 dark:text-gray-100">
                       <span aria-hidden="true">{cat.emoji}</span>
@@ -169,7 +171,7 @@ export function ProgressPage() {
                       style={{ width: `${pct}%`, backgroundColor: cat.color }}
                     />
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>

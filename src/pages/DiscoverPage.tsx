@@ -1,6 +1,6 @@
 import type { Quest } from '../types';
 import { useQuestContext } from '../lib/QuestContext';
-import { getQuestOfTheDay, getMetaQuestProgress, isMetaQuest } from '../lib/progress';
+import { getQuestOfTheDay, getMetaQuestProgress, isMetaQuest, xpForLevel } from '../lib/progress';
 import { CATEGORIES, CATEGORY_MAP } from '../data/categories';
 import { QuestCard } from '../components/QuestCard';
 
@@ -333,7 +333,6 @@ function TrackedTrailSection({
 }
 
 function XPProgressBar({ xp, level }: { xp: number; level: number }) {
-  const xpForLevel = (l: number) => 20 * (l - 1) * (l - 1);
   const xpStart = xpForLevel(level);
   const xpEnd = xpForLevel(level + 1);
   const progress = xpEnd > xpStart ? ((xp - xpStart) / (xpEnd - xpStart)) * 100 : 100;

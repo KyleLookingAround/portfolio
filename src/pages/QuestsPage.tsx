@@ -88,7 +88,7 @@ export function QuestsPage({ onSelectQuest, onLevelUp, onAchievements }: QuestsP
         <div className="flex items-center justify-between gap-2">
           <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Quests</h1>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span aria-live="polite" aria-atomic="true" className="text-sm text-gray-500 dark:text-gray-400">
               {filtered.length} of {quests.length}
             </span>
             <div

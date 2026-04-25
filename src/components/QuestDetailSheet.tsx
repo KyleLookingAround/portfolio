@@ -2,7 +2,7 @@ import { useEffect, useRef, useCallback, useMemo, useState } from 'react';
 import type { Quest } from '../types';
 import { CATEGORY_MAP } from '../data/categories';
 import { useQuestContext } from '../lib/QuestContext';
-import { isMetaQuest, getMetaQuestProgress } from '../lib/progress';
+import { isMetaQuest, getMetaQuestProgress, DIFFICULTY_LABEL } from '../lib/progress';
 import { TrailMap } from './TrailMap';
 
 interface QuestDetailSheetProps {
@@ -12,12 +12,6 @@ interface QuestDetailSheetProps {
   onAchievements?: (items: { id: string; message: string }[]) => void;
   onSelectQuest: (quest: Quest) => void;
 }
-
-const DIFFICULTY_LABEL: Record<Quest['difficulty'], string> = {
-  easy: 'Easy',
-  medium: 'Medium',
-  hard: 'Hard',
-};
 
 export function QuestDetailSheet({ quest, onClose, onLevelUp, onAchievements, onSelectQuest }: QuestDetailSheetProps) {
   const {
@@ -259,6 +253,7 @@ export function QuestDetailSheet({ quest, onClose, onLevelUp, onAchievements, on
                 href={mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`Open ${quest.location} in Google Maps (opens in new tab)`}
                 className="flex-1 py-3 rounded-xl text-sm font-semibold border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-center"
               >
                 🗺️ Open in Maps
