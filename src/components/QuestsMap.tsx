@@ -8,7 +8,7 @@ import {
   tripDistanceKm,
   walkingTimeMinutes,
 } from '../lib/progress';
-import { useQuestContext } from '../lib/QuestContext';
+import { MAX_TRIP_STOPS, useQuestContext } from '../lib/QuestContext';
 import { MapControls } from './MapControls';
 import 'leaflet/dist/leaflet.css';
 
@@ -84,6 +84,7 @@ export function QuestsMap({ quests, completed, onSelectQuest }: QuestsMapProps) 
     addToTrip,
     removeFromTrip,
     clearTrip,
+    reorderTrip,
   } = useQuestContext();
   const [hiddenCategories, setHiddenCategories] = useState<Set<CategoryId>>(new Set());
   const [flyTarget, setFlyTarget] = useState<{ position: [number, number]; tick: number } | null>(null);
@@ -306,6 +307,20 @@ export function QuestsMap({ quests, completed, onSelectQuest }: QuestsMapProps) 
                       >
                         Remove from trip
                       </button>
+                    ) : tripSelection.length >= MAX_TRIP_STOPS ? (
+                      <span
+                        title={`Trip is full (${MAX_TRIP_STOPS} stops). Remove a stop to add another.`}
+                        style={{
+                          color: '#9CA3AF',
+                          fontWeight: 600,
+                          fontSize: '12px',
+                          marginTop: '4px',
+                          display: 'inline-block',
+                          cursor: 'not-allowed',
+                        }}
+                      >
+                        Trip is full
+                      </span>
                     ) : (
                       <button
                         type="button"
@@ -355,7 +370,7 @@ export function QuestsMap({ quests, completed, onSelectQuest }: QuestsMapProps) 
             </div>
             <ol className="overflow-y-auto px-1 pb-1">
               {tripQuests.map((q, i) => (
-                <li key={q.id} className="flex items-center gap-1">
+                <li key={q.id} className="flex items-center gap-0.5">
                   <button
                     type="button"
                     onClick={() => {
@@ -366,6 +381,24 @@ export function QuestsMap({ quests, completed, onSelectQuest }: QuestsMapProps) 
                   >
                     <span className="font-semibold mr-1">{i + 1}.</span>
                     {q.title}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => reorderTrip(i, i - 1)}
+                    disabled={i === 0}
+                    aria-label={`Move ${q.title} up`}
+                    className="shrink-0 w-6 h-7 inline-flex items-center justify-center rounded-md text-gray-400 hover:text-brand dark:hover:text-brand-dark hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed"
+                  >
+                    <span aria-hidden="true">▲</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => reorderTrip(i, i + 1)}
+                    disabled={i === tripQuests.length - 1}
+                    aria-label={`Move ${q.title} down`}
+                    className="shrink-0 w-6 h-7 inline-flex items-center justify-center rounded-md text-gray-400 hover:text-brand dark:hover:text-brand-dark hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed"
+                  >
+                    <span aria-hidden="true">▼</span>
                   </button>
                   <button
                     type="button"

@@ -307,7 +307,7 @@ describe('storage', () => {
 
 import { renderHook, act } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import { QuestContextProvider, useQuestContext } from '../lib/QuestContext';
+import { MAX_TRIP_STOPS, QuestContextProvider, useQuestContext } from '../lib/QuestContext';
 
 function wrapper({ children }: { children: ReactNode }) {
   return <QuestContextProvider>{children}</QuestContextProvider>;
@@ -1278,6 +1278,16 @@ describe('QuestContext — trip selection', () => {
     act(() => { result.current.addToTrip(id); });
     act(() => { result.current.resetProgress(); });
     expect(result.current.progress.tripSelection).toEqual([]);
+  });
+
+  it(`addToTrip stops adding once MAX_TRIP_STOPS (${MAX_TRIP_STOPS}) is reached`, () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const ids = result.current.quests.slice(0, MAX_TRIP_STOPS + 3).map(q => q.id);
+    act(() => {
+      for (const id of ids) result.current.addToTrip(id);
+    });
+    expect(result.current.progress.tripSelection.length).toBe(MAX_TRIP_STOPS);
+    expect(result.current.progress.tripSelection).toEqual(ids.slice(0, MAX_TRIP_STOPS));
   });
 });
 

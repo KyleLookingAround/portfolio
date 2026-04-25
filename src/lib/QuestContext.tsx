@@ -60,6 +60,8 @@ interface QuestContextValue {
 
 const QuestContext = createContext<QuestContextValue | null>(null);
 
+export const MAX_TRIP_STOPS = 10;
+
 export function useQuestContext(): QuestContextValue {
   const ctx = useContext(QuestContext);
   if (!ctx) throw new Error('useQuestContext must be used inside QuestContextProvider');
@@ -208,6 +210,7 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
   const addToTrip = useCallback((id: string) => {
     setProgress(prev => {
       if (prev.tripSelection.includes(id)) return prev;
+      if (prev.tripSelection.length >= MAX_TRIP_STOPS) return prev;
       return { ...prev, tripSelection: [...prev.tripSelection, id] };
     });
   }, []);
