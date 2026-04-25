@@ -6,7 +6,7 @@ This file provides guidance for AI assistants (Claude and others) working in thi
 
 ## Project Overview
 
-**Stockport Quest Tracker** is a client-side React PWA that presents 50 curated quests (activities, walks, viewpoints, food spots, hidden gems) around Stockport, UK. Users tick quests off, earn XP, level up through themed ranks, build daily streaks, and save favourites. Everything runs offline — there is no backend and no network APIs.
+**Stockport Quest Tracker** is a client-side React PWA that presents curated quests (activities, walks, viewpoints, food spots, hidden gems) around Stockport, UK. Users tick quests off, earn XP, level up through themed ranks, build daily streaks, save favourites, follow themed multi-stop trails, and plan/share their own custom trails. Everything runs offline — there is no backend and no network APIs.
 
 - **Live site:** deployed to GitHub Pages at `/StockportToday/`
 - **Package name:** `stockport-quest-tracker`
@@ -23,6 +23,7 @@ This file provides guidance for AI assistants (Claude and others) working in thi
 | Build | Vite 7 |
 | PWA | `vite-plugin-pwa` (autoUpdate, manifest + icon) |
 | Styling | Tailwind CSS 3 (`darkMode: 'class'`) — utility classes only |
+| Maps | Leaflet 1.9 + react-leaflet 4 (OpenStreetMap tiles, no API key) |
 | Routing | Hash-based (`window.location.hash`) — no router library |
 | Testing | Vitest 4 + @testing-library/react + jsdom |
 | Linting | ESLint 9 (flat config) |
@@ -40,29 +41,42 @@ StockportToday/
 │   └── vite.svg
 ├── src/
 │   ├── components/
-│   │   ├── BottomNav.tsx          # Fixed bottom tab bar (4 hash-linked tabs)
+│   │   ├── BottomNav.tsx          # Fixed bottom tab bar (5 hash-linked tabs)
 │   │   ├── ErrorBoundary.tsx      # Class component; wraps page content
 │   │   ├── QuestCard.tsx          # Tappable card with favourite + complete buttons
-│   │   └── QuestDetailSheet.tsx   # Modal bottom-sheet with full quest info + actions
+│   │   ├── QuestDetailSheet.tsx   # Modal bottom-sheet with full quest info + actions
+│   │   ├── QuestsMap.tsx          # Interactive Leaflet map for QuestsPage map view
+│   │   ├── TrailMap.tsx           # Compact map showing a single trail's stops
+│   │   ├── DiscoverMiniMap.tsx    # Small preview map on Discover
+│   │   ├── MapControls.tsx        # "Find me" + reset-view buttons for QuestsMap
+│   │   ├── BackupSection.tsx      # Profile-tab download/restore JSON backups
+│   │   └── HistoryTimeline.tsx    # Profile-tab list of recent completions
 │   ├── pages/
-│   │   ├── DiscoverPage.tsx       # Hero, Quest of the Day, category grid
-│   │   ├── QuestsPage.tsx         # Full list with search, category/difficulty filters
+│   │   ├── DiscoverPage.tsx       # Hero, Quest of the Day, category grid, mini-map
+│   │   ├── QuestsPage.tsx         # Full list with search, filters, list/map toggle
+│   │   ├── MetaQuestsPage.tsx     # Trails tab — built-in + user-created trails
+│   │   ├── PlanTrailPage.tsx      # Form to create or edit a custom trail
+│   │   ├── ImportTrailPage.tsx    # Preview + save flow for shared trail links
 │   │   ├── ProgressPage.tsx       # Level card, level ladder, streaks, per-category progress
-│   │   └── ProfilePage.tsx        # Name edit, stats, dark-mode toggle, reset
+│   │   └── ProfilePage.tsx        # Name edit, stats, achievements, backup, dark-mode, reset
 │   ├── data/
-│   │   ├── quests.ts              # 50 curated Quest objects
+│   │   ├── quests.ts              # Curated Quest objects (regular + meta-quests)
+│   │   ├── quest-coords.ts        # Sidecar map of quest id → { lat, lng }
 │   │   └── categories.ts          # 8 categories with labels, emoji, brand colour
 │   ├── lib/
-│   │   ├── QuestContext.tsx       # React context: quests, progress, level, XP, actions
-│   │   ├── progress.ts            # Pure XP/level/streak/QoTD functions
-│   │   └── storage.ts             # localStorage load/save/clear
+│   │   ├── QuestContext.tsx       # React context: merged quests, progress, CRUD
+│   │   ├── progress.ts            # Pure XP/level/streak/QoTD/meta/distance functions
+│   │   ├── achievements.ts        # Achievement definitions + unlock predicates
+│   │   ├── storage.ts             # localStorage load/save/clear (versioned)
+│   │   ├── trailShare.ts          # Encode/decode custom trails for share URLs
+│   │   └── planTrailNav.ts        # SessionStorage sentinel for create-vs-edit flow
 │   ├── test/
 │   │   ├── setup.ts               # Vitest global setup (@testing-library/jest-dom)
 │   │   └── App.test.tsx           # Unit + integration tests
-│   ├── App.tsx                    # Root: hash routing, theme, level-up toast
+│   ├── App.tsx                    # Root: hash routing, theme, toast queue
 │   ├── index.css                  # Tailwind directives + body font
 │   ├── main.tsx                   # React entry point (StrictMode)
-│   ├── types.ts                   # Quest, Category, UserProgress, StreakData, CategoryId, Difficulty
+│   ├── types.ts                   # Quest, Category, UserProgress, CustomMetaQuest, …
 │   └── vite-env.d.ts
 ├── index.html                     # HTML entry (title, meta, theme-color #4F46E5)
 ├── vite.config.ts                 # Vite + VitePWA + Vitest config (base: /StockportToday/)
@@ -101,29 +115,45 @@ npm run test:ui      # Vitest UI dashboard
 
 All quest data and user progress lives in a single React context: `QuestContextProvider` in `src/lib/QuestContext.tsx`. Components read it via the `useQuestContext()` hook and never touch `localStorage` directly.
 
+The exposed `quests` array is the **merged** list: every entry from `data/quests.ts` (with coordinates merged in from `data/quest-coords.ts`) plus a synthesized `Quest` object for each user-created trail in `progress.customMetaQuests`. Custom trails carry `category: 'outdoors'`, `difficulty: 'medium'`, `xp: 0`, and their own `memberQuestIds`, so all existing meta-quest plumbing (the Trails tab, `setTrackedMetaQuest`, `TrailMap`, the auto-complete-when-all-members-done logic in `toggleComplete`) treats them identically to built-in trails.
+
 The context exposes:
 
 ```ts
 interface QuestContextValue {
-  quests: Quest[];              // static catalogue from data/quests.ts
-  progress: UserProgress;       // persisted user state
-  totalXP: number;              // memoised from progress.completed
-  level: number;                // derived from totalXP
-  levelName: string;            // from progress.ts LEVEL_NAMES
-  toggleComplete: (id: string) => { levelDelta, newLevel, levelName };
+  quests: Quest[];                          // built-in + custom trails (merged)
+  progress: UserProgress;                   // persisted user state
+  totalXP: number;
+  level: number;
+  levelName: string;
+  trackedMetaQuest: Quest | null;           // currently-focused trail or null
+  toggleComplete: (id: string) => ToggleCompleteResult;
   toggleFavourite: (id: string) => void;
   updateDisplayName: (name: string) => void;
+  setTrackedMetaQuest: (id: string | null) => void;
+  setNote: (id: string, value: string) => void;
+  markAchievementsSeen: (ids: string[]) => void;
   resetProgress: () => void;
+  createCustomTrail: (input: { title; emoji?; memberQuestIds }) => string;  // returns new id
+  updateCustomTrail: (id: string, patch: Partial<CustomMetaQuest>) => void;
+  deleteCustomTrail: (id: string) => void;  // also clears tracking + derived completion
 }
 ```
 
-`toggleComplete` returns a level delta so callers can trigger the level-up toast in `App.tsx`.
+`toggleComplete` returns `{ levelDelta, newLevel, levelName, unlockedAchievements }` so callers can fire the level-up + achievement toasts in `App.tsx`. It also re-evaluates **every** meta-quest each call, so a single member quest can credit multiple parent trails simultaneously, and un-ticking a member reverts every parent it belonged to.
+
+`isCustomTrailId(id)` (also exported from `QuestContext.tsx`) tells whether a trail id was generated by `createCustomTrail` (prefix `custom-…`). Use this to drive UI like the Edit/Share/Delete actions on the Trails tab.
 
 ### Routing
 
-Hash-based — no library. `useHashRoute()` in `App.tsx` listens for `hashchange` and derives `activePage` from `#/discover | #/quests | #/progress | #/profile`. `BottomNav` renders `<a href="#/...">` links; the active tab is styled via `aria-current="page"`.
+Hash-based — no library. `useHashRoute()` in `App.tsx` listens for `hashchange` and derives `activePage`. The five tab routes are `#/discover`, `#/quests`, `#/trails`, `#/progress`, `#/profile`. There are also two sub-routes that don't appear in `BottomNav`:
 
-To navigate with side effects (e.g. DiscoverPage → QuestsPage with a pre-selected category filter), the current pattern is to write a sentinel into `sessionStorage` before navigating, which `QuestsPage` reads and deletes on mount.
+- `#/plan-trail` — create or edit a custom trail (PlanTrailPage). Reached from the **+ Plan your own trail** button on the Trails tab. Edit mode is keyed by a sessionStorage sentinel set via `navigateToPlanTrailEdit(id)` in `src/lib/planTrailNav.ts`.
+- `#/import-trail?d=<base64>` — preview + save flow when someone opens a shared trail link (ImportTrailPage). The `d` payload is a URL-safe base64-encoded JSON blob produced by `encodeTrail` in `src/lib/trailShare.ts`.
+
+`BottomNav` renders `<a href="#/...">` links; the active tab is styled via `aria-current="page"`.
+
+To navigate with side effects (e.g. DiscoverPage → QuestsPage with a pre-selected category filter), the current pattern is to write a sentinel into `sessionStorage` before navigating, which the destination page reads and deletes on mount.
 
 ### Progress, XP, and Levels
 
@@ -138,11 +168,42 @@ Pure functions in `src/lib/progress.ts`:
 
 XP by difficulty (from `XP_BY_DIFFICULTY`): **easy = 10, medium = 25, hard = 50**. Each quest also has an explicit `xp` field in `data/quests.ts`, so always sum via `computeTotalXP` rather than recomputing from difficulty.
 
+### Trails (meta-quests)
+
+A **meta-quest** is a `Quest` whose `memberQuestIds` is non-empty. The Trails tab (`MetaQuestsPage`) lists every meta-quest — built-in ones from `data/quests.ts` plus user-created ones from `progress.customMetaQuests` (synthesized into the merged `quests` list by `QuestContext`).
+
+Helpers in `progress.ts`:
+
+- `isMetaQuest(quest)` — `true` when `memberQuestIds.length > 0`.
+- `getMetaQuestProgress(quest, completed)` — `{ done, total }` over members.
+- `isMetaQuestFullyComplete(quest, completed)` — every member is in `completed`.
+
+Behaviour:
+
+- **Auto-completion**: in `toggleComplete`, after toggling a regular quest, every meta-quest is re-evaluated; ones that are now fully complete are added to `progress.completed` (awarding their bonus `xp`), and ones that fall back below 100% have their derived completion record removed.
+- **Tracking**: `setTrackedMetaQuest(id)` stores `progress.trackedMetaQuestId` after validating the id maps to a real meta-quest. The tracked trail surfaces on Discover, on its `MetaQuestsPage` card (📌 Tracking), and as the **🥾 Trail** overlay chip on the QuestsPage map view.
+- **Auto-clear**: completing all members of the tracked trail clears `trackedMetaQuestId` automatically.
+- **Custom trails** (`isCustomTrailId(id)`): synthesized as Quest objects with `xp: 0`, so finishing one only awards XP from its members. They are otherwise indistinguishable from built-in trails, including for tracking and overlay rendering.
+
+### Sharing trails
+
+`src/lib/trailShare.ts` encodes `{ title, emoji?, memberQuestIds }` into a URL-safe base64 string (`encodeTrail`). The encoder uses `TextEncoder`/`TextDecoder` so emoji and accented titles round-trip correctly through `btoa`. `buildShareUrl(trail)` produces a full hash URL of the form `<origin>/StockportToday/#/import-trail?d=<payload>`.
+
+The Trails tab's **🔗 Share** button on a custom-trail card calls `navigator.share({ title, text, url })` if available (mobile) and falls back to writing the URL to the clipboard with an inline "✓ Copied" confirmation.
+
+The `ImportTrailPage` decodes synchronously via `useState(() => readDecodedFromHash())` (effects-with-setState are flagged by lint), then resolves member ids against the local `QUESTS`. Unknown ids are shown as "skipped" rather than rejected, so links survive minor schema drift across versions. Saving calls `createCustomTrail` and routes back to `#/trails`.
+
 ### Persistence
 
 `src/lib/storage.ts` exposes `loadProgress()` / `saveProgress()` / `clearProgress()` against the key `stockport-quest-progress-v1`. Load is defensive: invalid JSON or mismatched `version` falls back to `defaultProgress()`. Every `try/catch` swallows storage errors silently — this is intentional (private mode, quota, SSR).
 
-If the `UserProgress` shape changes, bump the `version` field and write a migration (or reset) in `loadProgress`.
+`UserProgress.version` is **4**. Older saves are migrated on load:
+
+- v1 → v4: defaults filled in for `notes`, `seenAchievementIds`, `customMetaQuests`.
+- v2 → v4: same as above.
+- v3 → v4: `tripSelection` (the dropped on-map trip-builder field) is discarded; `customMetaQuests` defaulted to `[]`.
+
+`BackupSection.tsx` accepts JSON imports for any version 1–4. If the `UserProgress` shape changes again, bump `version`, extend the `loadProgress` switch, and update the validator in `BackupSection`.
 
 ### Theme
 
@@ -163,9 +224,32 @@ interface Quest {
   location: string;     // "Place name, Stockport" — first comma-segment is shown in cards
   category: CategoryId;
   difficulty: Difficulty;
-  xp: number;           // must match XP_BY_DIFFICULTY[difficulty]
+  xp: number;           // must match XP_BY_DIFFICULTY[difficulty] for regular quests; 0 is allowed for custom trails
   emoji?: string;
   tags?: string[];
+  memberQuestIds?: string[];   // present (and non-empty) → this is a meta-quest / trail
+  lat?: number;                // optional pin coordinates (sourced from data/quest-coords.ts)
+  lng?: number;
+}
+
+interface CustomMetaQuest {
+  id: string;                  // 'custom-<base36 timestamp>-<rand>' — never collides with QUESTS ids
+  title: string;
+  emoji?: string;
+  memberQuestIds: string[];
+  createdAt: string;           // ISO timestamp
+}
+
+interface UserProgress {
+  version: 4;
+  displayName: string;
+  completed: Record<string, string>;  // quest id → ISO completion timestamp
+  favourites: string[];
+  streak: StreakData;
+  trackedMetaQuestId: string | null;  // currently-focused trail
+  notes: Record<string, string>;
+  seenAchievementIds: string[];
+  customMetaQuests: CustomMetaQuest[];
 }
 ```
 
@@ -261,6 +345,17 @@ The workflow does **not** currently run tests or lint. If you rely on CI to catc
 2. Add the tab entry to the `TABS` array in `src/components/BottomNav.tsx` with a hash (`#/mypage`), label, and icon emoji.
 3. In `App.tsx`, extend the `activePage` derivation and render `<MyPage />` inside the `<main>`.
 4. Keep the bottom padding (`pb-20`) on the root so content clears the fixed nav.
+
+### Adding a New Built-in Trail (meta-quest)
+
+1. Append a `Quest` object to `QUESTS` in `src/data/quests.ts` with a non-empty `memberQuestIds` array referencing the ids of its stops. The trail's own `xp` is the bonus awarded when every member is complete.
+2. Each member id must match a real (non-meta) quest in the same array. Members may belong to multiple trails simultaneously — `toggleComplete` handles cross-trail credit correctly.
+3. No tests are required for trail data alone, but if the trail introduces a behaviour change, add coverage in `src/test/App.test.tsx` (see the `meta-quest crossover` block for a model).
+4. Built-in trails appear automatically on the Trails tab and can be tracked + overlaid on the Quests map.
+
+### Working with Custom Trails (user-created)
+
+User-created trails live in `progress.customMetaQuests` and are synthesized into the context `quests` array. Never instantiate a custom trail directly from a component — go through `createCustomTrail` / `updateCustomTrail` / `deleteCustomTrail` on the context. `deleteCustomTrail` also clears `trackedMetaQuestId` if it pointed at the deleted trail and removes any derived completion record. Use `isCustomTrailId(id)` to gate Edit/Share/Delete UI; the prefix is `custom-`.
 
 ### Changing the Level Curve
 

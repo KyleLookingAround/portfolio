@@ -1,18 +1,25 @@
 # Stockport Quest Tracker
 
-A free, offline-first progressive web app for residents and visitors of Stockport, UK. Discover 50 curated local adventures — walks, hidden gems, food stops, cultural landmarks — tick them off as you explore, earn XP, level up, and build a daily streak.
+A free, offline-first progressive web app for residents and visitors of Stockport, UK. Discover curated local adventures — walks, hidden gems, food stops, cultural landmarks — tick them off as you explore, earn XP, level up, and build a daily streak.
 
 Built with React 19, TypeScript, Vite, and Tailwind CSS. No accounts, no backend, no tracking — all progress stays on your device.
 
 ## Features
 
-- **50 curated quests** across 8 categories: Outdoors, Food & Drink, Culture, History, Family, Hidden Gems, Fitness, Nightlife
+- **Curated quests** across 8 categories: Outdoors, Food & Drink, Culture, History, Family, Hidden Gems, Fitness, Nightlife
 - **Three difficulty tiers** — Easy (10 XP), Medium (25 XP), Hard (50 XP)
 - **Themed progression** — level up from Stockport Newcomer to Stockport Legend
 - **Quest of the Day** — a deterministic daily suggestion
 - **Daily streaks** — complete a quest every day to keep the fire going
 - **Favourites** — save the places you want to come back to
-- **Search & filter** — by category, difficulty, or hide what you've already done
+- **Trails** — multi-stop themed routes that auto-complete when every stop is ticked off, awarding bonus XP
+- **Plan your own trail** — pick any set of quests to build a custom trail, then track it like a built-in one
+- **Share trails** — generate a link that opens a preview on another device and saves with one tap
+- **Trail overlay** — toggle the currently-tracked trail on top of the quest map alongside the easy/medium/hard filters
+- **Search & filter** — by category, difficulty, favourites, or hide what you've already done
+- **Map view** — interactive Leaflet map with category legend and "find me" geolocation
+- **Achievements & history** — unlock badges as you progress, scroll through a timeline of completions
+- **Backup & restore** — export/import your progress as a JSON file
 - **Dark mode** — with system-preference default and manual override
 - **Installable PWA** — add to your home screen, works offline
 - **Accessible** — keyboard navigation, ARIA labelling, respects `prefers-reduced-motion`
@@ -65,14 +72,18 @@ Open <http://localhost:5173/StockportToday/> in your browser.
 
 ```
 src/
-├── components/      # BottomNav, QuestCard, QuestDetailSheet, ErrorBoundary
-├── pages/           # DiscoverPage, QuestsPage, ProgressPage, ProfilePage
-├── data/            # quests.ts (50 quests), categories.ts
-├── lib/             # QuestContext, progress (XP/level/streak logic), storage
+├── components/      # BottomNav, QuestCard, QuestDetailSheet, ErrorBoundary,
+│                    # QuestsMap, TrailMap, MapControls, DiscoverMiniMap,
+│                    # BackupSection, HistoryTimeline
+├── pages/           # DiscoverPage, QuestsPage, MetaQuestsPage, PlanTrailPage,
+│                    # ImportTrailPage, ProgressPage, ProfilePage
+├── data/            # quests.ts, categories.ts, quest-coords.ts
+├── lib/             # QuestContext, progress (XP/level/streak/meta logic),
+│                    # storage, achievements, trailShare, planTrailNav
 ├── test/            # App.test.tsx, setup.ts
-├── App.tsx          # Root: hash routing, theme, level-up toast
+├── App.tsx          # Root: hash routing, theme, toast queue
 ├── main.tsx         # React entry point
-├── types.ts         # Quest, Category, UserProgress, etc.
+├── types.ts         # Quest, Category, UserProgress, CustomMetaQuest, etc.
 └── index.css        # Tailwind directives
 ```
 
@@ -86,9 +97,15 @@ XP is earned per quest based on difficulty (10 / 25 / 50). Your level is derived
 
 Complete at least one quest per day to extend your streak. Miss a day and the current streak resets to zero — but your longest-ever streak is kept forever.
 
+### Trails
+
+Trails are meta-quests: a single themed entry that bundles several individual quests as ordered stops. Tick off every stop and the trail auto-completes, awarding a bonus XP reward on top of the per-stop XP. Pick one to **track** and it stays front-and-centre on Discover and can be overlaid on the Quests map.
+
+You can also build your own from the Trails tab: tap **Plan your own trail**, name it, choose stops, and save. Tap **Share** on a custom trail to generate a link — opening it on another device shows a preview screen where the recipient can save the trail to their own collection. Sharing happens entirely via URL encoding; no server is involved.
+
 ### Data & Privacy
 
-The app ships with zero telemetry. Your display name, completed quests, favourites, and streaks live only in your browser's `localStorage` (key `stockport-quest-progress-v1`). Use **Profile → Reset all progress** to wipe everything.
+The app ships with zero telemetry. Your display name, completed quests, favourites, streaks, and custom trails live only in your browser's `localStorage` (key `stockport-quest-progress-v1`). Use **Profile → Reset all progress** to wipe everything, or **Profile → Backup** to download a JSON snapshot you can restore later.
 
 ## Deployment
 

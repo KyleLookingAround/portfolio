@@ -9,7 +9,7 @@ interface BackupSectionProps {
 function isValidBackup(parsed: unknown): parsed is UserProgress {
   if (!parsed || typeof parsed !== 'object') return false;
   const p = parsed as Record<string, unknown>;
-  if (p.version !== 1 && p.version !== 2 && p.version !== 3) return false;
+  if (p.version !== 1 && p.version !== 2 && p.version !== 3 && p.version !== 4) return false;
   if (typeof p.displayName !== 'string') return false;
   if (!p.completed || typeof p.completed !== 'object') return false;
   if (!Array.isArray(p.favourites)) return false;

@@ -5,6 +5,8 @@ import { QuestDetailSheet } from './components/QuestDetailSheet';
 import { DiscoverPage } from './pages/DiscoverPage';
 import { QuestsPage } from './pages/QuestsPage';
 import { MetaQuestsPage } from './pages/MetaQuestsPage';
+import { PlanTrailPage } from './pages/PlanTrailPage';
+import { ImportTrailPage } from './pages/ImportTrailPage';
 import { ProgressPage } from './pages/ProgressPage';
 import { ProfilePage } from './pages/ProfilePage';
 import type { Quest } from './types';
@@ -107,6 +109,8 @@ export default function App() {
   const activePage = (() => {
     if (hash === '#/quests') return 'quests';
     if (hash === '#/trails') return 'trails';
+    if (hash === '#/plan-trail') return 'plan-trail';
+    if (hash.startsWith('#/import-trail')) return 'import-trail';
     if (hash === '#/progress') return 'progress';
     if (hash === '#/profile') return 'profile';
     return 'discover';
@@ -136,6 +140,8 @@ export default function App() {
               {activePage === 'trails' && (
                 <MetaQuestsPage onSelectQuest={setSelectedQuest} />
               )}
+              {activePage === 'plan-trail' && <PlanTrailPage />}
+              {activePage === 'import-trail' && <ImportTrailPage />}
               {activePage === 'progress' && <ProgressPage onSelectQuest={setSelectedQuest} />}
               {activePage === 'profile' && (
                 <ProfilePage isDark={isDark} onToggleDark={handleToggleDark} />

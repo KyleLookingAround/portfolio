@@ -8,7 +8,7 @@ import {
   useMemo,
 } from 'react';
 import type { ReactNode } from 'react';
-import type { Quest, UserProgress } from '../types';
+import type { CustomMetaQuest, Quest, UserProgress } from '../types';
 import { QUESTS as RAW_QUESTS } from '../data/quests';
 import { QUEST_COORDS } from '../data/quest-coords';
 import { loadProgress, saveProgress, clearProgress } from './storage';
@@ -37,6 +37,31 @@ interface ToggleCompleteResult {
   unlockedAchievements: Achievement[];
 }
 
+export const CUSTOM_TRAIL_PREFIX = 'custom-';
+
+export function isCustomTrailId(id: string): boolean {
+  return id.startsWith(CUSTOM_TRAIL_PREFIX);
+}
+
+function customAsQuest(c: CustomMetaQuest): Quest {
+  return {
+    id: c.id,
+    title: c.title,
+    description: `Your custom trail · ${c.memberQuestIds.length} ${c.memberQuestIds.length === 1 ? 'stop' : 'stops'}`,
+    location: 'Stockport',
+    category: 'outdoors',
+    difficulty: 'medium',
+    xp: 0,
+    emoji: c.emoji ?? '🥾',
+    memberQuestIds: c.memberQuestIds,
+  };
+}
+
+function mergeQuests(custom: CustomMetaQuest[]): Quest[] {
+  if (custom.length === 0) return QUESTS;
+  return [...QUESTS, ...custom.map(customAsQuest)];
+}
+
 interface QuestContextValue {
   quests: Quest[];
   progress: UserProgress;
@@ -44,7 +69,6 @@ interface QuestContextValue {
   level: number;
   levelName: string;
   trackedMetaQuest: Quest | null;
-  tripQuests: Quest[];
   toggleComplete: (id: string) => ToggleCompleteResult;
   toggleFavourite: (id: string) => void;
   updateDisplayName: (name: string) => void;
@@ -52,15 +76,19 @@ interface QuestContextValue {
   setNote: (id: string, value: string) => void;
   markAchievementsSeen: (ids: string[]) => void;
   resetProgress: () => void;
-  addToTrip: (id: string) => void;
-  removeFromTrip: (id: string) => void;
-  clearTrip: () => void;
-  reorderTrip: (fromIndex: number, toIndex: number) => void;
+  createCustomTrail: (input: {
+    title: string;
+    emoji?: string;
+    memberQuestIds: string[];
+  }) => string;
+  updateCustomTrail: (
+    id: string,
+    patch: Partial<Omit<CustomMetaQuest, 'id' | 'createdAt'>>
+  ) => void;
+  deleteCustomTrail: (id: string) => void;
 }
 
 const QuestContext = createContext<QuestContextValue | null>(null);
-
-export const MAX_TRIP_STOPS = 10;
 
 export function useQuestContext(): QuestContextValue {
   const ctx = useContext(QuestContext);
@@ -73,6 +101,11 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
     const p = loadProgress();
     return checkStreakReset(p);
   });
+
+  const quests = useMemo(
+    () => mergeQuests(progress.customMetaQuests),
+    [progress.customMetaQuests]
+  );
 
   const totalXP = useMemo(() => computeTotalXP(progress.completed, QUESTS), [progress.completed]);
   const level = useMemo(() => computeLevel(totalXP), [totalXP]);
@@ -89,8 +122,9 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
     let unlockedAchievements: Achievement[] = [];
 
     setProgress(prev => {
+      const merged = mergeQuests(prev.customMetaQuests);
       // Meta-quests cannot be toggled directly — their state is derived.
-      const target = QUESTS.find(q => q.id === id);
+      const target = merged.find(q => q.id === id);
       if (target && isMetaQuest(target)) {
         newLevel = computeLevel(computeTotalXP(prev.completed, QUESTS));
         newLevelName = getLevelName(newLevel);
@@ -110,8 +144,8 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
         updatedCompleted[id] = nowIso;
       }
 
-      // Sync every meta-quest whose derived state may have changed.
-      for (const meta of QUESTS) {
+      // Sync every meta-quest (built-in + custom) whose derived state may have changed.
+      for (const meta of merged) {
         if (!isMetaQuest(meta)) continue;
         const fullyDone = isMetaQuestFullyComplete(meta, updatedCompleted);
         const wasMarked = Boolean(updatedCompleted[meta.id]);
@@ -167,7 +201,8 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
   const setTrackedMetaQuest = useCallback((id: string | null) => {
     setProgress(prev => {
       if (id === null) return { ...prev, trackedMetaQuestId: null };
-      const target = QUESTS.find(q => q.id === id);
+      const merged = mergeQuests(prev.customMetaQuests);
+      const target = merged.find(q => q.id === id);
       if (!target || !isMetaQuest(target)) return prev;
       return { ...prev, trackedMetaQuestId: id };
     });
@@ -207,64 +242,79 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
     setProgress(loadProgress());
   }, []);
 
-  const addToTrip = useCallback((id: string) => {
-    setProgress(prev => {
-      if (prev.tripSelection.includes(id)) return prev;
-      if (prev.tripSelection.length >= MAX_TRIP_STOPS) return prev;
-      return { ...prev, tripSelection: [...prev.tripSelection, id] };
-    });
-  }, []);
+  const createCustomTrail = useCallback(
+    (input: { title: string; emoji?: string; memberQuestIds: string[] }): string => {
+      const id = `${CUSTOM_TRAIL_PREFIX}${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+      const trail: CustomMetaQuest = {
+        id,
+        title: input.title.trim() || 'My Trail',
+        emoji: input.emoji,
+        memberQuestIds: [...input.memberQuestIds],
+        createdAt: new Date().toISOString(),
+      };
+      setProgress(prev => ({
+        ...prev,
+        customMetaQuests: [...prev.customMetaQuests, trail],
+      }));
+      return id;
+    },
+    []
+  );
 
-  const removeFromTrip = useCallback((id: string) => {
-    setProgress(prev => {
-      if (!prev.tripSelection.includes(id)) return prev;
-      return { ...prev, tripSelection: prev.tripSelection.filter(x => x !== id) };
-    });
-  }, []);
+  const updateCustomTrail = useCallback(
+    (id: string, patch: Partial<Omit<CustomMetaQuest, 'id' | 'createdAt'>>) => {
+      setProgress(prev => {
+        const idx = prev.customMetaQuests.findIndex(c => c.id === id);
+        if (idx === -1) return prev;
+        const next = [...prev.customMetaQuests];
+        const current = next[idx];
+        next[idx] = {
+          ...current,
+          ...patch,
+          title: patch.title !== undefined ? patch.title.trim() || current.title : current.title,
+          memberQuestIds: patch.memberQuestIds
+            ? [...patch.memberQuestIds]
+            : current.memberQuestIds,
+        };
+        return { ...prev, customMetaQuests: next };
+      });
+    },
+    []
+  );
 
-  const clearTrip = useCallback(() => {
-    setProgress(prev => (prev.tripSelection.length === 0 ? prev : { ...prev, tripSelection: [] }));
-  }, []);
-
-  const reorderTrip = useCallback((fromIndex: number, toIndex: number) => {
+  const deleteCustomTrail = useCallback((id: string) => {
     setProgress(prev => {
-      const list = prev.tripSelection;
-      if (
-        fromIndex === toIndex ||
-        fromIndex < 0 || fromIndex >= list.length ||
-        toIndex < 0 || toIndex >= list.length
-      ) return prev;
-      const next = [...list];
-      const [moved] = next.splice(fromIndex, 1);
-      next.splice(toIndex, 0, moved);
-      return { ...prev, tripSelection: next };
+      if (!prev.customMetaQuests.some(c => c.id === id)) return prev;
+      const next = {
+        ...prev,
+        customMetaQuests: prev.customMetaQuests.filter(c => c.id !== id),
+      };
+      if (prev.trackedMetaQuestId === id) {
+        next.trackedMetaQuestId = null;
+      }
+      // Also drop a derived completion record if one exists.
+      if (prev.completed[id]) {
+        const nextCompleted = { ...prev.completed };
+        delete nextCompleted[id];
+        next.completed = nextCompleted;
+      }
+      return next;
     });
   }, []);
 
   const trackedMetaQuest = useMemo<Quest | null>(() => {
     if (!progress.trackedMetaQuestId) return null;
-    return QUESTS.find(q => q.id === progress.trackedMetaQuestId && isMetaQuest(q)) ?? null;
-  }, [progress.trackedMetaQuestId]);
-
-  const tripQuests = useMemo<Quest[]>(() => {
-    const byId = new Map(QUESTS.map(q => [q.id, q]));
-    const out: Quest[] = [];
-    for (const id of progress.tripSelection) {
-      const q = byId.get(id);
-      if (q && typeof q.lat === 'number' && typeof q.lng === 'number') out.push(q);
-    }
-    return out;
-  }, [progress.tripSelection]);
+    return quests.find(q => q.id === progress.trackedMetaQuestId && isMetaQuest(q)) ?? null;
+  }, [quests, progress.trackedMetaQuestId]);
 
   const value = useMemo<QuestContextValue>(
     () => ({
-      quests: QUESTS,
+      quests,
       progress,
       totalXP,
       level,
       levelName,
       trackedMetaQuest,
-      tripQuests,
       toggleComplete,
       toggleFavourite,
       updateDisplayName,
@@ -272,18 +322,17 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
       setNote,
       markAchievementsSeen,
       resetProgress,
-      addToTrip,
-      removeFromTrip,
-      clearTrip,
-      reorderTrip,
+      createCustomTrail,
+      updateCustomTrail,
+      deleteCustomTrail,
     }),
     [
+      quests,
       progress,
       totalXP,
       level,
       levelName,
       trackedMetaQuest,
-      tripQuests,
       toggleComplete,
       toggleFavourite,
       updateDisplayName,
@@ -291,10 +340,9 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
       setNote,
       markAchievementsSeen,
       resetProgress,
-      addToTrip,
-      removeFromTrip,
-      clearTrip,
-      reorderTrip,
+      createCustomTrail,
+      updateCustomTrail,
+      deleteCustomTrail,
     ]
   );
 
