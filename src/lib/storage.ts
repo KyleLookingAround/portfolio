@@ -4,7 +4,7 @@ const STORAGE_KEY = 'stockport-quest-progress-v1';
 
 function defaultProgress(): UserProgress {
   return {
-    version: 3,
+    version: 4,
     displayName: 'Explorer',
     completed: {},
     favourites: [],
@@ -12,7 +12,7 @@ function defaultProgress(): UserProgress {
     trackedMetaQuestId: null,
     notes: {},
     seenAchievementIds: [],
-    tripSelection: [],
+    customMetaQuests: [],
   };
 }
 
@@ -20,10 +20,22 @@ export function loadProgress(): UserProgress {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      const parsed = JSON.parse(raw) as Partial<Omit<UserProgress, 'version'>> & { version?: number };
-      if (parsed.version === 1 || parsed.version === 2 || parsed.version === 3) {
+      const parsed = JSON.parse(raw) as Partial<Omit<UserProgress, 'version'>> & {
+        version?: number;
+        tripSelection?: unknown;
+      };
+      if (
+        parsed.version === 1 ||
+        parsed.version === 2 ||
+        parsed.version === 3 ||
+        parsed.version === 4
+      ) {
         // Merge with defaults so older saves without newer fields still load.
-        return { ...defaultProgress(), ...parsed, version: 3 } as UserProgress;
+        // tripSelection (v3 field) is dropped on read.
+        const { tripSelection: _drop, version: _v, ...rest } = parsed;
+        void _drop;
+        void _v;
+        return { ...defaultProgress(), ...rest, version: 4 } as UserProgress;
       }
     }
   } catch {

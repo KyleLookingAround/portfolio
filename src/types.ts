@@ -43,8 +43,16 @@ export interface StreakData {
   longest: number;
 }
 
+export interface CustomMetaQuest {
+  id: string;
+  title: string;
+  emoji?: string;
+  memberQuestIds: string[];
+  createdAt: string;
+}
+
 export interface UserProgress {
-  version: 3;
+  version: 4;
   displayName: string;
   completed: Record<string, string>;
   favourites: string[];
@@ -55,6 +63,6 @@ export interface UserProgress {
   notes: Record<string, string>;
   // Achievement ids the user has already seen an unlock toast for.
   seenAchievementIds: string[];
-  // User-built trip route on the map: ordered list of quest ids (tap order = route order).
-  tripSelection: string[];
+  // User-authored meta-quest trails. Surfaced alongside built-in trails.
+  customMetaQuests: CustomMetaQuest[];
 }

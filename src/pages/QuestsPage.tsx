@@ -20,7 +20,7 @@ interface QuestsPageProps {
 }
 
 export function QuestsPage({ onSelectQuest, onLevelUp, onAchievements }: QuestsPageProps) {
-  const { quests, progress } = useQuestContext();
+  const { quests, progress, trackedMetaQuest } = useQuestContext();
 
   const [activeCategory, setActiveCategory] = useState<CategoryId | null>(() => {
     const saved = sessionStorage.getItem('sq-filter-category') as CategoryId | null;
@@ -42,6 +42,7 @@ export function QuestsPage({ onSelectQuest, onLevelUp, onAchievements }: QuestsP
   });
   const [rawSearch, setRawSearch] = useState('');
   const [search, setSearch] = useState('');
+  const [showTrailOverlay, setShowTrailOverlay] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -195,6 +196,23 @@ export function QuestsPage({ onSelectQuest, onLevelUp, onAchievements }: QuestsP
             </button>
           ))}
 
+          {viewMode === 'map' && trackedMetaQuest && (
+            <button
+              type="button"
+              onClick={() => setShowTrailOverlay(v => !v)}
+              className={[
+                'text-xs px-2.5 py-1 rounded-full font-medium transition-colors',
+                showTrailOverlay
+                  ? 'bg-brand text-white'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300',
+              ].join(' ')}
+              aria-pressed={showTrailOverlay}
+              title={`Overlay ${trackedMetaQuest.title}`}
+            >
+              {trackedMetaQuest.emoji ?? '🥾'} Trail
+            </button>
+          )}
+
           <button
             type="button"
             onClick={() => setFavouritesOnly(v => !v)}
@@ -254,6 +272,14 @@ export function QuestsPage({ onSelectQuest, onLevelUp, onAchievements }: QuestsP
             quests={filtered}
             completed={progress.completed}
             onSelectQuest={onSelectQuest}
+            trailOverlay={
+              showTrailOverlay && trackedMetaQuest
+                ? {
+                    title: trackedMetaQuest.title,
+                    coords: resolveTrailCoords(trackedMetaQuest, quests),
+                  }
+                : undefined
+            }
           />
         </div>
       ) : (
@@ -288,6 +314,23 @@ export function QuestsPage({ onSelectQuest, onLevelUp, onAchievements }: QuestsP
       )}
     </div>
   );
+}
+
+function resolveTrailCoords(
+  meta: Quest,
+  quests: Quest[]
+): Array<{ lat: number; lng: number }> {
+  const ids = meta.memberQuestIds ?? [];
+  if (ids.length === 0) return [];
+  const byId = new Map(quests.map(q => [q.id, q]));
+  const out: Array<{ lat: number; lng: number }> = [];
+  for (const id of ids) {
+    const q = byId.get(id);
+    if (q && typeof q.lat === 'number' && typeof q.lng === 'number') {
+      out.push({ lat: q.lat, lng: q.lng });
+    }
+  }
+  return out;
 }
 
 function sortQuests(

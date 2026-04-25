@@ -136,7 +136,7 @@ describe('getQuestOfTheDay', () => {
 
 function makeProgress(overrides: Partial<UserProgress['streak']> = {}): UserProgress {
   return {
-    version: 3,
+    version: 4,
     displayName: 'Test',
     completed: {},
     favourites: [],
@@ -144,7 +144,7 @@ function makeProgress(overrides: Partial<UserProgress['streak']> = {}): UserProg
     trackedMetaQuestId: null,
     notes: {},
     seenAchievementIds: [],
-    tripSelection: [],
+    customMetaQuests: [],
   };
 }
 
@@ -206,19 +206,19 @@ describe('storage', () => {
 
   it('returns default progress when storage is empty', () => {
     const p = loadProgress();
-    expect(p.version).toBe(3);
+    expect(p.version).toBe(4);
     expect(p.displayName).toBe('Explorer');
     expect(p.completed).toEqual({});
     expect(p.favourites).toEqual([]);
     expect(p.trackedMetaQuestId).toBeNull();
     expect(p.notes).toEqual({});
     expect(p.seenAchievementIds).toEqual([]);
-    expect(p.tripSelection).toEqual([]);
+    expect(p.customMetaQuests).toEqual([]);
   });
 
   it('round-trips progress through save and load', () => {
     const p: UserProgress = {
-      version: 3,
+      version: 4,
       displayName: 'Kyle',
       completed: { q1: '2024-01-01T00:00:00.000Z' },
       favourites: ['q2'],
@@ -226,14 +226,22 @@ describe('storage', () => {
       trackedMetaQuestId: 'culture-frog-trail',
       notes: { q1: 'Lovely morning walk' },
       seenAchievementIds: ['first-quest'],
-      tripSelection: ['q1', 'q2'],
+      customMetaQuests: [
+        {
+          id: 'custom-abc',
+          title: 'Tea round',
+          emoji: '☕',
+          memberQuestIds: ['q1', 'q2'],
+          createdAt: '2024-02-01T00:00:00.000Z',
+        },
+      ],
     };
     saveProgress(p);
     const loaded = loadProgress();
     expect(loaded).toEqual(p);
   });
 
-  it('migrates a v1 save to v3 with defaults for new fields', () => {
+  it('migrates a v1 save to v4 with defaults for new fields', () => {
     localStorage.setItem(
       'stockport-quest-progress-v1',
       JSON.stringify({
@@ -245,33 +253,36 @@ describe('storage', () => {
       })
     );
     const loaded = loadProgress();
-    expect(loaded.version).toBe(3);
+    expect(loaded.version).toBe(4);
     expect(loaded.displayName).toBe('Legacy');
     expect(loaded.completed).toEqual({ q1: 'x' });
     expect(loaded.favourites).toEqual(['q2']);
     expect(loaded.trackedMetaQuestId).toBeNull();
     expect(loaded.notes).toEqual({});
     expect(loaded.seenAchievementIds).toEqual([]);
-    expect(loaded.tripSelection).toEqual([]);
+    expect(loaded.customMetaQuests).toEqual([]);
+    expect((loaded as unknown as { tripSelection?: unknown }).tripSelection).toBeUndefined();
   });
 
-  it('migrates a v2 save to v3 with tripSelection defaulted', () => {
+  it('migrates a v3 save to v4, dropping tripSelection and adding customMetaQuests', () => {
     localStorage.setItem(
       'stockport-quest-progress-v1',
       JSON.stringify({
-        version: 2,
-        displayName: 'V2 User',
+        version: 3,
+        displayName: 'V3 User',
         completed: {},
         favourites: [],
         streak: { lastActiveDate: '', current: 0, longest: 0 },
         trackedMetaQuestId: null,
         notes: {},
         seenAchievementIds: [],
+        tripSelection: ['q1', 'q2'],
       })
     );
     const loaded = loadProgress();
-    expect(loaded.version).toBe(3);
-    expect(loaded.tripSelection).toEqual([]);
+    expect(loaded.version).toBe(4);
+    expect(loaded.customMetaQuests).toEqual([]);
+    expect((loaded as unknown as { tripSelection?: unknown }).tripSelection).toBeUndefined();
   });
 
   it('returns default when stored data has unknown version', () => {
@@ -288,7 +299,7 @@ describe('storage', () => {
 
   it('clearProgress removes the key', () => {
     saveProgress({
-      version: 3,
+      version: 4,
       displayName: 'X',
       completed: {},
       favourites: [],
@@ -296,7 +307,7 @@ describe('storage', () => {
       trackedMetaQuestId: null,
       notes: {},
       seenAchievementIds: [],
-      tripSelection: [],
+      customMetaQuests: [],
     });
     clearProgress();
     expect(localStorage.getItem('stockport-quest-progress-v1')).toBeNull();
@@ -307,7 +318,7 @@ describe('storage', () => {
 
 import { renderHook, act } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import { MAX_TRIP_STOPS, QuestContextProvider, useQuestContext } from '../lib/QuestContext';
+import { QuestContextProvider, useQuestContext, isCustomTrailId } from '../lib/QuestContext';
 
 function wrapper({ children }: { children: ReactNode }) {
   return <QuestContextProvider>{children}</QuestContextProvider>;
@@ -831,7 +842,7 @@ import { ACHIEVEMENTS, getUnlockedIds, getNewlyUnlocked } from '../lib/achieveme
 
 function emptyProgress(): UserProgress {
   return {
-    version: 3,
+    version: 4,
     displayName: 'Test',
     completed: {},
     favourites: [],
@@ -839,7 +850,7 @@ function emptyProgress(): UserProgress {
     trackedMetaQuestId: null,
     notes: {},
     seenAchievementIds: [],
-    tripSelection: [],
+    customMetaQuests: [],
   };
 }
 
@@ -1048,7 +1059,7 @@ describe('BackupSection', () => {
 
   function sampleProgress(): UserProgress {
     return {
-      version: 3,
+      version: 4,
       displayName: 'Kyle',
       completed: { q1: '2024-01-01' },
       favourites: ['q2'],
@@ -1056,7 +1067,7 @@ describe('BackupSection', () => {
       trackedMetaQuestId: null,
       notes: { q1: 'a note' },
       seenAchievementIds: [],
-      tripSelection: [],
+      customMetaQuests: [],
     };
   }
 
@@ -1195,99 +1206,191 @@ describe('nearestQuestsByCoord', () => {
   });
 });
 
-// ─── Trip selection actions ──────────────────────────────────────────────────
+// ─── Custom meta-quest trails ────────────────────────────────────────────────
 
-describe('QuestContext — trip selection', () => {
+describe('QuestContext — custom trails', () => {
   beforeEach(() => { localStorage.clear(); });
 
-  it('addToTrip appends an id', () => {
-    const { result } = renderHook(() => useQuestContext(), { wrapper });
-    const id = result.current.quests[0].id;
-    act(() => { result.current.addToTrip(id); });
-    expect(result.current.progress.tripSelection).toEqual([id]);
-  });
+  function pickRegularQuestIds(result: { current: ReturnType<typeof useQuestContext> }, n: number): string[] {
+    return result.current.quests
+      .filter(q => !q.memberQuestIds || q.memberQuestIds.length === 0)
+      .filter(q => !isCustomTrailId(q.id))
+      .slice(0, n)
+      .map(q => q.id);
+  }
 
-  it('addToTrip is a no-op for an id already in the trip', () => {
+  it('createCustomTrail appends a trail with a custom- id', () => {
     const { result } = renderHook(() => useQuestContext(), { wrapper });
-    const id = result.current.quests[0].id;
-    act(() => { result.current.addToTrip(id); });
-    act(() => { result.current.addToTrip(id); });
-    expect(result.current.progress.tripSelection).toEqual([id]);
-  });
-
-  it('removeFromTrip filters an id out', () => {
-    const { result } = renderHook(() => useQuestContext(), { wrapper });
-    const id = result.current.quests[0].id;
-    act(() => { result.current.addToTrip(id); });
-    act(() => { result.current.removeFromTrip(id); });
-    expect(result.current.progress.tripSelection).toEqual([]);
-  });
-
-  it('preserves tap order', () => {
-    const { result } = renderHook(() => useQuestContext(), { wrapper });
-    const ids = result.current.quests.slice(0, 3).map(q => q.id);
+    const ids = pickRegularQuestIds(result, 3);
+    let newId = '';
     act(() => {
-      for (const id of ids) result.current.addToTrip(id);
+      newId = result.current.createCustomTrail({
+        title: 'My Loop',
+        emoji: '🥾',
+        memberQuestIds: ids,
+      });
     });
-    expect(result.current.progress.tripSelection).toEqual(ids);
+    expect(isCustomTrailId(newId)).toBe(true);
+    expect(result.current.progress.customMetaQuests).toHaveLength(1);
+    expect(result.current.progress.customMetaQuests[0]).toMatchObject({
+      id: newId,
+      title: 'My Loop',
+      emoji: '🥾',
+      memberQuestIds: ids,
+    });
   });
 
-  it('reorderTrip moves an entry', () => {
+  it('a created custom trail surfaces in the merged quests list as a meta-quest', () => {
     const { result } = renderHook(() => useQuestContext(), { wrapper });
-    const ids = result.current.quests.slice(0, 3).map(q => q.id);
+    const ids = pickRegularQuestIds(result, 2);
+    let newId = '';
     act(() => {
-      for (const id of ids) result.current.addToTrip(id);
+      newId = result.current.createCustomTrail({ title: 'Mini', memberQuestIds: ids });
     });
-    act(() => { result.current.reorderTrip(0, 2); });
-    expect(result.current.progress.tripSelection).toEqual([ids[1], ids[2], ids[0]]);
+    const surfaced = result.current.quests.find(q => q.id === newId);
+    expect(surfaced).toBeDefined();
+    expect(surfaced!.memberQuestIds).toEqual(ids);
   });
 
-  it('clearTrip empties the selection', () => {
+  it('updateCustomTrail patches the named fields', () => {
     const { result } = renderHook(() => useQuestContext(), { wrapper });
-    const id = result.current.quests[0].id;
-    act(() => { result.current.addToTrip(id); });
-    act(() => { result.current.clearTrip(); });
-    expect(result.current.progress.tripSelection).toEqual([]);
+    const ids = pickRegularQuestIds(result, 3);
+    let newId = '';
+    act(() => {
+      newId = result.current.createCustomTrail({ title: 'Old name', memberQuestIds: ids });
+    });
+    act(() => {
+      result.current.updateCustomTrail(newId, { title: 'New name', emoji: '🌳' });
+    });
+    const trail = result.current.progress.customMetaQuests.find(c => c.id === newId)!;
+    expect(trail.title).toBe('New name');
+    expect(trail.emoji).toBe('🌳');
+    // memberQuestIds unchanged.
+    expect(trail.memberQuestIds).toEqual(ids);
   });
 
-  it('persists trip selection across remounts', () => {
+  it('deleteCustomTrail removes the trail', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const ids = pickRegularQuestIds(result, 2);
+    let newId = '';
+    act(() => {
+      newId = result.current.createCustomTrail({ title: 'Doomed', memberQuestIds: ids });
+    });
+    act(() => { result.current.deleteCustomTrail(newId); });
+    expect(result.current.progress.customMetaQuests).toEqual([]);
+  });
+
+  it('deleteCustomTrail also clears trackedMetaQuestId if it pointed at the trail', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const ids = pickRegularQuestIds(result, 2);
+    let newId = '';
+    act(() => {
+      newId = result.current.createCustomTrail({ title: 'Tracked', memberQuestIds: ids });
+    });
+    act(() => { result.current.setTrackedMetaQuest(newId); });
+    expect(result.current.progress.trackedMetaQuestId).toBe(newId);
+    act(() => { result.current.deleteCustomTrail(newId); });
+    expect(result.current.progress.trackedMetaQuestId).toBeNull();
+  });
+
+  it('setTrackedMetaQuest accepts a custom trail id', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const ids = pickRegularQuestIds(result, 2);
+    let newId = '';
+    act(() => {
+      newId = result.current.createCustomTrail({ title: 'Trackable', memberQuestIds: ids });
+    });
+    act(() => { result.current.setTrackedMetaQuest(newId); });
+    expect(result.current.trackedMetaQuest?.id).toBe(newId);
+  });
+
+  it('completing every member auto-marks a custom trail and clears tracking', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const ids = pickRegularQuestIds(result, 3);
+    let newId = '';
+    act(() => {
+      newId = result.current.createCustomTrail({ title: 'Walk', memberQuestIds: ids });
+    });
+    act(() => { result.current.setTrackedMetaQuest(newId); });
+    act(() => {
+      for (const id of ids) result.current.toggleComplete(id);
+    });
+    expect(result.current.progress.completed[newId]).toBeTruthy();
+    expect(result.current.progress.trackedMetaQuestId).toBeNull();
+  });
+
+  it('a synthesized custom trail awards 0 bonus XP', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const ids = pickRegularQuestIds(result, 2);
+    const memberXP = ids.reduce(
+      (sum, id) => sum + (result.current.quests.find(q => q.id === id)?.xp ?? 0),
+      0
+    );
+    let newId = '';
+    act(() => {
+      newId = result.current.createCustomTrail({ title: 'No bonus', memberQuestIds: ids });
+    });
+    void newId;
+    act(() => {
+      for (const id of ids) result.current.toggleComplete(id);
+    });
+    expect(result.current.totalXP).toBe(memberXP);
+  });
+
+  it('persists custom trails across remounts', () => {
     const { result, unmount } = renderHook(() => useQuestContext(), { wrapper });
-    const id = result.current.quests[0].id;
-    act(() => { result.current.addToTrip(id); });
+    const ids = pickRegularQuestIds(result, 2);
+    act(() => {
+      result.current.createCustomTrail({ title: 'Persist', memberQuestIds: ids });
+    });
     unmount();
     const { result: result2 } = renderHook(() => useQuestContext(), { wrapper });
-    expect(result2.current.progress.tripSelection).toEqual([id]);
+    expect(result2.current.progress.customMetaQuests).toHaveLength(1);
+    expect(result2.current.progress.customMetaQuests[0].title).toBe('Persist');
   });
+});
 
-  it('tripQuests filters out ids without coordinates', () => {
-    const { result } = renderHook(() => useQuestContext(), { wrapper });
-    const withCoords = result.current.quests.find(q => typeof q.lat === 'number');
-    const withoutCoords = result.current.quests.find(q => typeof q.lat !== 'number');
-    expect(withCoords).toBeDefined();
-    expect(withoutCoords).toBeDefined();
-    act(() => {
-      result.current.addToTrip(withCoords!.id);
-      result.current.addToTrip(withoutCoords!.id);
+// ─── Trail share encoding ────────────────────────────────────────────────────
+
+import { encodeTrail, decodeTrail } from '../lib/trailShare';
+
+describe('trailShare', () => {
+  it('round-trips title, emoji, and memberQuestIds', () => {
+    const encoded = encodeTrail({
+      title: 'Sunday Wander',
+      emoji: '🥾',
+      memberQuestIds: ['a', 'b', 'c'],
     });
-    expect(result.current.tripQuests.map(q => q.id)).toEqual([withCoords!.id]);
-  });
-
-  it('resetProgress clears the trip', () => {
-    const { result } = renderHook(() => useQuestContext(), { wrapper });
-    const id = result.current.quests[0].id;
-    act(() => { result.current.addToTrip(id); });
-    act(() => { result.current.resetProgress(); });
-    expect(result.current.progress.tripSelection).toEqual([]);
-  });
-
-  it(`addToTrip stops adding once MAX_TRIP_STOPS (${MAX_TRIP_STOPS}) is reached`, () => {
-    const { result } = renderHook(() => useQuestContext(), { wrapper });
-    const ids = result.current.quests.slice(0, MAX_TRIP_STOPS + 3).map(q => q.id);
-    act(() => {
-      for (const id of ids) result.current.addToTrip(id);
+    const decoded = decodeTrail(encoded);
+    expect(decoded).toEqual({
+      v: 1,
+      t: 'Sunday Wander',
+      e: '🥾',
+      m: ['a', 'b', 'c'],
     });
-    expect(result.current.progress.tripSelection.length).toBe(MAX_TRIP_STOPS);
-    expect(result.current.progress.tripSelection).toEqual(ids.slice(0, MAX_TRIP_STOPS));
+  });
+
+  it('round-trips when emoji is omitted', () => {
+    const encoded = encodeTrail({ title: 'Plain', memberQuestIds: ['x'] });
+    const decoded = decodeTrail(encoded);
+    expect(decoded).toEqual({ v: 1, t: 'Plain', m: ['x'] });
+  });
+
+  it('returns null for malformed input', () => {
+    expect(decodeTrail('not-base64-!!!')).toBeNull();
+    expect(decodeTrail(btoa('{"hello":"world"}'))).toBeNull();
+    // Wrong version.
+    expect(decodeTrail(btoa(JSON.stringify({ v: 2, t: 'x', m: [] })))).toBeNull();
+    // Non-string member id.
+    expect(decodeTrail(btoa(JSON.stringify({ v: 1, t: 'x', m: [1, 2] })))).toBeNull();
+  });
+
+  it('produces URL-safe base64 (no +, /, or =)', () => {
+    const encoded = encodeTrail({
+      title: 'Test '.repeat(6),
+      memberQuestIds: ['one', 'two', 'three', 'four', 'five'],
+    });
+    expect(encoded).not.toMatch(/[+/=]/);
   });
 });
 
