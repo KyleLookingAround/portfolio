@@ -6,6 +6,7 @@ import { getLocalDateStr } from '../lib/progress';
 interface HistoryTimelineProps {
   completed: Record<string, string>;
   quests: Quest[];
+  onSelectQuest?: (quest: Quest) => void;
 }
 
 interface Entry {
@@ -41,7 +42,7 @@ function formatRelative(iso: string): string {
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 }
 
-export function HistoryTimeline({ completed, quests }: HistoryTimelineProps) {
+export function HistoryTimeline({ completed, quests, onSelectQuest }: HistoryTimelineProps) {
   const { entries, grouped } = useMemo(() => {
     const byId = new Map(quests.map(q => [q.id, q]));
     const today = getLocalDateStr();
@@ -88,11 +89,8 @@ export function HistoryTimeline({ completed, quests }: HistoryTimelineProps) {
               <ul className="bg-white dark:bg-surface-dark rounded-xl divide-y divide-gray-100 dark:divide-gray-700">
                 {items.map(({ quest, iso }) => {
                   const cat = CATEGORY_MAP[quest.category];
-                  return (
-                    <li
-                      key={quest.id}
-                      className="flex items-center gap-2.5 px-3 py-2"
-                    >
+                  const rowContent = (
+                    <>
                       {quest.emoji && (
                         <span className="text-lg shrink-0" aria-hidden="true">{quest.emoji}</span>
                       )}
@@ -110,6 +108,24 @@ export function HistoryTimeline({ completed, quests }: HistoryTimelineProps) {
                       <span className="text-xs text-gray-400 dark:text-gray-500 shrink-0">
                         {formatRelative(iso)}
                       </span>
+                    </>
+                  );
+                  return (
+                    <li key={quest.id}>
+                      {onSelectQuest ? (
+                        <button
+                          type="button"
+                          onClick={() => onSelectQuest(quest)}
+                          aria-label={`View ${quest.title}`}
+                          className="w-full text-left flex items-center gap-2.5 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors rounded-xl"
+                        >
+                          {rowContent}
+                        </button>
+                      ) : (
+                        <div className="flex items-center gap-2.5 px-3 py-2">
+                          {rowContent}
+                        </div>
+                      )}
                     </li>
                   );
                 })}

@@ -1,13 +1,14 @@
 import { useMemo } from 'react';
-import type { Quest, UserProgress } from '../types';
+import type { CategoryId, Quest, UserProgress } from '../types';
 import { ACHIEVEMENTS, getUnlockedIds } from '../lib/achievements';
 
 interface AchievementsPanelProps {
   progress: UserProgress;
   quests: Quest[];
+  onNavigate?: (category: CategoryId) => void;
 }
 
-export function AchievementsPanel({ progress, quests }: AchievementsPanelProps) {
+export function AchievementsPanel({ progress, quests, onNavigate }: AchievementsPanelProps) {
   const unlockedIds = useMemo(() => new Set(getUnlockedIds(progress, quests)), [progress, quests]);
   const unlockedCount = unlockedIds.size;
 
@@ -61,6 +62,16 @@ export function AchievementsPanel({ progress, quests }: AchievementsPanelProps) 
                 <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-tight line-clamp-2">
                   {a.description}
                 </p>
+                {!unlocked && a.filterCategory && onNavigate && (
+                  <button
+                    type="button"
+                    onClick={() => onNavigate(a.filterCategory!)}
+                    aria-label={`Find ${a.title} quests`}
+                    className="text-[10px] text-brand dark:text-brand-dark font-medium hover:underline mt-0.5"
+                  >
+                    Find quests →
+                  </button>
+                )}
               </div>
             </li>
           );

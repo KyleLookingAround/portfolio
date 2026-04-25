@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import type { Quest } from '../types';
 import { CATEGORY_MAP } from '../data/categories';
 import { useQuestContext } from '../lib/QuestContext';
-import { isMetaQuest, getMetaQuestProgress } from '../lib/progress';
+import { isMetaQuest, getMetaQuestProgress, DIFFICULTY_LABEL } from '../lib/progress';
 
 interface QuestCardProps {
   quest: Quest;
@@ -11,12 +11,6 @@ interface QuestCardProps {
   onAchievements?: (items: { id: string; message: string }[]) => void;
   compact?: boolean;
 }
-
-const DIFFICULTY_LABEL: Record<Quest['difficulty'], string> = {
-  easy: 'Easy',
-  medium: 'Medium',
-  hard: 'Hard',
-};
 
 const DIFFICULTY_COLOR: Record<Quest['difficulty'], string> = {
   easy: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30',

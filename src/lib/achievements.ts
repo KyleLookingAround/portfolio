@@ -1,11 +1,13 @@
 import type { CategoryId, Quest, UserProgress } from '../types';
 import { isMetaQuest } from './progress';
+import { CATEGORIES } from '../data/categories';
 
 export interface Achievement {
   id: string;
   title: string;
   description: string;
   emoji: string;
+  filterCategory?: CategoryId;
   predicate: (progress: UserProgress, quests: Quest[]) => boolean;
 }
 
@@ -87,7 +89,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Complete at least one quest from every category.',
     emoji: '🌈',
     predicate: (p, q) => {
-      const categories: CategoryId[] = ['outdoors', 'food', 'culture', 'history', 'family', 'hidden', 'fitness', 'nightlife'];
+      const categories = CATEGORIES.map(c => c.id);
       return categories.every(c => completedInCategory(p, q, c) >= 1);
     },
   },
@@ -103,6 +105,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     title: 'Night Owl',
     description: 'Complete every nightlife quest.',
     emoji: '🦉',
+    filterCategory: 'nightlife',
     predicate: (p, q) => {
       const total = totalInCategory(q, 'nightlife');
       return total > 0 && completedInCategory(p, q, 'nightlife') === total;
@@ -113,6 +116,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     title: 'Culture Vulture',
     description: 'Complete every culture quest.',
     emoji: '📚',
+    filterCategory: 'culture',
     predicate: (p, q) => {
       const total = totalInCategory(q, 'culture');
       return total > 0 && completedInCategory(p, q, 'culture') === total;

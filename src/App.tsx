@@ -20,8 +20,8 @@ function useHashRoute(): string {
 }
 
 type ToastItem =
-  | { kind: 'level'; message: string }
-  | { kind: 'achievement'; id: string; message: string };
+  | { kind: 'level'; seq: number; message: string }
+  | { kind: 'achievement'; seq: number; id: string; message: string };
 
 interface ToastProps {
   message: string;
@@ -74,6 +74,7 @@ export default function App() {
   });
   const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
   const [toastQueue, setToastQueue] = useState<ToastItem[]>([]);
+  const seqRef = useRef(0);
 
   useEffect(() => {
     try {
@@ -84,14 +85,14 @@ export default function App() {
   }, [isDark]);
 
   const pushToast = useCallback((message: string) => {
-    setToastQueue(q => [...q, { kind: 'level', message }]);
+    setToastQueue(q => [...q, { kind: 'level', seq: ++seqRef.current, message }]);
   }, []);
 
   const pushAchievementToasts = useCallback((items: { id: string; message: string }[]) => {
     if (items.length === 0) return;
     setToastQueue(q => [
       ...q,
-      ...items.map<ToastItem>(i => ({ kind: 'achievement', id: i.id, message: i.message })),
+      ...items.map<ToastItem>(i => ({ kind: 'achievement', seq: ++seqRef.current, id: i.id, message: i.message })),
     ]);
   }, []);
 
@@ -135,7 +136,7 @@ export default function App() {
               {activePage === 'trails' && (
                 <MetaQuestsPage onSelectQuest={setSelectedQuest} />
               )}
-              {activePage === 'progress' && <ProgressPage />}
+              {activePage === 'progress' && <ProgressPage onSelectQuest={setSelectedQuest} />}
               {activePage === 'profile' && (
                 <ProfilePage isDark={isDark} onToggleDark={handleToggleDark} />
               )}
@@ -169,7 +170,7 @@ export default function App() {
 
         {toastQueue.length > 0 && (
           <Toast
-            key={`${toastQueue[0].kind}-${toastQueue[0].message}`}
+            key={toastQueue[0].seq}
             message={toastQueue[0].message}
             onDismiss={dismissToast}
           />
