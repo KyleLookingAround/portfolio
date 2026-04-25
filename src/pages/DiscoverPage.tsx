@@ -3,6 +3,7 @@ import { useQuestContext } from '../lib/QuestContext';
 import { getQuestOfTheDay, getMetaQuestProgress, isMetaQuest, xpForLevel } from '../lib/progress';
 import { CATEGORIES, CATEGORY_MAP } from '../data/categories';
 import { QuestCard } from '../components/QuestCard';
+import { DiscoverMiniMap } from '../components/DiscoverMiniMap';
 
 interface DiscoverPageProps {
   onSelectQuest: (quest: Quest) => void;
@@ -89,6 +90,8 @@ export function DiscoverPage({ onSelectQuest, onLevelUp, onAchievements }: Disco
       </div>
 
       <div className="flex-1 px-4 py-5 space-y-6">
+        <DiscoverMiniMap />
+
         {/* Tracked trail */}
         {trackedMetaQuest && trackedProgress && (
           <TrackedTrailSection

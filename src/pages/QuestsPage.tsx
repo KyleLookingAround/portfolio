@@ -35,7 +35,11 @@ export function QuestsPage({ onSelectQuest, onLevelUp, onAchievements }: QuestsP
     return saved === '1';
   });
   const [sortMode, setSortMode] = useState<SortMode>('alpha');
-  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
+  const [viewMode, setViewMode] = useState<'list' | 'map'>(() => {
+    const saved = sessionStorage.getItem('sq-quests-view');
+    if (saved) sessionStorage.removeItem('sq-quests-view');
+    return saved === 'map' ? 'map' : 'list';
+  });
   const [rawSearch, setRawSearch] = useState('');
   const [search, setSearch] = useState('');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);

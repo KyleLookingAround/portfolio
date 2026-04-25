@@ -1,9 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import type { CategoryId, Quest } from '../types';
 import { CATEGORIES, CATEGORY_MAP } from '../data/categories';
-import { getQuestOfTheDay } from '../lib/progress';
+import {
+  getQuestOfTheDay,
+  tripDistanceKm,
+  walkingTimeMinutes,
+} from '../lib/progress';
 import { useQuestContext } from '../lib/QuestContext';
 import { MapControls } from './MapControls';
 import 'leaflet/dist/leaflet.css';
@@ -22,21 +26,34 @@ interface IconSpec {
   emoji: string;
   done: boolean;
   highlight: boolean;
+  tripIndex: number | null;
 }
 
-function buildIcon({ color, emoji, done, highlight }: IconSpec): L.DivIcon {
+function buildIcon({ color, emoji, done, highlight, tripIndex }: IconSpec): L.DivIcon {
   const size = highlight ? 36 : 28;
   const ring = highlight
     ? `box-shadow:0 0 0 4px rgba(245,158,11,0.55),0 2px 6px rgba(0,0,0,0.3);`
     : `box-shadow:0 2px 4px rgba(0,0,0,0.25);`;
   const inner = done ? '✓' : emoji;
+  const badge = tripIndex !== null
+    ? `<span style="
+        position:absolute;top:-4px;right:-4px;
+        display:inline-flex;align-items:center;justify-content:center;
+        min-width:16px;height:16px;padding:0 3px;border-radius:9999px;
+        background:#4F46E5;color:white;font-size:10px;font-weight:700;
+        border:2px solid white;box-sizing:content-box;line-height:1;
+      ">${tripIndex}</span>`
+    : '';
   const html = `
-    <span style="
-      display:inline-flex;align-items:center;justify-content:center;
-      width:${size}px;height:${size}px;border-radius:9999px;
-      background:${color};color:white;font-size:${highlight ? 16 : 14}px;font-weight:700;
-      border:2px solid white;${ring}
-    ">${inner}</span>`;
+    <span style="position:relative;display:inline-block;">
+      <span style="
+        display:inline-flex;align-items:center;justify-content:center;
+        width:${size}px;height:${size}px;border-radius:9999px;
+        background:${color};color:white;font-size:${highlight ? 16 : 14}px;font-weight:700;
+        border:2px solid white;${ring}
+      ">${inner}</span>
+      ${badge}
+    </span>`;
   return L.divIcon({
     html,
     className: highlight ? 'sq-pin-pulse' : '',
@@ -60,9 +77,25 @@ function FlyToOnSelect({ target }: FlyToOnSelectProps) {
 }
 
 export function QuestsMap({ quests, completed, onSelectQuest }: QuestsMapProps) {
-  const { quests: allQuests } = useQuestContext();
+  const {
+    quests: allQuests,
+    progress,
+    tripQuests,
+    addToTrip,
+    removeFromTrip,
+    clearTrip,
+  } = useQuestContext();
   const [hiddenCategories, setHiddenCategories] = useState<Set<CategoryId>>(new Set());
   const [flyTarget, setFlyTarget] = useState<{ position: [number, number]; tick: number } | null>(null);
+  const [userPos, setUserPos] = useState<[number, number] | null>(null);
+  const [lastTappedPinId, setLastTappedPinId] = useState<string | null>(null);
+
+  const tripSelection = progress.tripSelection;
+
+  const tripIndexById = useMemo(
+    () => new Map(tripSelection.map((id, i) => [id, i + 1])),
+    [tripSelection]
+  );
 
   const withCoords = useMemo(
     () => quests.filter((q): q is Quest & { lat: number; lng: number } =>
@@ -93,6 +126,19 @@ export function QuestsMap({ quests, completed, onSelectQuest }: QuestsMapProps) 
     () => getQuestOfTheDay(allQuests, completed),
     [allQuests, completed]
   );
+
+  const tripCoords = useMemo(
+    () => tripQuests.map(q => ({ lat: q.lat as number, lng: q.lng as number })),
+    [tripQuests]
+  );
+
+  const tripKm = useMemo(() => tripDistanceKm(tripCoords), [tripCoords]);
+  const tripMinutes = Math.round(walkingTimeMinutes(tripKm));
+
+  const lastTappedPin = useMemo(() => {
+    if (!lastTappedPinId) return null;
+    return withCoords.find(q => q.id === lastTappedPinId) ?? null;
+  }, [withCoords, lastTappedPinId]);
 
   function toggleCategory(id: CategoryId) {
     setHiddenCategories(prev => {
@@ -157,11 +203,39 @@ export function QuestsMap({ quests, completed, onSelectQuest }: QuestsMapProps) 
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <FlyToOnSelect target={flyTarget} />
-          <MapControls defaultCenter={STOCKPORT_CENTER} defaultZoom={DEFAULT_ZOOM} />
+          <MapControls
+            defaultCenter={STOCKPORT_CENTER}
+            defaultZoom={DEFAULT_ZOOM}
+            onUserPosChange={setUserPos}
+          />
+          {tripCoords.length >= 2 && (
+            <Polyline
+              positions={tripCoords.map(c => [c.lat, c.lng] as [number, number])}
+              pathOptions={{
+                color: '#4F46E5',
+                weight: 3,
+                opacity: 0.6,
+                dashArray: '6 8',
+              }}
+            />
+          )}
+          {tripSelection.length === 0 && userPos && lastTappedPin && (
+            <Polyline
+              positions={[userPos, [lastTappedPin.lat, lastTappedPin.lng]]}
+              pathOptions={{
+                color: '#3B82F6',
+                weight: 3,
+                opacity: 0.55,
+                dashArray: '4 6',
+              }}
+            />
+          )}
           {visiblePins.map(q => {
             const cat = CATEGORY_MAP[q.category];
             const done = Boolean(completed[q.id]);
             const highlight = questOfTheDay?.id === q.id;
+            const tripIndex = tripIndexById.get(q.id) ?? null;
+            const inTrip = tripIndex !== null;
             return (
               <Marker
                 key={q.id}
@@ -171,10 +245,13 @@ export function QuestsMap({ quests, completed, onSelectQuest }: QuestsMapProps) 
                   emoji: q.emoji ?? cat.emoji,
                   done,
                   highlight,
+                  tripIndex,
                 })}
                 eventHandlers={{
-                  click: () =>
-                    setFlyTarget({ position: [q.lat, q.lng], tick: Date.now() }),
+                  click: () => {
+                    setFlyTarget({ position: [q.lat, q.lng], tick: Date.now() });
+                    setLastTappedPinId(q.id);
+                  },
                 }}
               >
                 <Popup>
@@ -210,12 +287,99 @@ export function QuestsMap({ quests, completed, onSelectQuest }: QuestsMapProps) 
                     >
                       View quest →
                     </button>
+                    <br />
+                    {inTrip ? (
+                      <button
+                        type="button"
+                        onClick={() => removeFromTrip(q.id)}
+                        style={{
+                          color: '#DC2626',
+                          fontWeight: 600,
+                          fontSize: '12px',
+                          marginTop: '4px',
+                          display: 'inline-block',
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Remove from trip
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => addToTrip(q.id)}
+                        style={{
+                          color: '#4F46E5',
+                          fontWeight: 600,
+                          fontSize: '12px',
+                          marginTop: '4px',
+                          display: 'inline-block',
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        + Add to trip
+                      </button>
+                    )}
                   </div>
                 </Popup>
               </Marker>
             );
           })}
         </MapContainer>
+
+        {tripQuests.length > 0 && (
+          <div
+            role="region"
+            aria-label="Trip builder"
+            className="absolute bottom-3 left-3 z-[400] w-[240px] max-h-[min(60%,360px)] flex flex-col bg-white dark:bg-surface-dark text-gray-900 dark:text-gray-100 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
+          >
+            <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100 dark:border-gray-700">
+              <span className="text-xs font-semibold">
+                Trip · {tripQuests.length} {tripQuests.length === 1 ? 'stop' : 'stops'}
+              </span>
+              <button
+                type="button"
+                onClick={clearTrip}
+                className="text-[11px] font-semibold text-red-600 dark:text-red-400 hover:underline"
+              >
+                Clear
+              </button>
+            </div>
+            <div className="px-3 py-1.5 text-[11px] text-gray-500 dark:text-gray-400">
+              ≈ {tripKm.toFixed(1)} km · ~{tripMinutes} min @ 5 km/h
+            </div>
+            <ol className="overflow-y-auto px-1 pb-1">
+              {tripQuests.map((q, i) => (
+                <li key={q.id} className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof q.lat !== 'number' || typeof q.lng !== 'number') return;
+                      setFlyTarget({ position: [q.lat, q.lng], tick: Date.now() });
+                    }}
+                    className="flex-1 text-left text-xs px-2 py-1.5 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 truncate"
+                  >
+                    <span className="font-semibold mr-1">{i + 1}.</span>
+                    {q.title}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeFromTrip(q.id)}
+                    aria-label={`Remove ${q.title} from trip`}
+                    className="shrink-0 w-7 h-7 inline-flex items-center justify-center rounded-md text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  >
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
       </div>
     </div>
   );

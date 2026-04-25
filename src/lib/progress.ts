@@ -119,3 +119,50 @@ export function getQuestOfTheDay(
   const hash = hashDateString(today);
   return available[hash % available.length];
 }
+
+// Great-circle distance in kilometres between two lat/lng points.
+export function haversineDistance(
+  a: { lat: number; lng: number },
+  b: { lat: number; lng: number }
+): number {
+  const R = 6371;
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const dLat = toRad(b.lat - a.lat);
+  const dLng = toRad(b.lng - a.lng);
+  const lat1 = toRad(a.lat);
+  const lat2 = toRad(b.lat);
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+export function tripDistanceKm(coords: Array<{ lat: number; lng: number }>): number {
+  if (coords.length < 2) return 0;
+  let total = 0;
+  for (let i = 1; i < coords.length; i++) {
+    total += haversineDistance(coords[i - 1], coords[i]);
+  }
+  return total;
+}
+
+export function walkingTimeMinutes(km: number, kmh: number = 5): number {
+  if (kmh <= 0) return 0;
+  return (km / kmh) * 60;
+}
+
+export function nearestQuestsByCoord<T extends { lat?: number; lng?: number }>(
+  from: { lat: number; lng: number },
+  list: T[],
+  n: number
+): T[] {
+  const withCoords = list.filter(
+    (item): item is T & { lat: number; lng: number } =>
+      typeof item.lat === 'number' && typeof item.lng === 'number'
+  );
+  return withCoords
+    .map(item => ({ item, d: haversineDistance(from, { lat: item.lat, lng: item.lng }) }))
+    .sort((a, b) => a.d - b.d)
+    .slice(0, n)
+    .map(x => x.item);
+}

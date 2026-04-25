@@ -44,6 +44,7 @@ interface QuestContextValue {
   level: number;
   levelName: string;
   trackedMetaQuest: Quest | null;
+  tripQuests: Quest[];
   toggleComplete: (id: string) => ToggleCompleteResult;
   toggleFavourite: (id: string) => void;
   updateDisplayName: (name: string) => void;
@@ -51,6 +52,10 @@ interface QuestContextValue {
   setNote: (id: string, value: string) => void;
   markAchievementsSeen: (ids: string[]) => void;
   resetProgress: () => void;
+  addToTrip: (id: string) => void;
+  removeFromTrip: (id: string) => void;
+  clearTrip: () => void;
+  reorderTrip: (fromIndex: number, toIndex: number) => void;
 }
 
 const QuestContext = createContext<QuestContextValue | null>(null);
@@ -200,10 +205,53 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
     setProgress(loadProgress());
   }, []);
 
+  const addToTrip = useCallback((id: string) => {
+    setProgress(prev => {
+      if (prev.tripSelection.includes(id)) return prev;
+      return { ...prev, tripSelection: [...prev.tripSelection, id] };
+    });
+  }, []);
+
+  const removeFromTrip = useCallback((id: string) => {
+    setProgress(prev => {
+      if (!prev.tripSelection.includes(id)) return prev;
+      return { ...prev, tripSelection: prev.tripSelection.filter(x => x !== id) };
+    });
+  }, []);
+
+  const clearTrip = useCallback(() => {
+    setProgress(prev => (prev.tripSelection.length === 0 ? prev : { ...prev, tripSelection: [] }));
+  }, []);
+
+  const reorderTrip = useCallback((fromIndex: number, toIndex: number) => {
+    setProgress(prev => {
+      const list = prev.tripSelection;
+      if (
+        fromIndex === toIndex ||
+        fromIndex < 0 || fromIndex >= list.length ||
+        toIndex < 0 || toIndex >= list.length
+      ) return prev;
+      const next = [...list];
+      const [moved] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, moved);
+      return { ...prev, tripSelection: next };
+    });
+  }, []);
+
   const trackedMetaQuest = useMemo<Quest | null>(() => {
     if (!progress.trackedMetaQuestId) return null;
     return QUESTS.find(q => q.id === progress.trackedMetaQuestId && isMetaQuest(q)) ?? null;
   }, [progress.trackedMetaQuestId]);
+
+  const tripQuests = useMemo<Quest[]>(() => {
+    const byId = new Map(QUESTS.map(q => [q.id, q]));
+    const out: Quest[] = [];
+    for (const id of progress.tripSelection) {
+      const q = byId.get(id);
+      if (q && typeof q.lat === 'number' && typeof q.lng === 'number') out.push(q);
+    }
+    return out;
+  }, [progress.tripSelection]);
 
   const value = useMemo<QuestContextValue>(
     () => ({
@@ -213,6 +261,7 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
       level,
       levelName,
       trackedMetaQuest,
+      tripQuests,
       toggleComplete,
       toggleFavourite,
       updateDisplayName,
@@ -220,6 +269,10 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
       setNote,
       markAchievementsSeen,
       resetProgress,
+      addToTrip,
+      removeFromTrip,
+      clearTrip,
+      reorderTrip,
     }),
     [
       progress,
@@ -227,6 +280,7 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
       level,
       levelName,
       trackedMetaQuest,
+      tripQuests,
       toggleComplete,
       toggleFavourite,
       updateDisplayName,
@@ -234,6 +288,10 @@ export function QuestContextProvider({ children }: { children: ReactNode }) {
       setNote,
       markAchievementsSeen,
       resetProgress,
+      addToTrip,
+      removeFromTrip,
+      clearTrip,
+      reorderTrip,
     ]
   );
 

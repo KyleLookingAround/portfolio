@@ -44,7 +44,7 @@ export interface StreakData {
 }
 
 export interface UserProgress {
-  version: 2;
+  version: 3;
   displayName: string;
   completed: Record<string, string>;
   favourites: string[];
@@ -55,4 +55,6 @@ export interface UserProgress {
   notes: Record<string, string>;
   // Achievement ids the user has already seen an unlock toast for.
   seenAchievementIds: string[];
+  // User-built trip route on the map: ordered list of quest ids (tap order = route order).
+  tripSelection: string[];
 }

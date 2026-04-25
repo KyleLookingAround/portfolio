@@ -4,7 +4,7 @@ const STORAGE_KEY = 'stockport-quest-progress-v1';
 
 function defaultProgress(): UserProgress {
   return {
-    version: 2,
+    version: 3,
     displayName: 'Explorer',
     completed: {},
     favourites: [],
@@ -12,6 +12,7 @@ function defaultProgress(): UserProgress {
     trackedMetaQuestId: null,
     notes: {},
     seenAchievementIds: [],
+    tripSelection: [],
   };
 }
 
@@ -20,9 +21,9 @@ export function loadProgress(): UserProgress {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as Partial<Omit<UserProgress, 'version'>> & { version?: number };
-      if (parsed.version === 1 || parsed.version === 2) {
+      if (parsed.version === 1 || parsed.version === 2 || parsed.version === 3) {
         // Merge with defaults so older saves without newer fields still load.
-        return { ...defaultProgress(), ...parsed, version: 2 } as UserProgress;
+        return { ...defaultProgress(), ...parsed, version: 3 } as UserProgress;
       }
     }
   } catch {
