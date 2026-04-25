@@ -4,9 +4,10 @@ import { CircleMarker, useMap } from 'react-leaflet';
 interface MapControlsProps {
   defaultCenter: [number, number];
   defaultZoom: number;
+  onUserPosChange?: (pos: [number, number] | null) => void;
 }
 
-export function MapControls({ defaultCenter, defaultZoom }: MapControlsProps) {
+export function MapControls({ defaultCenter, defaultZoom, onUserPosChange }: MapControlsProps) {
   const map = useMap();
   const [userPos, setUserPos] = useState<[number, number] | null>(null);
   const [locating, setLocating] = useState(false);
@@ -29,6 +30,7 @@ export function MapControls({ defaultCenter, defaultZoom }: MapControlsProps) {
       pos => {
         const next: [number, number] = [pos.coords.latitude, pos.coords.longitude];
         setUserPos(next);
+        onUserPosChange?.(next);
         map.flyTo(next, 15, { duration: 0.8 });
         setLocating(false);
       },

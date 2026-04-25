@@ -15,6 +15,10 @@ import {
   isMetaQuest,
   getMetaQuestProgress,
   isMetaQuestFullyComplete,
+  haversineDistance,
+  tripDistanceKm,
+  walkingTimeMinutes,
+  nearestQuestsByCoord,
 } from '../lib/progress';
 import type { Quest, UserProgress } from '../types';
 
@@ -132,7 +136,7 @@ describe('getQuestOfTheDay', () => {
 
 function makeProgress(overrides: Partial<UserProgress['streak']> = {}): UserProgress {
   return {
-    version: 2,
+    version: 3,
     displayName: 'Test',
     completed: {},
     favourites: [],
@@ -140,6 +144,7 @@ function makeProgress(overrides: Partial<UserProgress['streak']> = {}): UserProg
     trackedMetaQuestId: null,
     notes: {},
     seenAchievementIds: [],
+    tripSelection: [],
   };
 }
 
@@ -201,18 +206,19 @@ describe('storage', () => {
 
   it('returns default progress when storage is empty', () => {
     const p = loadProgress();
-    expect(p.version).toBe(2);
+    expect(p.version).toBe(3);
     expect(p.displayName).toBe('Explorer');
     expect(p.completed).toEqual({});
     expect(p.favourites).toEqual([]);
     expect(p.trackedMetaQuestId).toBeNull();
     expect(p.notes).toEqual({});
     expect(p.seenAchievementIds).toEqual([]);
+    expect(p.tripSelection).toEqual([]);
   });
 
   it('round-trips progress through save and load', () => {
     const p: UserProgress = {
-      version: 2,
+      version: 3,
       displayName: 'Kyle',
       completed: { q1: '2024-01-01T00:00:00.000Z' },
       favourites: ['q2'],
@@ -220,13 +226,14 @@ describe('storage', () => {
       trackedMetaQuestId: 'culture-frog-trail',
       notes: { q1: 'Lovely morning walk' },
       seenAchievementIds: ['first-quest'],
+      tripSelection: ['q1', 'q2'],
     };
     saveProgress(p);
     const loaded = loadProgress();
     expect(loaded).toEqual(p);
   });
 
-  it('migrates a v1 save to v2 with defaults for new fields', () => {
+  it('migrates a v1 save to v3 with defaults for new fields', () => {
     localStorage.setItem(
       'stockport-quest-progress-v1',
       JSON.stringify({
@@ -238,13 +245,33 @@ describe('storage', () => {
       })
     );
     const loaded = loadProgress();
-    expect(loaded.version).toBe(2);
+    expect(loaded.version).toBe(3);
     expect(loaded.displayName).toBe('Legacy');
     expect(loaded.completed).toEqual({ q1: 'x' });
     expect(loaded.favourites).toEqual(['q2']);
     expect(loaded.trackedMetaQuestId).toBeNull();
     expect(loaded.notes).toEqual({});
     expect(loaded.seenAchievementIds).toEqual([]);
+    expect(loaded.tripSelection).toEqual([]);
+  });
+
+  it('migrates a v2 save to v3 with tripSelection defaulted', () => {
+    localStorage.setItem(
+      'stockport-quest-progress-v1',
+      JSON.stringify({
+        version: 2,
+        displayName: 'V2 User',
+        completed: {},
+        favourites: [],
+        streak: { lastActiveDate: '', current: 0, longest: 0 },
+        trackedMetaQuestId: null,
+        notes: {},
+        seenAchievementIds: [],
+      })
+    );
+    const loaded = loadProgress();
+    expect(loaded.version).toBe(3);
+    expect(loaded.tripSelection).toEqual([]);
   });
 
   it('returns default when stored data has unknown version', () => {
@@ -261,7 +288,7 @@ describe('storage', () => {
 
   it('clearProgress removes the key', () => {
     saveProgress({
-      version: 2,
+      version: 3,
       displayName: 'X',
       completed: {},
       favourites: [],
@@ -269,6 +296,7 @@ describe('storage', () => {
       trackedMetaQuestId: null,
       notes: {},
       seenAchievementIds: [],
+      tripSelection: [],
     });
     clearProgress();
     expect(localStorage.getItem('stockport-quest-progress-v1')).toBeNull();
@@ -279,7 +307,7 @@ describe('storage', () => {
 
 import { renderHook, act } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import { QuestContextProvider, useQuestContext } from '../lib/QuestContext';
+import { MAX_TRIP_STOPS, QuestContextProvider, useQuestContext } from '../lib/QuestContext';
 
 function wrapper({ children }: { children: ReactNode }) {
   return <QuestContextProvider>{children}</QuestContextProvider>;
@@ -803,7 +831,7 @@ import { ACHIEVEMENTS, getUnlockedIds, getNewlyUnlocked } from '../lib/achieveme
 
 function emptyProgress(): UserProgress {
   return {
-    version: 2,
+    version: 3,
     displayName: 'Test',
     completed: {},
     favourites: [],
@@ -811,6 +839,7 @@ function emptyProgress(): UserProgress {
     trackedMetaQuestId: null,
     notes: {},
     seenAchievementIds: [],
+    tripSelection: [],
   };
 }
 
@@ -1019,7 +1048,7 @@ describe('BackupSection', () => {
 
   function sampleProgress(): UserProgress {
     return {
-      version: 2,
+      version: 3,
       displayName: 'Kyle',
       completed: { q1: '2024-01-01' },
       favourites: ['q2'],
@@ -1027,6 +1056,7 @@ describe('BackupSection', () => {
       trackedMetaQuestId: null,
       notes: { q1: 'a note' },
       seenAchievementIds: [],
+      tripSelection: [],
     };
   }
 
@@ -1076,5 +1106,210 @@ describe('HistoryTimeline', () => {
     render(<HistoryTimeline completed={{ q1: longAgo }} quests={QUESTS_FIXTURE} />);
     expect(screen.getByText('Earlier')).toBeInTheDocument();
     expect(screen.queryByText('Today')).not.toBeInTheDocument();
+  });
+});
+
+// ─── Geo helpers ─────────────────────────────────────────────────────────────
+
+describe('haversineDistance', () => {
+  it('returns 0 for identical points', () => {
+    const p = { lat: 53.4083, lng: -2.1494 };
+    expect(haversineDistance(p, p)).toBeLessThan(1e-9);
+  });
+
+  it('measures Stockport centre to Vernon Park at ~1.16 km', () => {
+    const a = { lat: 53.4083, lng: -2.1494 };
+    const b = { lat: 53.4127, lng: -2.1335 };
+    const d = haversineDistance(a, b);
+    expect(d).toBeGreaterThan(1.0);
+    expect(d).toBeLessThan(1.3);
+  });
+
+  it('1 degree of latitude is ~111.19 km', () => {
+    const d = haversineDistance({ lat: 0, lng: 0 }, { lat: 1, lng: 0 });
+    expect(d).toBeGreaterThan(110.5);
+    expect(d).toBeLessThan(111.7);
+  });
+
+  it('is symmetric', () => {
+    const a = { lat: 53.4, lng: -2.15 };
+    const b = { lat: 53.42, lng: -2.13 };
+    expect(haversineDistance(a, b)).toBeCloseTo(haversineDistance(b, a), 9);
+  });
+});
+
+describe('tripDistanceKm', () => {
+  it('returns 0 for an empty list', () => {
+    expect(tripDistanceKm([])).toBe(0);
+  });
+  it('returns 0 for a single point', () => {
+    expect(tripDistanceKm([{ lat: 53.4, lng: -2.15 }])).toBe(0);
+  });
+  it('matches haversine for two points', () => {
+    const a = { lat: 53.4083, lng: -2.1494 };
+    const b = { lat: 53.4127, lng: -2.1335 };
+    expect(tripDistanceKm([a, b])).toBeCloseTo(haversineDistance(a, b), 9);
+  });
+  it('sums segments for three points', () => {
+    const a = { lat: 53.40, lng: -2.15 };
+    const b = { lat: 53.41, lng: -2.14 };
+    const c = { lat: 53.42, lng: -2.13 };
+    const expected = haversineDistance(a, b) + haversineDistance(b, c);
+    expect(tripDistanceKm([a, b, c])).toBeCloseTo(expected, 9);
+  });
+});
+
+describe('walkingTimeMinutes', () => {
+  it('returns 60 minutes for 5 km at 5 km/h', () => {
+    expect(walkingTimeMinutes(5)).toBe(60);
+  });
+  it('returns 0 for 0 km', () => {
+    expect(walkingTimeMinutes(0)).toBe(0);
+  });
+  it('respects a custom speed', () => {
+    expect(walkingTimeMinutes(10, 4)).toBe(150);
+  });
+});
+
+describe('nearestQuestsByCoord', () => {
+  const sample: Quest[] = [
+    { id: 'a', title: 'A', description: '', location: '', category: 'outdoors', difficulty: 'easy', xp: 10, lat: 53.40, lng: -2.15 },
+    { id: 'b', title: 'B', description: '', location: '', category: 'outdoors', difficulty: 'easy', xp: 10, lat: 53.50, lng: -2.20 },
+    { id: 'c', title: 'C', description: '', location: '', category: 'outdoors', difficulty: 'easy', xp: 10 }, // no coords
+    { id: 'd', title: 'D', description: '', location: '', category: 'outdoors', difficulty: 'easy', xp: 10, lat: 53.405, lng: -2.155 },
+  ];
+
+  it('filters out items without coordinates', () => {
+    const out = nearestQuestsByCoord({ lat: 53.40, lng: -2.15 }, sample, 10);
+    expect(out.find(q => q.id === 'c')).toBeUndefined();
+  });
+
+  it('returns at most n items', () => {
+    const out = nearestQuestsByCoord({ lat: 53.40, lng: -2.15 }, sample, 1);
+    expect(out.length).toBe(1);
+  });
+
+  it('returns the closest item first', () => {
+    const out = nearestQuestsByCoord({ lat: 53.40, lng: -2.15 }, sample, 3);
+    expect(out[0].id).toBe('a');
+  });
+});
+
+// ─── Trip selection actions ──────────────────────────────────────────────────
+
+describe('QuestContext — trip selection', () => {
+  beforeEach(() => { localStorage.clear(); });
+
+  it('addToTrip appends an id', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const id = result.current.quests[0].id;
+    act(() => { result.current.addToTrip(id); });
+    expect(result.current.progress.tripSelection).toEqual([id]);
+  });
+
+  it('addToTrip is a no-op for an id already in the trip', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const id = result.current.quests[0].id;
+    act(() => { result.current.addToTrip(id); });
+    act(() => { result.current.addToTrip(id); });
+    expect(result.current.progress.tripSelection).toEqual([id]);
+  });
+
+  it('removeFromTrip filters an id out', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const id = result.current.quests[0].id;
+    act(() => { result.current.addToTrip(id); });
+    act(() => { result.current.removeFromTrip(id); });
+    expect(result.current.progress.tripSelection).toEqual([]);
+  });
+
+  it('preserves tap order', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const ids = result.current.quests.slice(0, 3).map(q => q.id);
+    act(() => {
+      for (const id of ids) result.current.addToTrip(id);
+    });
+    expect(result.current.progress.tripSelection).toEqual(ids);
+  });
+
+  it('reorderTrip moves an entry', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const ids = result.current.quests.slice(0, 3).map(q => q.id);
+    act(() => {
+      for (const id of ids) result.current.addToTrip(id);
+    });
+    act(() => { result.current.reorderTrip(0, 2); });
+    expect(result.current.progress.tripSelection).toEqual([ids[1], ids[2], ids[0]]);
+  });
+
+  it('clearTrip empties the selection', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const id = result.current.quests[0].id;
+    act(() => { result.current.addToTrip(id); });
+    act(() => { result.current.clearTrip(); });
+    expect(result.current.progress.tripSelection).toEqual([]);
+  });
+
+  it('persists trip selection across remounts', () => {
+    const { result, unmount } = renderHook(() => useQuestContext(), { wrapper });
+    const id = result.current.quests[0].id;
+    act(() => { result.current.addToTrip(id); });
+    unmount();
+    const { result: result2 } = renderHook(() => useQuestContext(), { wrapper });
+    expect(result2.current.progress.tripSelection).toEqual([id]);
+  });
+
+  it('tripQuests filters out ids without coordinates', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const withCoords = result.current.quests.find(q => typeof q.lat === 'number');
+    const withoutCoords = result.current.quests.find(q => typeof q.lat !== 'number');
+    expect(withCoords).toBeDefined();
+    expect(withoutCoords).toBeDefined();
+    act(() => {
+      result.current.addToTrip(withCoords!.id);
+      result.current.addToTrip(withoutCoords!.id);
+    });
+    expect(result.current.tripQuests.map(q => q.id)).toEqual([withCoords!.id]);
+  });
+
+  it('resetProgress clears the trip', () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const id = result.current.quests[0].id;
+    act(() => { result.current.addToTrip(id); });
+    act(() => { result.current.resetProgress(); });
+    expect(result.current.progress.tripSelection).toEqual([]);
+  });
+
+  it(`addToTrip stops adding once MAX_TRIP_STOPS (${MAX_TRIP_STOPS}) is reached`, () => {
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const ids = result.current.quests.slice(0, MAX_TRIP_STOPS + 3).map(q => q.id);
+    act(() => {
+      for (const id of ids) result.current.addToTrip(id);
+    });
+    expect(result.current.progress.tripSelection.length).toBe(MAX_TRIP_STOPS);
+    expect(result.current.progress.tripSelection).toEqual(ids.slice(0, MAX_TRIP_STOPS));
+  });
+});
+
+// ─── Discover mini-map deep link ─────────────────────────────────────────────
+
+import { DiscoverMiniMap } from '../components/DiscoverMiniMap';
+
+describe('DiscoverMiniMap', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+
+  it('"Open full map" link writes the sq-quests-view sentinel', async () => {
+    render(
+      <QuestContextProvider>
+        <DiscoverMiniMap />
+      </QuestContextProvider>
+    );
+    const links = screen.getAllByRole('link', { name: /Open full map/i });
+    expect(links.length).toBeGreaterThan(0);
+    await userEvent.click(links[0]);
+    expect(sessionStorage.getItem('sq-quests-view')).toBe('map');
   });
 });
