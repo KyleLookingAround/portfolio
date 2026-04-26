@@ -91,17 +91,20 @@ export function PlanTrailPage() {
     [pinnedSelected]
   );
 
-  const nearestCandidate = useMemo<{ quest: Quest; km: number } | null>(() => {
+  const nearestCandidates = useMemo<Array<{ quest: Quest; km: number }>>(() => {
     const last = selectedQuests[selectedQuests.length - 1];
-    if (!last || typeof last.lat !== 'number' || typeof last.lng !== 'number') return null;
+    if (!last || typeof last.lat !== 'number' || typeof last.lng !== 'number') return [];
+    const lastPt = { lat: last.lat, lng: last.lng };
     const candidates = pickable.filter(q => !selectedSet.has(q.id));
-    const [closest] = nearestQuestsByCoord({ lat: last.lat, lng: last.lng }, candidates, 1);
-    if (!closest || typeof closest.lat !== 'number' || typeof closest.lng !== 'number') return null;
-    const km = tripDistanceKm([
-      { lat: last.lat, lng: last.lng },
-      { lat: closest.lat, lng: closest.lng },
-    ]);
-    return { quest: closest, km };
+    return nearestQuestsByCoord(lastPt, candidates, 5)
+      .filter(
+        (q): q is Quest & { lat: number; lng: number } =>
+          typeof q.lat === 'number' && typeof q.lng === 'number'
+      )
+      .map(q => ({
+        quest: q,
+        km: tripDistanceKm([lastPt, { lat: q.lat, lng: q.lng }]),
+      }));
   }, [selectedQuests, pickable, selectedSet]);
 
   const trimmedTitle = title.trim();
@@ -301,16 +304,26 @@ export function PlanTrailPage() {
             </ol>
           )}
 
-          {nearestCandidate && (
-            <button
-              type="button"
-              onClick={() => toggleQuest(nearestCandidate.quest.id)}
-              className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-brand/10 dark:bg-brand-dark/20 text-brand dark:text-brand-dark hover:bg-brand/20 dark:hover:bg-brand-dark/30 transition-colors"
-              aria-label={`Add nearest unpicked stop: ${nearestCandidate.quest.title}, about ${nearestCandidate.km.toFixed(1)} kilometres away`}
-            >
-              <span aria-hidden="true">➕</span>
-              Add nearest: {nearestCandidate.quest.title} ({nearestCandidate.km.toFixed(1)} km)
-            </button>
+          {nearestCandidates.length > 0 && (
+            <div className="mt-2">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">
+                Nearby suggestions
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {nearestCandidates.map(c => (
+                  <button
+                    key={c.quest.id}
+                    type="button"
+                    onClick={() => toggleQuest(c.quest.id)}
+                    className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-brand/10 dark:bg-brand-dark/20 text-brand dark:text-brand-dark hover:bg-brand/20 dark:hover:bg-brand-dark/30 transition-colors"
+                    aria-label={`Add nearby stop: ${c.quest.title}, about ${c.km.toFixed(1)} kilometres away`}
+                  >
+                    <span aria-hidden="true">➕</span>
+                    {c.quest.title} ({c.km.toFixed(1)} km)
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
         </div>
 

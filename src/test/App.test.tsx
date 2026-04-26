@@ -1486,7 +1486,7 @@ describe('PlanTrailPage', () => {
     });
   });
 
-  it('shows the "Add nearest" helper after selecting one pinned quest', async () => {
+  it('shows up to five nearby suggestions after selecting one pinned quest', async () => {
     renderPage();
     const { result } = renderHook(() => useQuestContext(), { wrapper });
     const first = result.current.quests.find(
@@ -1501,7 +1501,10 @@ describe('PlanTrailPage', () => {
     await userEvent.click(pickerRow!);
 
     await waitFor(() => {
-      expect(screen.getByText(/^Add nearest:/i)).toBeInTheDocument();
+      expect(screen.getByText(/^Nearby suggestions$/i)).toBeInTheDocument();
     });
+    const suggestions = screen.getAllByRole('button', { name: /^Add nearby stop:/i });
+    expect(suggestions.length).toBeGreaterThan(0);
+    expect(suggestions.length).toBeLessThanOrEqual(5);
   });
 });
