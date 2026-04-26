@@ -1759,4 +1759,271 @@ export const QUESTS: Quest[] = [
       'food-heaton-moor-food-mile',
     ],
   },
+
+  // ── New food spots: vegan, bakery & dessert ───────────────────────────────────
+  // Independent venues only (chains are deliberately excluded). Three new trails
+  // bundle these into themed meta-quests at the bottom of this block.
+
+  // Fully vegan establishments
+  {
+    id: 'food-hillgate-cakery',
+    title: 'Hillgate Cakery',
+    description:
+      'Treat yourself at Hillgate Cakery, a fully plant-based bakery in Stockport\'s Old Town turning out beautifully decorated cakes, brownies and bakes that happen to be 100% vegan.',
+    location: 'Hillgate Cakery, Hillgate, Old Town, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🧁',
+    tags: ['vegan', 'plant-based', 'bakery', 'cake', 'old town', 'hillgate'],
+  },
+  {
+    id: 'food-otto-vegan-empire',
+    title: 'Otto Vegan Empire',
+    description:
+      'Sit down for a full meal at Otto Vegan Empire in Bramhall — a fully vegan kitchen serving plant-based comfort food, brunch and weekend feasts in the leafy village south of Stockport.',
+    location: 'Otto Vegan Empire, Bramhall, Stockport',
+    category: 'food',
+    difficulty: 'medium',
+    xp: 25,
+    emoji: '🌱',
+    tags: ['vegan', 'plant-based', 'restaurant', 'bramhall', 'brunch'],
+  },
+  {
+    id: 'food-the-allotment-vegan',
+    title: 'The Allotment Vegan Eatery',
+    description:
+      'Book in at The Allotment, a multi-award-winning fully vegan restaurant tucked off the cobbles near St Mary\'s, famous for inventive seasonal small plates and a knockout dessert menu.',
+    location: 'The Allotment Vegan Eatery, Mealhouse Brow, Stockport',
+    category: 'food',
+    difficulty: 'medium',
+    xp: 25,
+    emoji: '🌿',
+    tags: ['vegan', 'plant-based', 'restaurant', 'fine dining', 'seasonal', 'old town'],
+  },
+
+  // Independent bakeries & cafés
+  {
+    id: 'food-yellowhammer',
+    title: 'Yellowhammer Bakery',
+    description:
+      'Pick up a loaf and a pastry at Yellowhammer, a craft bakery turning out beautifully crusted artisan sourdough, viennoiserie and seasonal bakes from a small Stockport kitchen.',
+    location: 'Yellowhammer Bakery, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🥖',
+    tags: ['bakery', 'sourdough', 'artisan', 'pastries', 'independent'],
+  },
+  {
+    id: 'food-bake-house-stockport',
+    title: 'The Bake House Stockport',
+    description:
+      'Drop into The Bake House for fresh bread, savouries and a proper cup of tea — a friendly Stockport bakery and café with a steady rotation of vegan options alongside the classics.',
+    location: 'The Bake House, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🍞',
+    tags: ['bakery', 'cafe', 'vegan', 'bread', 'independent'],
+  },
+  {
+    id: 'food-thatchers-bakery',
+    title: 'Thatcher\'s Bakery',
+    description:
+      'Step into Thatcher\'s, a traditional family bakery serving generations of Stockport regulars with proper meat pies, sausage rolls, custard slices and freshly baked bread.',
+    location: 'Thatcher\'s Bakery, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🥧',
+    tags: ['bakery', 'traditional', 'family-run', 'pies', 'independent'],
+  },
+  {
+    id: 'food-cafe-sanjuan',
+    title: 'Cafe Sanjuan',
+    description:
+      'Settle in at Cafe Sanjuan for honest, classic café fare — full breakfasts, sandwiches and proper mugs of tea in a welcoming Stockport spot that locals quietly swear by.',
+    location: 'Cafe Sanjuan, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🍳',
+    tags: ['cafe', 'breakfast', 'classic', 'independent'],
+  },
+  {
+    id: 'food-grand-caffe',
+    title: 'Grand Caffe Hazel Grove',
+    description:
+      'Head out to Hazel Grove for breakfast or coffee at Grand Caffe — a relaxed neighbourhood café that draws a steady crowd of locals to the high street south of Stockport.',
+    location: 'Grand Caffe, Hazel Grove, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '☕',
+    tags: ['cafe', 'hazel grove', 'breakfast', 'coffee', 'independent'],
+  },
+  {
+    id: 'food-sticky-fingers',
+    title: 'Sticky Fingers',
+    description:
+      'Grab a slice of something sweet at Sticky Fingers — a Stockport favourite for handmade cakes, traybakes and the kind of unfussy treats that disappear by mid-afternoon.',
+    location: 'Sticky Fingers, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🎂',
+    tags: ['cake', 'bakery', 'handmade', 'cafe', 'independent'],
+  },
+  {
+    id: 'food-silver-birch-cafe',
+    title: 'Silver Birch Café',
+    description:
+      'Take a break at Silver Birch, a calm independent café in Stockport with a thoughtful menu, good coffee and a generous run of vegan options for plant-based locals.',
+    location: 'Silver Birch Café, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🌳',
+    tags: ['cafe', 'vegan', 'coffee', 'brunch', 'independent'],
+  },
+  {
+    id: 'food-ginkgo-cafe',
+    title: 'Ginkgo Café',
+    description:
+      'Refuel at Ginkgo, a health-focused Stockport café with a strong vegan and plant-forward menu — fresh bowls, smoothies and bakes that make eating well feel easy.',
+    location: 'Ginkgo Café, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🥗',
+    tags: ['cafe', 'vegan', 'plant-based', 'healthy', 'independent'],
+  },
+
+  // Independent dessert places
+  {
+    id: 'food-wow-shakes-cakes',
+    title: 'Wow Shakes & Cakes',
+    description:
+      'Round off a night out at Wow Shakes & Cakes — an indulgent Stockport dessert spot stacking shakes, sundaes and slabs of cake well past most kitchens\' bedtimes.',
+    location: 'Wow Shakes & Cakes, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🥤',
+    tags: ['dessert', 'shakes', 'cake', 'late night', 'sweet'],
+  },
+  {
+    id: 'food-icestone-gelato',
+    title: 'Icestone Gelato',
+    description:
+      'Cool off with a cone from Icestone Gelato — a small-batch gelateria churning out classic Italian flavours and a steady run of vegan sorbets you can usually count on.',
+    location: 'Icestone Gelato, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🍦',
+    tags: ['gelato', 'ice cream', 'vegan', 'sorbet', 'dessert'],
+  },
+  {
+    id: 'food-amai-desserts',
+    title: 'Amai Desserts',
+    description:
+      'Order something Asian-inspired at Amai Desserts — mochi, soft-serve, bingsu-style bowls and classic sweets sit side by side on a menu that\'s built for sharing.',
+    location: 'Amai Desserts, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🍡',
+    tags: ['dessert', 'asian', 'mochi', 'sweet', 'independent'],
+  },
+  {
+    id: 'food-dessert-outlet',
+    title: 'The Dessert Outlet',
+    description:
+      'Take a detour to The Dessert Outlet in Cheadle Hulme — waffles, crêpes, sundaes and shakes from an independent dessert kitchen that\'s become a south-of-town favourite.',
+    location: 'The Dessert Outlet, Cheadle Hulme, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🧇',
+    tags: ['dessert', 'waffles', 'cheadle hulme', 'sweet', 'independent'],
+  },
+  {
+    id: 'food-convene',
+    title: 'Convene',
+    description:
+      'Drop by Convene for late-night sweets — an independent Stockport dessert spot serving a rotating board of cakes, shakes and indulgences for the post-dinner crowd.',
+    location: 'Convene, Stockport',
+    category: 'food',
+    difficulty: 'easy',
+    xp: 10,
+    emoji: '🍨',
+    tags: ['dessert', 'cake', 'shakes', 'late night', 'independent'],
+  },
+
+  // ── Vegan / Bakery / Dessert Trails ───────────────────────────────────────────
+  // Three themed meta-quests bundling the new (and a couple of existing) food
+  // venues. The vegan trail mixes fully-vegan kitchens with vegan-friendly
+  // independents to give plant-based visitors a complete crawl across Stockport.
+  {
+    id: 'food-stockport-vegan-trail',
+    title: 'The Stockport Vegan Trail',
+    description:
+      'Stockport\'s plant-based scene punches well above its weight. This trail strings together the borough\'s fully-vegan kitchens and its most vegan-friendly independents — from cobbled-lane fine dining at The Allotment to Bramhall brunch at Otto, plus bakes, cafés, gelato and a Produce Hall tiffin tin along the way.',
+    location: 'Stockport (borough-wide)',
+    category: 'food',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '🌱',
+    tags: ['vegan', 'plant-based', 'trail', 'food', 'borough'],
+    memberQuestIds: [
+      'food-hillgate-cakery',
+      'food-otto-vegan-empire',
+      'food-the-allotment-vegan',
+      'food-bake-house-stockport',
+      'food-silver-birch-cafe',
+      'food-ginkgo-cafe',
+      'food-icestone-gelato',
+      'food-ph-chaat-cart',
+    ],
+  },
+  {
+    id: 'food-stockport-bakery-trail',
+    title: 'The Stockport Bakery Trail',
+    description:
+      'From craft sourdough to traditional family pies, Stockport\'s bakeries are quietly some of its best food. Work your way through five independents — Yellowhammer\'s artisan loaves, The Bake House classics, Thatcher\'s old-school counter, Hillgate Cakery\'s vegan bakes and Sticky Fingers\' handmade cakes.',
+    location: 'Stockport (borough-wide)',
+    category: 'food',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '🍞',
+    tags: ['bakery', 'trail', 'cake', 'sourdough', 'independent'],
+    memberQuestIds: [
+      'food-yellowhammer',
+      'food-bake-house-stockport',
+      'food-thatchers-bakery',
+      'food-hillgate-cakery',
+      'food-sticky-fingers',
+    ],
+  },
+  {
+    id: 'food-stockport-dessert-crawl',
+    title: 'The Stockport Dessert Crawl',
+    description:
+      'Save room and crawl through Stockport\'s sweetest independents — late-night shakes at Wow, small-batch gelato at Icestone, Asian-inspired bites at Amai, waffles at The Dessert Outlet in Cheadle Hulme, and a final stop at Convene to round it all off.',
+    location: 'Stockport (borough-wide)',
+    category: 'food',
+    difficulty: 'hard',
+    xp: 50,
+    emoji: '🍰',
+    tags: ['dessert', 'trail', 'sweet', 'late night', 'independent'],
+    memberQuestIds: [
+      'food-wow-shakes-cakes',
+      'food-icestone-gelato',
+      'food-amai-desserts',
+      'food-dessert-outlet',
+      'food-convene',
+    ],
+  },
 ];

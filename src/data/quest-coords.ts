@@ -142,4 +142,22 @@ export const QUEST_COORDS: Record<string, { lat: number; lng: number }> = {
   'fitness-vernon-park-parkrun':     { lat: 53.4127, lng: -2.1335 },
   'fitness-cycle-goyt-valley':       { lat: 53.3300, lng: -2.0094 },
   'fitness-goyt-trail-challenge':    { lat: 53.3975, lng: -2.0651 },
+
+  // Food — vegan / bakery / dessert additions
+  'food-hillgate-cakery':            { lat: 53.4068, lng: -2.1530 },
+  'food-otto-vegan-empire':          { lat: 53.3573, lng: -2.1631 },
+  'food-the-allotment-vegan':        { lat: 53.4097, lng: -2.1556 },
+  'food-yellowhammer':               { lat: 53.4275, lng: -2.1882 },
+  'food-bake-house-stockport':       { lat: 53.4090, lng: -2.1555 },
+  'food-thatchers-bakery':           { lat: 53.4090, lng: -2.1545 },
+  'food-cafe-sanjuan':               { lat: 53.4090, lng: -2.1555 },
+  'food-grand-caffe':                { lat: 53.3784, lng: -2.1239 },
+  'food-sticky-fingers':             { lat: 53.4095, lng: -2.1550 },
+  'food-silver-birch-cafe':          { lat: 53.4090, lng: -2.1555 },
+  'food-ginkgo-cafe':                { lat: 53.4090, lng: -2.1555 },
+  'food-wow-shakes-cakes':           { lat: 53.4090, lng: -2.1555 },
+  'food-icestone-gelato':            { lat: 53.4090, lng: -2.1555 },
+  'food-amai-desserts':              { lat: 53.4090, lng: -2.1555 },
+  'food-dessert-outlet':             { lat: 53.3779, lng: -2.1908 },
+  'food-convene':                    { lat: 53.4090, lng: -2.1555 },
 };
