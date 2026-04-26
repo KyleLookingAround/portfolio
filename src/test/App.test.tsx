@@ -1416,3 +1416,92 @@ describe('DiscoverMiniMap', () => {
     expect(sessionStorage.getItem('sq-quests-view')).toBe('map');
   });
 });
+
+// ─── PlanTrailPage ───────────────────────────────────────────────────────────
+
+import { PlanTrailPage } from '../pages/PlanTrailPage';
+
+describe('PlanTrailPage', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+
+  function renderPage() {
+    render(
+      <QuestContextProvider>
+        <PlanTrailPage />
+      </QuestContextProvider>
+    );
+  }
+
+  it('renders the create-mode heading', () => {
+    renderPage();
+    expect(screen.getByRole('heading', { name: /Plan your own trail/i })).toBeInTheDocument();
+  });
+
+  it('category chips narrow the pickable list to one category', async () => {
+    renderPage();
+    // Pre-toggle: at least one Food row visible (e.g. an Ale Trail member).
+    // Toggle the Outdoors chip and verify Food rows are no longer in the picker.
+    const outdoorsChip = screen.getByRole('button', { name: /🌿 Outdoors/i });
+    await userEvent.click(outdoorsChip);
+    expect(outdoorsChip).toHaveAttribute('aria-pressed', 'true');
+    // Picker should show no rows for non-outdoors quests. We sanity-check by
+    // confirming a known food quest title is not present.
+    expect(screen.queryByText(/Marble Brewery/i)).not.toBeInTheDocument();
+  });
+
+  it('search narrows the picker list', async () => {
+    renderPage();
+    const searchInput = screen.getByPlaceholderText(/Search quests/i);
+    await userEvent.type(searchInput, 'Vernon');
+    // The search should leave at least one match visible.
+    expect(screen.getAllByText(/Vernon/i).length).toBeGreaterThan(0);
+    // And quests that obviously don't match should disappear from the picker.
+    expect(screen.queryByText(/Marble Brewery/i)).not.toBeInTheDocument();
+  });
+
+  it('shows the distance estimate after selecting two pinned quests', async () => {
+    renderPage();
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const pinned = result.current.quests
+      .filter(q => !q.memberQuestIds && typeof q.lat === 'number' && typeof q.lng === 'number')
+      .slice(0, 2);
+    expect(pinned.length).toBe(2);
+
+    for (const q of pinned) {
+      const escaped = q.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const matches = await screen.findAllByRole('button', { name: new RegExp(escaped, 'i') });
+      // Only picker rows expose aria-pressed; we want the un-pressed one
+      // for this title (so we don't accidentally toggle off a prior pick or
+      // click the "Add nearest" helper).
+      const pickerRow = matches.find(b => b.getAttribute('aria-pressed') === 'false');
+      expect(pickerRow).toBeDefined();
+      await userEvent.click(pickerRow!);
+    }
+
+    await waitFor(() => {
+      expect(screen.getByText(/≈ \d/)).toBeInTheDocument();
+    });
+  });
+
+  it('shows the "Add nearest" helper after selecting one pinned quest', async () => {
+    renderPage();
+    const { result } = renderHook(() => useQuestContext(), { wrapper });
+    const first = result.current.quests.find(
+      q => !q.memberQuestIds && typeof q.lat === 'number' && typeof q.lng === 'number'
+    );
+    expect(first).toBeDefined();
+
+    const escaped = first!.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const matches = await screen.findAllByRole('button', { name: new RegExp(escaped, 'i') });
+    const pickerRow = matches.find(b => b.getAttribute('aria-pressed') === 'false');
+    expect(pickerRow).toBeDefined();
+    await userEvent.click(pickerRow!);
+
+    await waitFor(() => {
+      expect(screen.getByText(/^Add nearest:/i)).toBeInTheDocument();
+    });
+  });
+});

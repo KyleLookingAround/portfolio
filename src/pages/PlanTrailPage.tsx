@@ -1,9 +1,16 @@
 import { useMemo, useState } from 'react';
-import type { CustomMetaQuest, Quest } from '../types';
-import { CATEGORY_MAP } from '../data/categories';
-import { isMetaQuest } from '../lib/progress';
+import type { CategoryId, CustomMetaQuest, Quest } from '../types';
+import { CATEGORIES, CATEGORY_MAP } from '../data/categories';
+import {
+  isMetaQuest,
+  tripDistanceKm,
+  walkingTimeMinutes,
+  nearestQuestsByCoord,
+  DIFFICULTY_LABEL,
+} from '../lib/progress';
 import { isCustomTrailId, useQuestContext } from '../lib/QuestContext';
 import { consumePlanTrailEditId } from '../lib/planTrailNav';
+import { TrailMap } from '../components/TrailMap';
 
 const EMOJI_CHOICES = ['🥾', '🌳', '🏞️', '🧭', '☕', '🍻', '🎨', '🏛️', '🌸', '🦊'];
 const MIN_STOPS = 2;
@@ -40,6 +47,7 @@ export function PlanTrailPage() {
   const [emoji, setEmoji] = useState<string | undefined>(initial.emoji);
   const [selectedIds, setSelectedIds] = useState<string[]>(initial.selectedIds);
   const [search, setSearch] = useState('');
+  const [activeCategories, setActiveCategories] = useState<Set<CategoryId>>(() => new Set());
 
   // The catalogue of pickable quests: real (non-meta) quests with a known category.
   const pickable = useMemo<Quest[]>(
@@ -51,12 +59,13 @@ export function PlanTrailPage() {
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
-    if (!term) return pickable;
     return pickable.filter(q => {
+      if (activeCategories.size > 0 && !activeCategories.has(q.category)) return false;
+      if (!term) return true;
       const haystack = [q.title, q.location, ...(q.tags ?? [])].join(' ').toLowerCase();
       return haystack.includes(term);
     });
-  }, [pickable, search]);
+  }, [pickable, search, activeCategories]);
 
   const selectedQuests = useMemo<Quest[]>(() => {
     const byId = new Map(quests.map(q => [q.id, q]));
@@ -68,6 +77,33 @@ export function PlanTrailPage() {
     return out;
   }, [quests, selectedIds]);
 
+  const pinnedSelected = useMemo(
+    () =>
+      selectedQuests.filter(
+        (q): q is Quest & { lat: number; lng: number } =>
+          typeof q.lat === 'number' && typeof q.lng === 'number'
+      ),
+    [selectedQuests]
+  );
+
+  const distanceKm = useMemo(
+    () => tripDistanceKm(pinnedSelected.map(q => ({ lat: q.lat, lng: q.lng }))),
+    [pinnedSelected]
+  );
+
+  const nearestCandidate = useMemo<{ quest: Quest; km: number } | null>(() => {
+    const last = selectedQuests[selectedQuests.length - 1];
+    if (!last || typeof last.lat !== 'number' || typeof last.lng !== 'number') return null;
+    const candidates = pickable.filter(q => !selectedSet.has(q.id));
+    const [closest] = nearestQuestsByCoord({ lat: last.lat, lng: last.lng }, candidates, 1);
+    if (!closest || typeof closest.lat !== 'number' || typeof closest.lng !== 'number') return null;
+    const km = tripDistanceKm([
+      { lat: last.lat, lng: last.lng },
+      { lat: closest.lat, lng: closest.lng },
+    ]);
+    return { quest: closest, km };
+  }, [selectedQuests, pickable, selectedSet]);
+
   const trimmedTitle = title.trim();
   const canSave = trimmedTitle.length > 0 && selectedIds.length >= MIN_STOPS;
 
@@ -75,6 +111,15 @@ export function PlanTrailPage() {
     setSelectedIds(prev =>
       prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
     );
+  }
+
+  function toggleCategory(id: CategoryId) {
+    setActiveCategories(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   }
 
   function moveSelection(fromIndex: number, toIndex: number) {
@@ -177,10 +222,20 @@ export function PlanTrailPage() {
 
         {/* Selected list */}
         <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-              Stops ({selectedIds.length})
-            </p>
+          <div className="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+            <div className="flex items-baseline gap-2 flex-wrap">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                Stops ({selectedIds.length})
+              </p>
+              {distanceKm > 0 && (
+                <span
+                  className="text-[11px] text-gray-500 dark:text-gray-400"
+                  aria-label={`Approximately ${distanceKm.toFixed(1)} kilometres, about ${Math.round(walkingTimeMinutes(distanceKm))} minutes on foot`}
+                >
+                  ≈ {distanceKm.toFixed(1)} km · {Math.round(walkingTimeMinutes(distanceKm))} min on foot
+                </span>
+              )}
+            </div>
             {selectedIds.length > 0 && (
               <button
                 type="button"
@@ -245,13 +300,87 @@ export function PlanTrailPage() {
               })}
             </ol>
           )}
+
+          {nearestCandidate && (
+            <button
+              type="button"
+              onClick={() => toggleQuest(nearestCandidate.quest.id)}
+              className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-brand/10 dark:bg-brand-dark/20 text-brand dark:text-brand-dark hover:bg-brand/20 dark:hover:bg-brand-dark/30 transition-colors"
+              aria-label={`Add nearest unpicked stop: ${nearestCandidate.quest.title}, about ${nearestCandidate.km.toFixed(1)} kilometres away`}
+            >
+              <span aria-hidden="true">➕</span>
+              Add nearest: {nearestCandidate.quest.title} ({nearestCandidate.km.toFixed(1)} km)
+            </button>
+          )}
         </div>
+
+        {/* Map preview */}
+        {selectedIds.length > 0 && (
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1.5">
+              Preview
+            </p>
+            {pinnedSelected.length === 0 ? (
+              <p className="text-xs text-gray-500 dark:text-gray-400 italic">
+                No map data for these stops yet.
+              </p>
+            ) : (
+              <TrailMap
+                members={selectedQuests}
+                completed={progress.completed}
+                onSelectQuest={() => {}}
+              />
+            )}
+          </div>
+        )}
 
         {/* Picker */}
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1.5">
             Add quests
           </p>
+
+          {/* Category chips */}
+          <div
+            className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-none mb-2"
+            role="group"
+            aria-label="Filter quests by category"
+          >
+            <button
+              type="button"
+              onClick={() => setActiveCategories(new Set())}
+              className={[
+                'shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-colors whitespace-nowrap',
+                activeCategories.size === 0
+                  ? 'bg-brand text-white'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600',
+              ].join(' ')}
+              aria-pressed={activeCategories.size === 0}
+            >
+              All
+            </button>
+            {CATEGORIES.map(cat => {
+              const active = activeCategories.has(cat.id);
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => toggleCategory(cat.id)}
+                  className={[
+                    'shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-colors whitespace-nowrap',
+                    active
+                      ? 'text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600',
+                  ].join(' ')}
+                  style={active ? { backgroundColor: cat.color } : {}}
+                  aria-pressed={active}
+                >
+                  {cat.emoji} {cat.label}
+                </button>
+              );
+            })}
+          </div>
+
           <div className="relative mb-2">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" aria-hidden="true">🔍</span>
             <input
@@ -293,6 +422,18 @@ export function PlanTrailPage() {
                       <span className="block text-[11px] text-gray-500 dark:text-gray-400 truncate">
                         {q.location.split(',')[0]}
                       </span>
+                    </span>
+                    <span
+                      className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300"
+                      aria-label={`Difficulty: ${DIFFICULTY_LABEL[q.difficulty]}`}
+                    >
+                      {DIFFICULTY_LABEL[q.difficulty]}
+                    </span>
+                    <span
+                      className="shrink-0 text-[10px] font-semibold text-accent"
+                      aria-label={`${q.xp} XP`}
+                    >
+                      +{q.xp}
                     </span>
                     <span
                       aria-hidden="true"
@@ -342,4 +483,3 @@ export function PlanTrailPage() {
     </div>
   );
 }
-
